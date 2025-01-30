@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/events")
+@RequestMapping("/events")
 @CrossOrigin(origins = "*")
 public class EventController {
 
@@ -22,9 +22,12 @@ public class EventController {
 
     @GetMapping("/{eventId}")
     public ResponseEntity<Event> getEventById(@PathVariable int eventId) {
-        return eventService.findByEventId(eventId)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        try {
+            Event event = eventService.findByEventId(eventId);
+            return ResponseEntity.ok(event);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping
@@ -34,21 +37,24 @@ public class EventController {
 
     @PutMapping("/{eventId}")
     public ResponseEntity<Event> updateEvent(@PathVariable int eventId, @RequestBody Event event) {
-        return eventService.findByEventId(eventId)
-                .map(existingEvent -> {
-                    event.setId(existingEvent.getId());
-                    event.setEventId(eventId);
-                    return ResponseEntity.ok(eventService.save(event));
-                })
-                .orElse(ResponseEntity.notFound().build());
+        try {
+            Event existingEvent = eventService.findByEventId(eventId);
+            event.setId(existingEvent.getId());
+            event.setEventId(eventId);
+            return ResponseEntity.ok(eventService.save(event));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{eventId}")
     public ResponseEntity<?> deleteEvent(@PathVariable int eventId) {
-        if (eventService.findByEventId(eventId).isPresent()) {
+        try {
+            eventService.findByEventId(eventId);
             eventService.deleteByEventId(eventId);
             return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
     }
 }

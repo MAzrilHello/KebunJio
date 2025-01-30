@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import iss.nus.edu.sg.sa4106.KebunJio.DAO.PostDAO;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.Post;
@@ -17,10 +18,11 @@ import iss.nus.edu.sg.sa4106.KebunJio.Services.PostService;
 
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/Forum")
+@RequestMapping("/forum")
+@CrossOrigin(origins = "*")
 public class ForumController {
 	@Autowired
 	private PostService postService;

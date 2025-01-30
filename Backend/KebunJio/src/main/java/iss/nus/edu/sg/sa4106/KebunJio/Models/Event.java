@@ -3,7 +3,9 @@ package iss.nus.edu.sg.sa4106.KebunJio.Models;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.annotation.Id;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Objects;
+import java.util.Date;
 
 @Document(collection = "events")
 public class Event {
@@ -103,11 +105,15 @@ public class Event {
 				.setDescription(this.description)
 				.setLocation(this.location);
 
+		// Convert LocalDateTime to Date
+		Date startDate = Date.from(this.startDateTime.atZone(ZoneId.systemDefault()).toInstant());
+		Date endDate = Date.from(this.endDateTime.atZone(ZoneId.systemDefault()).toInstant());
+
 		com.google.api.services.calendar.model.EventDateTime start = new com.google.api.services.calendar.model.EventDateTime()
-				.setDateTime(new com.google.api.client.util.DateTime(this.startDateTime.toString()));
+				.setDateTime(new com.google.api.client.util.DateTime(startDate));
 
 		com.google.api.services.calendar.model.EventDateTime end = new com.google.api.services.calendar.model.EventDateTime()
-				.setDateTime(new com.google.api.client.util.DateTime(this.endDateTime.toString()));
+				.setDateTime(new com.google.api.client.util.DateTime(endDate));
 
 		googleEvent.setStart(start);
 		googleEvent.setEnd(end);

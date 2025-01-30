@@ -17,23 +17,26 @@ import SignUpPage from './features/login-signup/signup';
 function App() {
   return (
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/events" element={<EventPage />} />
-          <Route path="/events/:id" element={<EventDetail />} />
-          <Route path="/forum" element={<ForumPage/>} />
-          <Route path="/event" element={<EventPage />} />
-          <Route path="/forum" element={<ForumTopPage/>} />
-          <Route path="/forum/search" element={<ForumSearchPage/>} />
-          <Route path="/forum/new" element={<ForumNewPost/>} /> 
-          <Route path="/forum/my" element={<ForumMyPage/>} /> 
-          <Route path="/forum/post" element={<ViewPost/>} /> 
-          <Route path="/user-profile" element={<UserProfilePage/>} />
-        </Routes>
+        <div className="min-h-screen bg-gray-50">
+          <Appbar/>
+          <Routes>
+            <Route path="/" element={<LoginPage/>}/>
+            <Route path="/signup" element={<SignUpPage/>}/>
+            <Route path="/dashboard" element={<DashboardPage/>}/>
+            <Route path="/events" element={<EventPage/>}/>
+            <Route path="/events/:id" element={<EventDetail/>}/>
+            <Route path="/forum" element={<ForumPage/>}/>
+            <Route path="/event" element={<EventPage/>}/>
+            <Route path="/forum" element={<ForumTopPage/>}/>
+            <Route path="/forum/search" element={<ForumSearchPage/>}/>
+            <Route path="/forum/new" element={<ForumNewPost/>}/>
+            <Route path="/forum/my" element={<ForumMyPage/>}/>
+            <Route path="/forum/post" element={<ViewPost/>}/>
+            <Route path="/user-profile" element={<UserProfilePage/>}/>
+          </Routes>
+        </div>
       </BrowserRouter>
-  );
+);
 }
 
 export default App;

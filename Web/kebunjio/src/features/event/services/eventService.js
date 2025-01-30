@@ -2,22 +2,33 @@ import axios from 'axios';
 
 const BASE_URL = 'http://localhost:8080/api/events';
 
+// Add error handling wrapper
+const handleApiError = async (apiCall) => {
+    try {
+        const response = await apiCall();
+        return response;
+    } catch (error) {
+        console.error('API Error:', error);
+        throw error.response?.data || error.message;
+    }
+};
+
 export const getAllEvents = () => {
-    return axios.get(BASE_URL);
+    return handleApiError(() => axios.get(BASE_URL));
 };
 
 export const getEventById = (id) => {
-    return axios.get(`${BASE_URL}/${id}`);
+    return handleApiError(() => axios.get(`${BASE_URL}/${id}`));
 };
 
 export const createEvent = (eventData) => {
-    return axios.post(BASE_URL, eventData);
+    return handleApiError(() => axios.post(BASE_URL, eventData));
 };
 
 export const updateEvent = (id, eventData) => {
-    return axios.put(`${BASE_URL}/${id}`, eventData);
+    return handleApiError(() => axios.put(`${BASE_URL}/${id}`, eventData));
 };
 
 export const deleteEvent = (id) => {
-    return axios.delete(`${BASE_URL}/${id}`);
+    return handleApiError(() => axios.delete(`${BASE_URL}/${id}`));
 };
