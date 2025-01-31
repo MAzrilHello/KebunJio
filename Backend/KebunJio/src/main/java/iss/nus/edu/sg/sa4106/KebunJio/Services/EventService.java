@@ -5,6 +5,7 @@ import iss.nus.edu.sg.sa4106.KebunJio.Repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EventService {
@@ -15,24 +16,35 @@ public class EventService {
     @Autowired
     private EventRepository eventRepository;
 
-    public List<Event> findAll() {
+    public List<Event> getAllEvents() {
         return eventRepository.findAll();
     }
 
-    public Event findById(String id) {
-        return eventRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Event not found"));
+    public Optional<Event> getEventById(String id) {
+        return eventRepository.findById(id);
     }
 
-    public Event save(Event event) {
+    public Event createEvent(Event event) {
         return eventRepository.save(event);
     }
 
-    public void deleteById(String id) {
-        eventRepository.deleteById(id);
+    public Optional<Event> updateEvent(String id, Event event) {
+        if (!eventRepository.existsById(id)) {
+            return Optional.empty();
+        }
+        event.setId(id);
+        return Optional.of(eventRepository.save(event));
     }
 
-    public boolean createEvent(Event event, String authorizationCode) {
+    public boolean deleteEvent(String id) {
+        if (eventRepository.existsById(id)) {
+            eventRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean createEventWithGoogleCalendar(Event event, String authorizationCode) {
         try {
             return googleCalendarService.addEventToCalendar(authorizationCode, event);
         } catch (Exception e) {

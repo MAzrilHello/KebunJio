@@ -16,10 +16,8 @@ const AddToGoogleCalendar = ({ event }) => {
                 throw new Error(data.error);
             }
 
-            // Store event data in localStorage for callback
             localStorage.setItem('pendingCalendarEvent', JSON.stringify(event));
 
-            // Redirect to Google OAuth
             window.location.href = data.authUrl;
         } catch (err) {
             setError('Failed to connect to Google Calendar. Please try again.');
@@ -29,21 +27,17 @@ const AddToGoogleCalendar = ({ event }) => {
         }
     };
 
-    return React.createElement(
-        'button',
-        {
-            onClick: handleAddToCalendar,
-            disabled: loading,
-            className: "bg-blue-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 w-full max-w-md disabled:bg-blue-300 disabled:cursor-not-allowed"
-        },
-        [
-            loading ? 'Connecting...' : 'Add to my Google Calendar',
-            error && React.createElement(
-                'p',
-                { className: "text-sm text-red-100 mt-2", key: "error" },
-                error
-            )
-        ]
+    return (
+        <button
+            onClick={handleAddToCalendar}
+            disabled={loading}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-md transition duration-200 w-full disabled:bg-blue-300 disabled:cursor-not-allowed"
+        >
+            {loading ? 'Connecting...' : 'Add to my Google Calendar'}
+            {error && (
+                <p className="text-sm text-red-100 mt-2">{error}</p>
+            )}
+        </button>
     );
 };
 
