@@ -52,4 +52,5 @@ public class EventService {
             throw new RuntimeException("Failed to create event", e);
         }
     }
+
 }
