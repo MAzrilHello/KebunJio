@@ -29,20 +29,21 @@ const AddToGoogleCalendar = ({ event }) => {
         }
     };
 
-    return (
-        <button
-            onClick={handleAddToCalendar}
-            disabled={loading}
-            className="bg-blue-500 text-white px-6 py-3 rounded-md hover:bg-blue-600
-                       transition-colors duration-200 focus:outline-none focus:ring-2
-                       focus:ring-blue-500 focus:ring-offset-2 w-full max-w-md
-                       disabled:bg-blue-300 disabled:cursor-not-allowed"
-        >
-            {loading ? 'Connecting...' : 'Add to my Google Calendar'}
-            {error && (
-                <p className="text-sm text-red-100 mt-2">{error}</p>
-            )}
-        </button>
+    return React.createElement(
+        'button',
+        {
+            onClick: handleAddToCalendar,
+            disabled: loading,
+            className: "bg-blue-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 w-full max-w-md disabled:bg-blue-300 disabled:cursor-not-allowed"
+        },
+        [
+            loading ? 'Connecting...' : 'Add to my Google Calendar',
+            error && React.createElement(
+                'p',
+                { className: "text-sm text-red-100 mt-2", key: "error" },
+                error
+            )
+        ]
     );
 };
 

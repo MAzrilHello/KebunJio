@@ -2,7 +2,6 @@ package iss.nus.edu.sg.sa4106.KebunJio.Services;
 
 import iss.nus.edu.sg.sa4106.KebunJio.Models.Event;
 import iss.nus.edu.sg.sa4106.KebunJio.Repository.EventRepository;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -20,8 +19,8 @@ public class EventService {
         return eventRepository.findAll();
     }
 
-    public Event findByEventId(int eventId) {
-        return eventRepository.findByEventId(eventId)
+    public Event findById(String id) {
+        return eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
     }
 
@@ -29,8 +28,8 @@ public class EventService {
         return eventRepository.save(event);
     }
 
-    public void deleteByEventId(int eventId) {
-        eventRepository.deleteByEventId(eventId);
+    public void deleteById(String id) {
+        eventRepository.deleteById(id);
     }
 
     public boolean createEvent(Event event, String authorizationCode) {
@@ -39,15 +38,5 @@ public class EventService {
         } catch (Exception e) {
             throw new RuntimeException("Failed to create event", e);
         }
-    }
-
-    public Event getEvent(Long id) {
-        return null;
-    }
-
-    public void updateEvent(Event event) {
-    }
-
-    public void deleteEvent(Long id) {
     }
 }

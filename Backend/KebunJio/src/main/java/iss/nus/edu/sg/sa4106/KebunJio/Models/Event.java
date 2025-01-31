@@ -12,7 +12,6 @@ public class Event {
 
 	@Id
 	private String id;
-	private int eventId;
 	private String name;
 	private String location;
 	private LocalDateTime startDateTime;
@@ -22,11 +21,10 @@ public class Event {
 
 	public Event() {}
 
-	public Event(String id, int eventId, String name, String location,
+	public Event(String id, String name, String location,
 				 LocalDateTime startDateTime, LocalDateTime endDateTime,
 				 String description, String picture) {
 		this.id = id;
-		this.eventId = eventId;
 		this.name = name;
 		this.location = location;
 		this.startDateTime = startDateTime;
@@ -41,14 +39,6 @@ public class Event {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public int getEventId() {
-		return eventId;
-	}
-
-	public void setEventId(int eventId) {
-		this.eventId = eventId;
 	}
 
 	public String getName() {
@@ -105,7 +95,6 @@ public class Event {
 				.setDescription(this.description)
 				.setLocation(this.location);
 
-		// Convert LocalDateTime to Date
 		Date startDate = Date.from(this.startDateTime.atZone(ZoneId.systemDefault()).toInstant());
 		Date endDate = Date.from(this.endDateTime.atZone(ZoneId.systemDefault()).toInstant());
 
@@ -126,8 +115,7 @@ public class Event {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Event event = (Event) o;
-		return eventId == event.eventId &&
-				Objects.equals(id, event.id) &&
+		return Objects.equals(id, event.id) &&
 				Objects.equals(name, event.name) &&
 				Objects.equals(location, event.location) &&
 				Objects.equals(startDateTime, event.startDateTime) &&
@@ -138,14 +126,13 @@ public class Event {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, eventId, name, location, startDateTime, endDateTime, description, picture);
+		return Objects.hash(id, name, location, startDateTime, endDateTime, description, picture);
 	}
 
 	@Override
 	public String toString() {
 		return "Event{" +
 				"id='" + id + '\'' +
-				", eventId=" + eventId +
 				", name='" + name + '\'' +
 				", location='" + location + '\'' +
 				", startDateTime=" + startDateTime +
