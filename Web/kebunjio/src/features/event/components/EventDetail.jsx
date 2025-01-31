@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getEventById } from '../services/eventService';
-import AddToGoogleCalendar from './googleCalendar/AddToGoogleCalendar';
+import AddToGoogleCalendar from './AddToGoogleCalendar';
 
 const EventDetail = () => {
     const { id } = useParams();
