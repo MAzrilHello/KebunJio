@@ -3,12 +3,12 @@ package iss.nus.edu.sg.sa4106.KebunJio.Models;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
+//import org.springframework.data.elasticsearch.annotations.Document;
 
 import jakarta.validation.constraints.NotNull;
 
 //ElasticSearch Class
-@Document(indexName ="post_index")
+//@Document(indexName ="post_index")
 public class PostES {
 	@Id
 	private String id;

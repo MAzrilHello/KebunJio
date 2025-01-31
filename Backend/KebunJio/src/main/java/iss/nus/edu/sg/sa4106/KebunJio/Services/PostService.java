@@ -34,6 +34,7 @@ public class PostService {
 		newPost.setAnswerSolved(false);
 		newPost.setPublishedDateTime(LocalDateTime.now());
 		newPost.setUserId(userId);
+		newPost.setUpvote(0);
 
 		
 		try {
@@ -95,6 +96,32 @@ public class PostService {
 			postRepository.deleteById(id);
 			result = true;
 		}
+		return result;
+	}
+	
+	// Function7: calculateUpvote
+	public boolean calculateUpvote(String postId,boolean hasUpvoted) {
+		boolean result = false;
+		Optional<Post> postOpt = postRepository.findById(postId);
+		if(postOpt.isPresent()) {
+			Post post = postOpt.get();
+			if(!hasUpvoted) {
+				post.setUpvote(post.getUpvote()+1);
+			}else {
+				if(post.getUpvote()-1<0) {
+					throw new RuntimeException("Upvote can not less than 0");
+				}else {
+					post.setUpvote(post.getUpvote()-1);
+				}
+			}
+			try {
+				postRepository.save(post);
+				result = true;
+			}catch(Exception e){
+				throw new RuntimeException("Update Error");
+			}
+		}
+		
 		return result;
 	}
 	

@@ -7,10 +7,11 @@ import android.os.IBinder
 import android.util.Log
 import org.json.JSONObject
 import java.io.DataOutputStream
+import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
 
-class MlModelService : Service() {
+open class MlModelService : Service() {
 
     inner class LocalBinder: Binder(){
         fun getService(): MlModelService{
@@ -149,6 +150,57 @@ class MlModelService : Service() {
             connection.disconnect()
         }
 
+        return null
+    }
+
+    //ML model to diagnose plants
+    fun diagnosePlant(imageFile: File): String? {
+        val connection = makePredictPlantSpeciesConnection()
+
+        try {
+            val boundary = "Boundary-${System.currentTimeMillis()}"
+            val lineEnd = "\r\n"
+            val twoHyphens = "--"
+
+            // Set headers for multipart/form-data
+            connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=$boundary")
+
+            // Create output stream
+            val outputStream = DataOutputStream(connection.outputStream)
+
+            // Write the image file part
+            outputStream.writeBytes("$twoHyphens$boundary$lineEnd")
+            outputStream.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"${imageFile.name}\"$lineEnd")
+            outputStream.writeBytes("Content-Type: image/jpeg$lineEnd")
+            outputStream.writeBytes("Content-Transfer-Encoding: binary$lineEnd")
+            outputStream.writeBytes(lineEnd)
+
+            // Write image data to the output stream
+            outputStream.write(imageFile.readBytes())
+            outputStream.writeBytes(lineEnd)
+
+            // End the multipart request
+            outputStream.writeBytes("$twoHyphens$boundary$twoHyphens$lineEnd")
+            outputStream.flush()
+            outputStream.close()
+
+            // Get the server's response
+            val responseCode = connection.responseCode
+            val responseMessage = connection.inputStream.bufferedReader().use { it.readText() }
+
+            Log.d("MlModelService", "Response Code: $responseCode")
+            Log.d("MlModelService", "Response Message: $responseMessage")
+
+            // Parse and return the diagnosis result
+            val responseObject = JSONObject(responseMessage)
+            return responseObject.getString("diagnosis") // Assume the result is under the "diagnosis" key
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.d("MlModelService", "Failed to send image for diagnosis.")
+        } finally {
+            connection.disconnect()
+        }
         return null
     }
 }

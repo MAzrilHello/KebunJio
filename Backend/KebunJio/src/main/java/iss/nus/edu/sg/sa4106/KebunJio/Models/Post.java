@@ -23,6 +23,15 @@ public class Post {
 	private LocalDateTime publishedDateTime;
 	private Boolean answerSolved;
 	private String userId;
+	private int upvote;
+	
+	public int getUpvote() {
+		return upvote;
+	}
+	
+	public void setUpvote(int upvote) {
+		this.upvote = upvote;
+	}
 	
 	
 

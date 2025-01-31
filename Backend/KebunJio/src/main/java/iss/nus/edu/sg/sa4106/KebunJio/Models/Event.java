@@ -12,6 +12,8 @@ public class Event {
 
 	@Id
 	private String id;
+//	private int eventId;
+
 	private String name;
 	private String location;
 	private LocalDateTime startDateTime;
@@ -20,6 +22,7 @@ public class Event {
 	private String picture;
 
 	public Event() {}
+
 
 	public Event(String id, String name, String location,
 				 LocalDateTime startDateTime, LocalDateTime endDateTime,

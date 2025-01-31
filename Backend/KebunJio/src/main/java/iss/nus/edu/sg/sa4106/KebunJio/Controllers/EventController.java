@@ -26,8 +26,13 @@ public class EventController {
         Optional<Event> event = eventService.getEventById(id);
         return event.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
-    }
 
+    }
+    
+    // Have some little question
+    // Which data we need to transfer?
+    // do we need return event info?
+    
     @PostMapping
     public Event createEvent(@RequestBody Event event) {
         return eventService.createEvent(event);

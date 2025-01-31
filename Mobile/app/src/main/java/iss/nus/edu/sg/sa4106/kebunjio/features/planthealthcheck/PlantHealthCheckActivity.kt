@@ -1,10 +1,8 @@
 package iss.nus.edu.sg.sa4106.kebunjio.features.planthealthcheck
 
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -19,11 +17,12 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import iss.nus.edu.sg.sa4106.kebunjio.R
-import iss.nus.edu.sg.sa4106.kebunjio.data.Plant
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityPlantHealthCheckBinding
-import iss.nus.edu.sg.sa4106.kebunjio.service.mlModel.MlModelService
-import iss.nus.edu.sg.sa4106.kebunjio.service.reminders.PlantApiService
+import iss.nus.edu.sg.sa4106.kebunjio.service.mlModel.mlModelDiagnoseService
+import iss.nus.edu.sg.sa4106.kebunjio.service.PlantApiService
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -65,6 +64,12 @@ class PlantHealthCheckActivity : AppCompatActivity() {
                     showToast("Failed to get the image file.")
                 }
             }
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
         }
 
     }
@@ -290,7 +295,7 @@ class PlantHealthCheckActivity : AppCompatActivity() {
 
     //Diagnose plant using ML service
     private fun diagnosePlant(imageFile: File) {
-        val diagnosis = MlModelService().diagnosePlant(imageFile)
+        val diagnosis = mlModelDiagnoseService().diagnosePlant(imageFile)
         showToast("Diagnosing plant...")
 
         if (diagnosis != null) {
