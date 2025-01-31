@@ -1,7 +1,7 @@
 .page-container {
     display: flex;
     flex-direction: row;
-    height: 100vh;          
+    height: 100vh;   
   }
 
 .menu-sidebar{
@@ -68,6 +68,7 @@
 .post-insight{
     display:flex;
     font-size: 0.8rem;
+    margin-bottom: 16px;
 }
 
 .custom-link{
@@ -76,4 +77,41 @@
     display: flex;
     align-items: center;
     margin-bottom: 15px;
+}
+
+.text-area{
+    border: 2px solid #CCC;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    color:#333;
+    font-size: 0.9rem;
+}
+
+.reply-header-avatar {
+    width: 25px;
+    height: 25px;
+}
+
+.reply-header-username {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: #333; 
+}
+
+.reply-header-time {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.post-image{
+    max-height:500px;
+    max-width:500px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+.three-dot{
+    background-color: white;
+    color: #333;
+    border-color: white;
 }

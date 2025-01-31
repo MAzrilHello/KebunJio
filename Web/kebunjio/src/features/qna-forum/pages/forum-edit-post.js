@@ -1,18 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Appbar from '../../../components/Appbar'
 import MenuSidebar from '../components/menu-sidebar'
 import '../styling/forum-page.css'
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import { useLocation } from "react-router-dom";
 
-function ForumNewPost() {
+function ForumEditPost() {
+
+  const location = useLocation();
+  const post = location.state?.post; 
 
   const [formData, setFormData] = useState({
-    category: '',
-    title: '',
-    question: '',
+    category: "",
+    title: "",
+    question: "",
     image: null,
   });
+
+  useEffect(() => {
+    if (post) {
+      setFormData({
+        category: post.tag || "",
+        title: post.title || "",
+        question: post.content || "",
+        image: null,
+      });
+    }
+  }, [post]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -54,7 +69,6 @@ function ForumNewPost() {
                 onChange={handleInputChange}
                 required
                 className="text-area"
-
               >
                 <option value="">Select category</option>
                 <option value="herb">Herb</option>
@@ -119,4 +133,4 @@ function ForumNewPost() {
   );
 }
 
-export default ForumNewPost;
+export default ForumEditPost;

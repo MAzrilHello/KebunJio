@@ -1,18 +1,15 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Models;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import jakarta.validation.constraints.NotNull;
 
-/* ToDiscuss:
- * 1. Confirm which format we want to use for the relationship
- * 2. Use the mongoDB generate Id or custom Id?*/
-@Document(collection="Post")
-public class Post {
+//ElasticSearch Class
+@Document(indexName ="post_index")
+public class PostES {
 	@Id
 	private String id;
 	@NotNull(message="Title can not be null")
@@ -33,8 +30,6 @@ public class Post {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-
-	public Post() {}
 
 	public String getId() {
 		return id;
@@ -83,5 +78,4 @@ public class Post {
 	public void setAnswerSolved(Boolean answerSolved) {
 		this.answerSolved = answerSolved;
 	}
-
 }

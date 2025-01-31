@@ -1,6 +1,9 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Services;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +23,7 @@ public class PostService {
 	private PostRepository postRepository;
 	
 	//Function1: CreatePost
-	public boolean createPost(PostDAO newPostData) {
+	public boolean createPost(PostDAO newPostData,String userId) {
 		boolean result = false;
 		
 		Post newPost = new Post();
@@ -30,6 +33,8 @@ public class PostService {
 		newPost.setQuestionStatus("Open");
 		newPost.setAnswerSolved(false);
 		newPost.setPublishedDateTime(LocalDateTime.now());
+		newPost.setUserId(userId);
+
 		
 		try {
 			postRepository.save(newPost);
@@ -55,8 +60,9 @@ public class PostService {
 			return null;
 		}
 	}
+	
 	//Function4: UpdatePostByPostId
-	public boolean UpdatePostByPostId(String id,PostDAO updatePost) {
+	public boolean updatePostByPostId(String id,PostDAO updatePost) {
 		boolean result = false;
 		// try to find the post
 		Optional<Post> post = postRepository.findById(id);
@@ -75,6 +81,22 @@ public class PostService {
 		return result;
 	}
 	
+	//Function5: GetPostByUserId
+	public List<Post> getPostsByUserId(String userId){
+		List<Post> postList = postRepository.findByUserId(userId);
+		Collections.sort(postList,(p1,p2)-> p2.getPublishedDateTime().compareTo(p1.getPublishedDateTime()));
+		return postList;
+	}
+	
+	//Function6: DeletePostByPostId
+	public boolean deletePostByPostId(String id) {
+		boolean result = false;
+		if(postRepository.existsById(id)) {
+			postRepository.deleteById(id);
+			result = true;
+		}
+		return result;
+	}
 	
 	//Function for Junit and GithubActions
 	public int add(int a,int b) {

@@ -1,6 +1,8 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Services;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +57,11 @@ public class CommentService {
 			if(!hasLiked) {
 				newComment.setLikeCount(newComment.getLikeCount()+1);
 			}else {
-				newComment.setLikeCount(newComment.getLikeCount()-1);
+				if(newComment.getLikeCount()-1<0) {
+					throw new RuntimeException("Count can not less than 0");
+				}else {
+					newComment.setLikeCount(newComment.getLikeCount()-1);
+				}
 			}
 			try {
 				commentRepository.save(newComment);
@@ -68,16 +74,20 @@ public class CommentService {
 		return result;
 	}
 	
-	public boolean calculateDislikeCount(String CommentId,boolean hasLiked) {
+	public boolean calculateDislikeCount(String CommentId,boolean hasDisliked) {
 		boolean result = false;
 		Optional<Comment> comment = commentRepository.findById(CommentId);
 		if(comment.isPresent()) {
 			Comment newComment = comment.get();
-			// updateLikeCount
-			if(!hasLiked) {
+			// updateDislikeCount
+			if(!hasDisliked) {
 				newComment.setDislikeCount(newComment.getDislikeCount()+1);
 			}else {
-				newComment.setDislikeCount(newComment.getDislikeCount()-1);
+				if(newComment.getDislikeCount()-1<0) {
+					throw new RuntimeException("Count can not less than 0");
+				}else {
+					newComment.setDislikeCount(newComment.getDislikeCount()-1);
+				}
 			}
 			try {
 				commentRepository.save(newComment);
@@ -87,6 +97,42 @@ public class CommentService {
 			}
 		}
 		
+		return result;
+	}
+	
+	// updateCommentByCommentId
+	public boolean updateCommentByCommentId(String id,String newContent) {
+		boolean result = false;
+		Optional<Comment> updateComment = commentRepository.findById(id);
+		if(updateComment.isPresent()) {
+			Comment newComment = updateComment.get();
+			newComment.setCommentContent(newContent);
+			// when comment update, the like count and dislike count should set on zero?
+			try {
+				commentRepository.save(newComment);
+				result = true;
+			}catch(Exception e) {
+				throw new RuntimeException("Update Error");
+			}
+		}
+		return result;
+		
+	}
+	
+	// getCommentsByPostId
+	public List<Comment> getCommentsByPostId(String postId){
+		List<Comment> commentList = commentRepository.findByPostId(postId);
+		Collections.sort(commentList,(c1,c2)->Integer.compare(c2.getLikeCount(), c1.getLikeCount()));
+		return commentList;
+	}
+	
+	// deleteComment
+	public boolean deleteCommentByCommentId(String id) {
+		boolean result = false;
+		if(commentRepository.existsById(id)) {
+			commentRepository.deleteById(id);
+			result = true;
+		}
 		return result;
 	}
 }
