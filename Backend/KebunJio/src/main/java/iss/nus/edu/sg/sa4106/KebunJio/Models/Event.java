@@ -12,7 +12,6 @@ public class Event {
 
 	@Id
 	private String id;
-    private int eventId;
 
 	private String name;
 	private String location;
@@ -24,10 +23,10 @@ public class Event {
 	public Event() {}
 
 
-	public Event(String eventId, String name, String location,
+	public Event(String id, String name, String location,
 				 LocalDateTime startDateTime, LocalDateTime endDateTime,
 				 String description, String picture) {
-		this.eventId = eventId;
+		this.id = id;
 		this.name = name;
 		this.location = location;
 		this.startDateTime = startDateTime;

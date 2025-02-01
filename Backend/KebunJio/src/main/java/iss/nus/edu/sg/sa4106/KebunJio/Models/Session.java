@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class Session {
 	@id
 	private String id;
-	private int sessionId;
+
 	private int userId;
 	private LocalDateTime startDateTime;
 	private LocalDateTime lastActionDateTime;
@@ -14,11 +14,11 @@ public class Session {
 	public Session() {}
 
 	public int getSessionId() {
-		return sessionId;
+		return id;
 	}
 
-	public void setSessionId(int sessionId) {
-		this.sessionId = sessionId;
+	public void setSessionId(int id) {
+		this.id = id;
 	}
 
 	public int getUserId() {

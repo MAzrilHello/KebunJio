@@ -3,7 +3,7 @@ package iss.nus.edu.sg.sa4106.KebunJio.Models;
 public class EdiblePlantSpecies {
 	@id
 	private String id;
-    private int ediblePlantSpeciesId;
+
     private String name;
     private String scientificName;
     private String description;
@@ -20,11 +20,11 @@ public class EdiblePlantSpecies {
     public EdiblePlantSpecies() {}
 
 	public int getEdiblePlantSpeciesId() {
-		return ediblePlantSpeciesId;
+		return id;
 	}
 
-	public void setEdiblePlantSpeciesId(int ediblePlantSpeciesId) {
-		this.ediblePlantSpeciesId = ediblePlantSpeciesId;
+	public void setEdiblePlantSpeciesId(int id) {
+		this.id = id;
 	}
 
 	public String getName() {

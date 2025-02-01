@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class EventAdmin {
     @Id
     private String id;
+
     private String name;
     private String location;
     

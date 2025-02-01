@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Comment {
 	@Id
 	private String id;
-	private String commentId;
+
 	private String postId;
 	private String userId;
 	private String commentContent;
@@ -20,11 +20,11 @@ public class Comment {
 	public Comment() {}
 
 	public String getId() {
-		return commentId;
+		return id;
 	}
 
-	public void setId(String commentId) {
-		this.commentId = commentId;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getPostId() {

@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class Reminder {
 	@id
 	private String id;
-    private int reminderId;
+
     private User user;
     private Plant plant;
     private String reminderType;
@@ -18,11 +18,11 @@ public class Reminder {
     public Reminder() {}
 
 	public int getReminderId() {
-		return reminderId;
+		return id;
 	}
 
-	public void setReminderId(int reminderId) {
-		this.reminderId = reminderId;
+	public void setReminderId(int id) {
+		this.id = id;
 	}
 
 	public User getUser() {

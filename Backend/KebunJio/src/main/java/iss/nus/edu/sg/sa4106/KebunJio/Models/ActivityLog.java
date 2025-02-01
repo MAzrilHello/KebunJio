@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class ActivityLog {
 	@id
 	private String id;
-    private int logId;
+
     private User user;
     private Plant plant;
     private String activityType;
@@ -15,11 +15,11 @@ public class ActivityLog {
 	public ActivityLog() {}
 
 	public int getLogId() {
-		return logId;
+		return id;
 	}
 
 	public void setLogId(Integer logId) {
-		this.logId = logId;
+		this.logId = id;
 	}
 
 	public User getUser() {
