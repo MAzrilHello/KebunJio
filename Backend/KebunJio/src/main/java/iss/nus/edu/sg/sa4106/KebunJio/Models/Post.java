@@ -15,6 +15,7 @@ import jakarta.validation.constraints.NotNull;
 public class Post {
 	@Id
 	private String id;
+	private String PostId;
 	@NotNull(message="Title can not be null")
 	private String title;
 	@NotNull(message="Content can not be null")
@@ -46,11 +47,11 @@ public class Post {
 	public Post() {}
 
 	public String getId() {
-		return id;
+		return postId;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setId(String postId) {
+		this.postId = postId;
 	}
 
 	public String getTitle() {

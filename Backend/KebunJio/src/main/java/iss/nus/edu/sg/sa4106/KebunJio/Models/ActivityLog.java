@@ -3,6 +3,8 @@ package iss.nus.edu.sg.sa4106.KebunJio.Models;
 import java.time.LocalDateTime;
 
 public class ActivityLog {
+	@id
+	private String id;
     private int logId;
     private User user;
     private Plant plant;

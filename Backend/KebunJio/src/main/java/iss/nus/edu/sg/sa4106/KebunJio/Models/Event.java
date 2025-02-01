@@ -12,7 +12,7 @@ public class Event {
 
 	@Id
 	private String id;
-//	private int eventId;
+    private int eventId;
 
 	private String name;
 	private String location;
@@ -24,10 +24,10 @@ public class Event {
 	public Event() {}
 
 
-	public Event(String id, String name, String location,
+	public Event(String eventId, String name, String location,
 				 LocalDateTime startDateTime, LocalDateTime endDateTime,
 				 String description, String picture) {
-		this.id = id;
+		this.eventId = eventId;
 		this.name = name;
 		this.location = location;
 		this.startDateTime = startDateTime;
@@ -37,11 +37,11 @@ public class Event {
 	}
 
 	public String getId() {
-		return id;
+		return eventId;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setId(int eventId) {
+		this.eventId = eventId;
 	}
 
 	public String getName() {

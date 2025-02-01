@@ -3,7 +3,8 @@ package iss.nus.edu.sg.sa4106.KebunJio.Models;
 import java.time.LocalDateTime;
 
 public class Session {
-
+	@id
+	private String id;
 	private int sessionId;
 	private int userId;
 	private LocalDateTime startDateTime;

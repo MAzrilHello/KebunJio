@@ -1,6 +1,8 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Models;
 
 public class Plant {
+	@id
+	priavte String id;
     private int plantId;
     private EdiblePlantSpecies ediblePlantSpecies;
     private User user;

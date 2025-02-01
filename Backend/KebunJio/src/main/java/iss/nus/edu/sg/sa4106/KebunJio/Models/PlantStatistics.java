@@ -13,7 +13,6 @@ import java.util.Map;
 public class PlantStatistics {
     @Id
     private String id;
-    
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime date;
 
