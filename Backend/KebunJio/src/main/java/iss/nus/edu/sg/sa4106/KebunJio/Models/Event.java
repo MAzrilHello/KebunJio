@@ -22,7 +22,7 @@ public class Event {
 
 	public Event() {}
 
-	public Event(String id, int eventId,String name, String location,
+	public Event(String id, String eventId,String name, String location,
 				 LocalDateTime startDateTime, LocalDateTime endDateTime,
 				 String description, String picture) {
 		this.id = id;

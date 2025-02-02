@@ -38,6 +38,17 @@ class DummyData {
     }
 
 
+    public fun getUserLogs(userId: Int): MutableList<ActivityLog> {
+        val toReturn = mutableListOf<ActivityLog>()
+        for (i in 0..ActivityLogDummy.size-1) {
+            if (ActivityLogDummy[i].userId == userId) {
+                toReturn.add(ActivityLogDummy[i])
+            }
+        }
+        return toReturn
+    }
+
+
     private fun setupPlantDummy() {
         val plant1 = Plant(0,0,0,"User 0 Type 0")
         PlantDummy.add(plant1)

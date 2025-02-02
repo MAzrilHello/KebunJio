@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class Session {
 
 	private int sessionId;
-	private int userId;
+	private User user;
 	private LocalDateTime startDateTime;
 	private LocalDateTime lastActionDateTime;
 	private LocalDateTime endDateTime;
@@ -20,12 +20,12 @@ public class Session {
 		this.sessionId = sessionId;
 	}
 
-	public int getUserId() {
-		return userId;
+	public User getUser() {
+		return user;
 	}
 
-	public void setUserId(int userId) {
-		this.userId = userId;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public LocalDateTime getStartDateTime() {

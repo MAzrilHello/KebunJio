@@ -30,7 +30,7 @@ class LogActivitiesActivity : AppCompatActivity() {
     lateinit var changeDateBtn: Button
     lateinit var changeTimeBtn: Button
     lateinit var logActivitiesBtn: Button
-    lateinit var activityTypeText: EditText
+    lateinit var activityTypeSpinner: Spinner
     lateinit var activityDescText: EditText
     lateinit var plantSpinner: Spinner
     var currentUser: Int = 0
@@ -45,7 +45,7 @@ class LogActivitiesActivity : AppCompatActivity() {
         timeStampText = binding.timeStampText
         changeDateBtn = binding.changeDateBtn
         changeTimeBtn = binding.changeTimeBtn
-        activityTypeText = binding.activityTypeText
+        activityTypeSpinner = binding.activityTypeSpinner
         activityDescText = binding.activityDescText
         logActivitiesBtn = binding.logActivitiesBtn
         plantSpinner = binding.plantSpinner
@@ -56,12 +56,23 @@ class LogActivitiesActivity : AppCompatActivity() {
         for (i in 0..userPlants.size-1) {
             userPlantNames.add(userPlants[i].name)
         }
+        val logActTypes: MutableList<String> = mutableListOf<String>()
+        logActTypes.add("Water")
+        logActTypes.add("Fertilize")
+        logActTypes.add("Harvest")
+        logActTypes.add("Withered")
 
-        val adapter = ArrayAdapter(this,
+        val plantAdapter = ArrayAdapter(this,
                                     android.R.layout.simple_spinner_item,
                                     userPlantNames)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        plantSpinner.adapter = adapter
+        plantAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        plantSpinner.adapter = plantAdapter
+
+        val logActAdapter = ArrayAdapter(this,
+                                    android.R.layout.simple_spinner_item,
+                                    logActTypes)
+        activityTypeSpinner.adapter = logActAdapter
+
 
         changeDateBtn.setOnClickListener {
             changeDateTime(true)
@@ -90,7 +101,7 @@ class LogActivitiesActivity : AppCompatActivity() {
         if (plantSpinner.selectedItemPosition > 0) {
             plantId = plantSpinner.selectedItemPosition - 1
         }
-        val activityType = activityTypeText.text.toString()
+        val activityType = activityTypeSpinner.selectedItem.toString()
         val activityDesc = activityDescText.text.toString()
         val timeStamp = timeStampText.text.toString()
 
