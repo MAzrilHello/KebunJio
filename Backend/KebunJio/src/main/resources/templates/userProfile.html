@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile - KebunJio</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header>
+    <h1>User Profile</h1>
+    <a href="/logout">Logout</a>
+</header>
+
+<div class="profile-container">
+    <h2>Welcome, <span th:text="${user.username}"></span></h2>
+
+    <form action="/profile/update" method="post">
+        <label>Username:</label>
+        <input type="text" name="username" th:value="${user.username}" required>
+
+        <label>Email:</label>
+        <input type="email" name="email" th:value="${user.email}" required>
+
+        <label>Phone Number:</label>
+        <input type="text" name="phoneNumber" th:value="${user.phoneNumber}" required>
+
+        <button type="submit">Update Profile</button>
+    </form>
+
+    <div th:if="${success}" class="success-message">
+        <p th:text="${success}"></p>
+    </div>
+</div>
+
+<h3>Plant Summary</h3>
+<div class="stats-container">
+    <div class="stat-box">
+        <p>Total plants planted</p>
+        <h3 th:text="${totalPlanted}"></h3>
+    </div>
+    <div class="stat-box">
+        <p>Total plants harvested</p>
+        <h3 th:text="${totalHarvested}"></h3>
+    </div>
+    <div class="stat-box">
+        <p>Types of plants</p>
+        <h3 th:text="${uniquePlantTypes}"></h3>
+    </div>
+</div>
+
+<h3>Plant History</h3>
+<table>
+    <thead>
+    <tr>
+        <th>Plant Species</th>
+        <th>Plant Type</th>
+        <th>Date Planted</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="plant : ${plantHistory}">
+        <td th:text="${plant.ediblePlantSpecies.name}"></td>
+        <td th:text="${plant.ediblePlantSpecies.type}"></td>
+        <td th:text="${plant.datePlanted}"></td>
+        <td th:text="${plant.ediblePlantSpecies.status}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
