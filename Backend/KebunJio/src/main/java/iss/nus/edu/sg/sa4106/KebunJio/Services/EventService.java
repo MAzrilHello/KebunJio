@@ -3,6 +3,7 @@ package iss.nus.edu.sg.sa4106.KebunJio.Services;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.Event;
 import iss.nus.edu.sg.sa4106.KebunJio.Repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -33,8 +34,10 @@ public class EventService {
         if (!eventRepository.existsById(id)) {
             return Optional.empty();
         }
-        event.setId(id);
-        return Optional.of(eventRepository.save(event));
+        Event newevent = eventRepository.findById(id).get();
+
+        newevent.setDescription(event.getDescription());
+        return Optional.of(eventRepository.save(newevent));
     }
 
     public boolean deleteEvent(String id) {

@@ -16,7 +16,7 @@ public class Comment {
 	private int likeCount;
 	private int dislikeCount;
 	private LocalDateTime publishedDateTime;
-	
+
 	public Comment() {}
 
 	public String getId() {
@@ -76,8 +76,8 @@ public class Comment {
 	}
 
 
-	
-	
+
+
 
 
 

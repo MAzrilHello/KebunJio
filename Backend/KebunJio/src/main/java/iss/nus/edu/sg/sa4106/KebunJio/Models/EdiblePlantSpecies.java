@@ -1,29 +1,31 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Models;
 
+import org.springframework.data.annotation.Id;
+
 public class EdiblePlantSpecies {
-	@id
+	@Id
 	private String id;
 
-    private String name;
-    private String scientificName;
-    private String description;
-    private String wateringTips;
-    private String sunlight;
-    private String soilType;
-    private String harvestTime;
-    private String commonPests;
-    private String growingSpace;
-    private String fertilizerTips;
-    private String specialNeeds;
-    private String imageUrl;
-    
-    public EdiblePlantSpecies() {}
+	private String name;
+	private String scientificName;
+	private String description;
+	private String wateringTips;
+	private String sunlight;
+	private String soilType;
+	private String harvestTime;
+	private String commonPests;
+	private String growingSpace;
+	private String fertilizerTips;
+	private String specialNeeds;
+	private String imageUrl;
 
-	public int getEdiblePlantSpeciesId() {
+	public EdiblePlantSpecies() {}
+
+	public String getEdiblePlantSpeciesId() {
 		return id;
 	}
 
-	public void setEdiblePlantSpeciesId(int id) {
+	public void setEdiblePlantSpeciesId(String id) {
 		this.id = id;
 	}
 
@@ -122,7 +124,7 @@ public class EdiblePlantSpecies {
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
 	}
-    
-    
+
+
 
 }

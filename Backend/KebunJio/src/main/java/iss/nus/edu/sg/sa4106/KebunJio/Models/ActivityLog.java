@@ -1,25 +1,27 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Models;
 
+import org.springframework.data.annotation.Id;
+
 import java.time.LocalDateTime;
 
 public class ActivityLog {
-	@id
+	@Id
 	private String id;
 
-    private User user;
-    private Plant plant;
-    private String activityType;
-    private String activityDescription;
-    private LocalDateTime timestamp;
-    
+	private User user;
+	private Plant plant;
+	private String activityType;
+	private String activityDescription;
+	private LocalDateTime timestamp;
+
 	public ActivityLog() {}
 
-	public int getLogId() {
+	public String getLogId() {
 		return id;
 	}
 
-	public void setLogId(Integer logId) {
-		this.logId = id;
+	public void setLogId(String logId) {
+		this.id = logId;
 	}
 
 	public User getUser() {
@@ -61,9 +63,9 @@ public class ActivityLog {
 	public void setTimestamp(LocalDateTime timestamp) {
 		this.timestamp = timestamp;
 	}
-	
-	
-    
-    
+
+
+
+
 
 }

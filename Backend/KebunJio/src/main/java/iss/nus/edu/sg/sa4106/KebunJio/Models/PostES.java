@@ -20,8 +20,8 @@ public class PostES {
 	private LocalDateTime publishedDateTime;
 	private Boolean answerSolved;
 	private String userId;
-	
-	
+
+
 
 	public String getUserId() {
 		return userId;

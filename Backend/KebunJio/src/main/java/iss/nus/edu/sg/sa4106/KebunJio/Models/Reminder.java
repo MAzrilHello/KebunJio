@@ -1,27 +1,29 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Models;
 
+import org.springframework.data.annotation.Id;
+
 import java.time.LocalDateTime;
 
 public class Reminder {
-	@id
+	@Id
 	private String id;
 
-    private User user;
-    private Plant plant;
-    private String reminderType;
-    private LocalDateTime reminderDateTime;
-    private Boolean isRecurring;
-    private String recurrenceInterval;
-    private String status;
-    private LocalDateTime createdDateTime;
-    
-    public Reminder() {}
+	private User user;
+	private Plant plant;
+	private String reminderType;
+	private LocalDateTime reminderDateTime;
+	private Boolean isRecurring;
+	private String recurrenceInterval;
+	private String status;
+	private LocalDateTime createdDateTime;
 
-	public int getReminderId() {
-		return id;
+	public Reminder() {}
+
+	public String getReminderId() {
+		return this.id;
 	}
 
-	public void setReminderId(int id) {
+	public void setReminderId(String id) {
 		this.id = id;
 	}
 
@@ -88,7 +90,7 @@ public class Reminder {
 	public void setCreatedDateTime(LocalDateTime createdDateTime) {
 		this.createdDateTime = createdDateTime;
 	}
-    
-    
+
+
 
 }

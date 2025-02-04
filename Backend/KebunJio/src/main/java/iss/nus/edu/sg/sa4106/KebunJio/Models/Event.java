@@ -19,10 +19,7 @@ public class Event {
 	private LocalDateTime endDateTime;
 	private String description;
 	private String picture;
-
 	public Event() {}
-
-
 	public Event(String id, String name, String location,
 				 LocalDateTime startDateTime, LocalDateTime endDateTime,
 				 String description, String picture) {
@@ -36,11 +33,11 @@ public class Event {
 	}
 
 	public String getId() {
-		return eventId;
+		return this.id;
 	}
 
-	public void setId(int eventId) {
-		this.eventId = eventId;
+	public void setId(String eventId) {
+		this.id = eventId;
 	}
 
 	public String getName() {
