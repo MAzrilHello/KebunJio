@@ -23,9 +23,13 @@ import androidx.core.view.WindowInsetsCompat
 import iss.nus.edu.sg.sa4106.kebunjio.R
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityPlantHealthCheckBinding
 import iss.nus.edu.sg.sa4106.kebunjio.features.viewplantdetails.ViewPlantDetailsActivity
-import iss.nus.edu.sg.sa4106.kebunjio.service.mlModel.mlModelDiagnoseService
 import iss.nus.edu.sg.sa4106.kebunjio.service.PlantApiService
+import iss.nus.edu.sg.sa4106.kebunjio.service.mlModel.MlModelDiagnoseService
+import org.json.JSONObject
+import java.io.DataOutputStream
 import java.io.File
+import java.net.HttpURLConnection
+import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -284,17 +288,73 @@ class PlantHealthCheckActivity : AppCompatActivity() {
         }
     }
 
-    //Diagnose plant using ML service
     private fun diagnosePlant(imageFile: File) {
-        val diagnosis = mlModelDiagnoseService().diagnosePlant(imageFile)
-        showToast("Diagnosing plant...")
-
-        if (diagnosis != null) {
-            showToast("Diagnosis result: $diagnosis")
-        } else {
-            showToast("Failed to diagnose plant")
-        }
+        Thread {
+            val diagnosis = MlModelDiagnoseService().diagnosePlant(imageFile)
+            runOnUiThread {
+                if (diagnosis != null) {
+                    showToast("Diagnosis: $diagnosis")
+                } else {
+                    showToast("Failed to diagnose plant")
+                }
+            }
+        }.start()
     }
+    //Diagnose plant using ML service
+//    private fun diagnosePlant(imageFile: File) {
+//        Thread {
+//            try {
+//                val urlString = "http://10.0.2.2:8080/api/healthcheck"
+//                val boundary = "Boundary-${System.currentTimeMillis()}"
+//                val lineEnd = "\r\n"
+//                val twoHyphens = "--"
+//
+//                val url = URL(urlString)
+//                val connection = url.openConnection() as HttpURLConnection
+//                connection.requestMethod = "POST"
+//                connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=$boundary")
+//                connection.doOutput = true
+//                connection.doInput = true
+//                connection.useCaches = false
+//
+//                DataOutputStream(connection.outputStream).use { outputStream ->
+//                    outputStream.writeBytes("$twoHyphens$boundary$lineEnd")
+//                    outputStream.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"${imageFile.name}\"$lineEnd")
+//                    outputStream.writeBytes("Content-Type: image/jpeg$lineEnd")
+//                    outputStream.writeBytes(lineEnd)
+//                    outputStream.write(imageFile.readBytes())
+//                    outputStream.writeBytes(lineEnd)
+//                    outputStream.writeBytes("$twoHyphens$boundary$twoHyphens$lineEnd")
+//                    outputStream.flush()
+//                }
+//
+//                val responseCode = connection.responseCode
+//                val responseMessage = if (responseCode == HttpURLConnection.HTTP_OK) {
+//                    connection.inputStream.bufferedReader().use { it.readText() }
+//                } else {
+//                    connection.errorStream?.bufferedReader()?.use { it.readText() } ?: "Error: No response"
+//                }
+//
+//                Log.d("PlantHealthCheckActivity", "Response Code: $responseCode")
+//                Log.d("PlantHealthCheckActivity", "Response Message: $responseMessage")
+//
+//                runOnUiThread {
+//                    if (responseCode == HttpURLConnection.HTTP_OK) {
+//                        val responseObject = JSONObject(responseMessage)
+//                        val plantHealth = responseObject.optString("plantHealth", "Unknown")
+//                        showToast("Diagnosis: $plantHealth")
+//                    } else {
+//                        showToast("Failed to diagnose plant")
+//                    }
+//                }
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//                runOnUiThread {
+//                    showToast("Error connecting to server")
+//                }
+//            }
+//        }.start()
+//    }
 
     private fun showToast(message: String) {
         Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()
