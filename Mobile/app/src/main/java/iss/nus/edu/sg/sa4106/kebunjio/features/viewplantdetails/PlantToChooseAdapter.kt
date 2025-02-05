@@ -11,24 +11,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.registerReceiver
 import iss.nus.edu.sg.sa4106.kebunjio.R
+import iss.nus.edu.sg.sa4106.kebunjio.data.Plant
+import iss.nus.edu.sg.sa4106.kebunjio.databinding.ViewPlantToChooseBinding
+import iss.nus.edu.sg.sa4106.kebunjio.features.addplant.AddPlantActivity
 import iss.nus.edu.sg.sa4106.kebunjio.service.DownloadImageService
 import java.io.File
 
 
 class PlantToChooseAdapter(private val context: Context,
-                           protected var idList: MutableList<Int>,
-                           protected var nameList: MutableList<String>
+                           protected var plantList: MutableList<Plant>
         ): ArrayAdapter<Any?>(context, R.layout.view_plant_to_choose) {
+
+    //private var _binding: ViewPlantToChooseBinding? = null
 
     //lateinit var showSpeciesImg: ImageButton
     //private var showSpeciesImgArray: MutableList<ImageButton> = mutableListOf<ImageButton>()
-    lateinit var showPlantName: TextView
-    lateinit var storedPlantId:  MutableList<Int>
+    //lateinit var showPlantName: TextView
+    //lateinit var viewPlantBtn: Button
+    //lateinit var deletePlantBtn: Button
+    lateinit var storedPlants:  MutableList<Plant>
 
     //protected var receiver: BroadcastReceiver = object : BroadcastReceiver() {
     //    override fun onReceive(context: Context, intent: Intent) {
@@ -64,26 +71,36 @@ class PlantToChooseAdapter(private val context: Context,
 
 
     init {
-        addAll(*arrayOfNulls<Any>(nameList.size))
+        for (i in 0..plantList.size-1) {
+
+        }
+        addAll(*arrayOfNulls<Any>(plantList.size))
     }
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
         var _view = view
-
+        var binding: ViewPlantToChooseBinding
         if (_view == null) {
             val inflater = context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             // if we are not responsible for adding the view to the parent,
             // then attachToRoot should be 'false' (which is in our case)
-            _view = inflater.inflate(R.layout.view_plant_to_choose, parent, false)
+            //_view = inflater.inflate(R.layout.view_plant_to_choose, parent, false)
+            binding = ViewPlantToChooseBinding.inflate(inflater,parent,false)
+            _view = binding.root
+        } else {
+            binding = ViewPlantToChooseBinding.bind(_view)
         }
-        this.storedPlantId = idList
+        this.storedPlants = plantList
         //showSpeciesImg = _view!!.findViewById<ImageButton>(R.id.show_species_choose_img)
         //Log.d("ChoosePlantAdapter","Position ${position}'s ImageButton: ${showSpeciesImg}")
         //showSpeciesImgArray.add(showSpeciesImg)
         //Log.d("ChoosePlantAdapter","ImgArray Size: ${showSpeciesImgArray.size}")
-        showPlantName = _view!!.findViewById<TextView>(R.id.plant_name_choose_text)
+        val showPlantName = binding.plantNameChooseText
+        val viewPlantBtn = binding.viewPlantBtn
+        val editPlantBtn = binding.editPlantBtn
+        val deletePlantBtn = binding.deletePlantBtn
         Log.d("ChoosePlantAdapter","Position ${position}'s TextView: ${showPlantName}")
 
-        showPlantName.text = nameList[position]
+        showPlantName.text = plantList[position].name
 
         // setup to receive broadcast from MyDownloadService
         //initReceiver()
@@ -93,10 +110,23 @@ class PlantToChooseAdapter(private val context: Context,
         //    requestImageDL(url,position)
         //}
 
-        showPlantName.setOnClickListener{
-            val thisId = this.storedPlantId[position]
+        viewPlantBtn.setOnClickListener{
+            val thisId = this.plantList[position].id
+            val userId = this.plantList[position].userId
             val intent = Intent(getContext(), ViewPlantDetailsActivity::class.java)
             intent.putExtra("plantId", thisId)
+            getContext().startActivity(intent)
+        }
+
+        editPlantBtn.setOnClickListener{
+            val thisId = this.plantList[position].id
+            val userId = this.plantList[position].userId
+            val intent = Intent(getContext(), AddPlantActivity::class.java)
+            intent.putExtra("update", true)
+            Log.d("PlantToChooseAdapter","putExtra update: true")
+            intent.putExtra("plantId", thisId)
+            intent.putExtra("userId",userId)
+            Log.d("PlantToChooseAdapter","putExtra userId: ${userId}")
             getContext().startActivity(intent)
         }
 

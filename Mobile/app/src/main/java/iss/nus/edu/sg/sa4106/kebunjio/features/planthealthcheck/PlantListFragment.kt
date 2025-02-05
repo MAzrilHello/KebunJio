@@ -41,9 +41,9 @@ class PlantListFragment : Fragment() {
 
         // Hardcoded data for testing purposes
         val hardcodedPlants = listOf(
-            Plant(1, 1, 1, "Plant 1"),
-            Plant(2, 2, 1, "Plant 2"),
-            Plant(3, 3, 1, "Plant 3")
+            Plant("a", "a", "a", "Plant 1","","","","",false),
+            Plant("b", "b", "a", "Plant 2","","","","",false),
+            Plant("c", "c", "a", "Plant 3","","","","",false)
         )
 
         // Update RecyclerView with the hardcoded data

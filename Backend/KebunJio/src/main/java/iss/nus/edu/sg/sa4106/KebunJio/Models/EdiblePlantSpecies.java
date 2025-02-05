@@ -1,31 +1,32 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Models;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "EdiblePlantSpecies")
 public class EdiblePlantSpecies {
 	@Id
-	private String id;
+    private String id;
+    private String name;
+    private String scientificName;
+    private String description;
+    private String wateringTips;
+    private String sunlight;
+    private String soilType;
+    private String harvestTime;
+    private String commonPests;
+    private String growingSpace;
+    private String fertilizerTips;
+    private String specialNeeds;
+    private String imageUrl;
+    
+    public EdiblePlantSpecies() {}
 
-	private String name;
-	private String scientificName;
-	private String description;
-	private String wateringTips;
-	private String sunlight;
-	private String soilType;
-	private String harvestTime;
-	private String commonPests;
-	private String growingSpace;
-	private String fertilizerTips;
-	private String specialNeeds;
-	private String imageUrl;
-
-	public EdiblePlantSpecies() {}
-
-	public String getEdiblePlantSpeciesId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setEdiblePlantSpeciesId(String id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

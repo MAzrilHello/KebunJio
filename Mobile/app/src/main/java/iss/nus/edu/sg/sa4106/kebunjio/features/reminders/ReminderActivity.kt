@@ -1,26 +1,21 @@
 package iss.nus.edu.sg.sa4106.kebunjio.features.reminders
 
-import android.app.AlarmManager
-import android.app.PendingIntent
+
 import android.app.TimePickerDialog
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.NumberPicker
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import iss.nus.edu.sg.sa4106.kebunjio.R
 import iss.nus.edu.sg.sa4106.kebunjio.adapter.ReminderAdapter
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityReminderBinding
+import iss.nus.edu.sg.sa4106.kebunjio.features.viewplantdetails.ViewPlantDetailsActivity
 import iss.nus.edu.sg.sa4106.kebunjio.service.reminders.ReminderService
 import java.util.Calendar
-
-
 
 class ReminderActivity : AppCompatActivity() {
     private lateinit var binding: ActivityReminderBinding
@@ -43,15 +38,60 @@ class ReminderActivity : AppCompatActivity() {
         }
 
         // Initialize spinners and frequency pickers
+        initButtons()
         initReminderTypeSpinner()
         initFrequencyPickers()
-        setupClickListeners()
+    }
+
+    private fun initButtons() {
+
+        binding.viewPlantDetailsButton.setOnClickListener {
+            // The below scripts are opening a new ViewPlantDetailsActivity, not going back
+            // to the previous view.
+            //val intent = Intent(this, ViewPlantDetailsActivity::class.java)
+            //startActivity(intent)
+            // 'finish' is used to close the activity
+            finish()
+        }
+
+        binding.timeButton.setOnClickListener {
+            showHourPicker()
+        }
+
+        binding.confirmButton.setOnClickListener {
+            confirmReminder()
+        }
+
     }
 
     private fun initReminderTypeSpinner() {
         val reminderTypeOptions = listOf("Water", "Fertilizer")
-        val typeAdapter = ReminderAdapter(this, reminderTypeOptions)
+        val typeAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, reminderTypeOptions)
+        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.reminderType.adapter = typeAdapter
+    }
+
+    private fun showHourPicker() {
+        val myCalendar = Calendar.getInstance()
+        val hour = myCalendar.get(Calendar.HOUR_OF_DAY)
+        val minute = myCalendar.get(Calendar.MINUTE)
+
+        val timeSetListener = TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
+            val formattedTime = String.format("%02d:%02d", selectedHour, selectedMinute)
+            binding.timeButton.text = formattedTime // Update the TextView with the selected time
+        }
+
+        val timePickerDialog = TimePickerDialog(
+            this,
+            android.R.style.Theme_Holo_Light_Dialog_NoActionBar,
+            timeSetListener,
+            hour,
+            minute,
+            true
+        )
+        timePickerDialog.setTitle("Choose hour:")
+        timePickerDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        timePickerDialog.show()
     }
 
     private fun initFrequencyPickers() {
@@ -64,34 +104,6 @@ class ReminderActivity : AppCompatActivity() {
         val intervalOptions = listOf("Days", "Weeks", "Months")
         val intervalAdapter = ReminderAdapter(this, intervalOptions)
         binding.frequencyIntervalPicker.adapter = intervalAdapter
-    }
-
-    private fun setupClickListeners() {
-        binding.reminderTime.setOnClickListener {
-            showTimePicker()
-        }
-
-        binding.confirmButton.setOnClickListener {
-            confirmReminder()
-        }
-    }
-
-    private fun showTimePicker() {
-        val currentTime = Calendar.getInstance()
-        val hour = currentTime.get(Calendar.HOUR_OF_DAY)
-        val minute = currentTime.get(Calendar.MINUTE)
-
-        val timePickerDialog = android.app.TimePickerDialog(
-            this,
-            { _, selectedHour, selectedMinute ->
-                val formattedTime = String.format("%02d:%02d", selectedHour, selectedMinute)
-                binding.reminderTime.text = formattedTime
-            },
-            hour,
-            minute,
-            true
-        )
-        timePickerDialog.show()
     }
 
     private fun confirmReminder() {

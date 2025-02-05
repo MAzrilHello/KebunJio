@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 // changed to Rest API
 @RestController
+@RequestMapping("/Users")
+@CrossOrigin(origins = "*")
 public class UserController {
 
     @Autowired
@@ -94,9 +96,10 @@ public class UserController {
       
       @GetMapping("/current")
       public ResponseEntity getCurrentUser(HttpSession sessionObj) {
-    	  User currentUser = (User) sessionObj.getAttribute("loggedInUser");
-    	  return new ResponseEntity<>(currentUser,HttpStatus.OK);
-      }
+		  User currentUser = (User) sessionObj.getAttribute("loggedInUser");
+		  return new ResponseEntity<>(currentUser != null ? currentUser : new User(), HttpStatus.OK);
+
+	  }
 //    @ResponseBody
 //    public User getCurrentUser(HttpSession session) {
 //        return (User) session.getAttribute("loggedInUser");
@@ -109,7 +112,7 @@ public class UserController {
 //    }
 
 
-    @PostMapping("/register")
+    @PostMapping("/signup")
     public ResponseEntity processRegister(@RequestBody RegisterDAO registerInfo) {
     	
     	if(!registerInfo.password.equals(registerInfo.confirmPassword)) {

@@ -4,6 +4,9 @@
   "private": true,
   "dependencies": {
     "assert": "^2.1.0",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "antd": "^5.23.3",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
@@ -11,15 +14,16 @@
     "cra-template": "1.2.0",
     "https-browserify": "^1.0.0",
     "kebunjio": "file:",
-    "react": "^18.2.0",
-    "react-bootstrap": "^2.10.8",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^7.1.4",
-    "react-scripts": "5.0.1",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
     "url": "^0.11.4",
     "util": "^0.12.5",
+    "echarts-for-react": "^3.0.2",
+    "react": "18.2.0",
+    "react-bootstrap": "^2.10.9",
+    "react-dom": "18.2.0",
+    "react-router-dom": "^7.1.4",
+    "react-scripts": "^5.0.1",
     "web-vitals": "^4.2.4"
   },
   "scripts": {
@@ -49,6 +53,7 @@
   "devDependencies": {
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.1",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.17",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
   }
 }

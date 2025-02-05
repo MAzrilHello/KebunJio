@@ -4,24 +4,31 @@ import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@Document(collection = "ActivityLogs")
 public class ActivityLog {
+	
 	@Id
-	private String id;
-
-	private User user;
-	private Plant plant;
-	private String activityType;
-	private String activityDescription;
-	private LocalDateTime timestamp;
-
+    private String id;
+    private User user;
+    private Plant plant;
+    private String activityType;
+    private String activityDescription;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime timestamp;
+    
 	public ActivityLog() {}
 
-	public String getLogId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setLogId(String logId) {
-		this.id = logId;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public User getUser() {

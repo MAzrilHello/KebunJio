@@ -1,7 +1,7 @@
 package iss.nus.edu.sg.sa4106.kebunjio.data
 
 data class EdiblePlantSpecies(
-    val ediblePlantSpeciesId: Int,
+    val id: String,
     val name: String,
     val scientificName: String,
     val ediblePlantGroup: String,

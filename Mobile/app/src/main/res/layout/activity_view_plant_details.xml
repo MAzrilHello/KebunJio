@@ -40,6 +40,129 @@
             android:textSize="20sp"
             android:text="Species Name" />
 
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="Planted Date: "
+                android:textSize="20sp"
+                />
+            <TextView
+                android:id="@+id/plant_date_time_text"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="dd/mm/yyyy hh:mm"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="Harvested:: "
+                android:textSize="20sp"
+                />
+            <TextView
+                android:id="@+id/harvested_text"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text=""
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="Harvest Start Date: "
+                android:textSize="20sp"
+                />
+            <TextView
+                android:id="@+id/harvest_date_time_text"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="dd/mm/yyyy hh:mm"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="Plant Health: "
+                android:textSize="20sp"
+                />
+            <TextView
+                android:id="@+id/plant_health_text"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text=""
+                android:textSize="20sp"
+                />
+            <Button
+                android:id="@+id/health_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Diagnose"
+                />
+        </LinearLayout>
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal" >
+        <TextView
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:text="Set reminder: "
+            android:textSize="20sp"
+            />
+        <TextView
+            android:id="@+id/reminder_text"
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:text=""
+            android:textSize="20sp"
+            />
+        <Button
+            android:id="@+id/reminder_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Set reminder"
+            />
+    </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="Diseases: "
+                android:textSize="20sp"
+                />
+            <TextView
+                android:id="@+id/plant_disease_text"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text=""
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

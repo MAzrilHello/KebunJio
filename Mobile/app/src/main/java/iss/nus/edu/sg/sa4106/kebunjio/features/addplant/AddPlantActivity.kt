@@ -26,33 +26,58 @@ import iss.nus.edu.sg.sa4106.kebunjio.R
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityAddPlantBinding
 import iss.nus.edu.sg.sa4106.kebunjio.data.Plant
 import iss.nus.edu.sg.sa4106.kebunjio.DummyData
+import iss.nus.edu.sg.sa4106.kebunjio.TimeClassHandler
 import iss.nus.edu.sg.sa4106.kebunjio.service.mlModel.MlModelService
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
-import iss.nus.edu.sg.sa4106.kebunjio.service.mlModel.MlModelService
 
 
 class AddPlantActivity : AppCompatActivity() {
 
     // for the UI
+    private var updatePlantId: String? = null
+    private var updateUserId: String? = null
+
     private var _binding: ActivityAddPlantBinding? = null
     private val binding get() = _binding!!
     private lateinit var nameEditText: EditText
+
     private lateinit var speciesSpinner: Spinner
+    private var speciesSpinnerIdxToId = mutableListOf<String>()
+
     private lateinit var selectImageBtn: Button
     private lateinit var addPlantBtn: Button
     private lateinit var showChosenImg: ImageView
     private lateinit var predictSpeciesText: TextView
     private lateinit var predictSpeciesBtn: Button
+
+    lateinit var plantDateTimeHandler: TimeClassHandler
+    lateinit var plantDateTimeText: TextView
+    lateinit var changePlantDateBtn: Button
+    lateinit var changePlantTimeBtn: Button
+
+    lateinit var harvestDateTimeHandler: TimeClassHandler
+    lateinit var harvestDateTimeText: TextView
+    lateinit var changeHarvestDateBtn: Button
+    lateinit var changeHarvestTimeBtn: Button
+
+    lateinit var plantHealthText: EditText
+    lateinit var diseaseText: EditText
+    lateinit var harvestedSpinner: Spinner
+
     private var dummyData: DummyData = DummyData()
+
+    private var harvestSpinnerOptions = mutableListOf("Harvested","Not Harvested")
 
     // services
     //variables for service, set bound to false
     private var svc: MlModelService? = null
     private var isBound: Boolean? = false
+
+
 
     //set up service to connection
     val conn = object : ServiceConnection {
@@ -116,14 +141,28 @@ class AddPlantActivity : AppCompatActivity() {
         predictSpeciesText = binding.predictSpeciesText
         predictSpeciesBtn = binding.predictSpeciesBtn
 
-        // set the spinner options
-        val spinnerOptions = dummyData.nameList()
-        val spinAdapter: ArrayAdapter<String> = ArrayAdapter<String>(this,
-                                                                        android.R.layout.simple_spinner_item,
-                                                                        spinnerOptions)
+        plantDateTimeText = binding.plantDateTimeText
+        changePlantDateBtn = binding.changePlantDateBtn
+        changePlantTimeBtn = binding.changePlantTimeBtn
+        plantDateTimeHandler = TimeClassHandler(plantDateTimeText,changePlantDateBtn,changePlantTimeBtn,this)
 
-        spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        speciesSpinner.adapter = spinAdapter
+        harvestDateTimeText = binding.harvestDateTimeText
+        changeHarvestDateBtn = binding.changeHarvestDateBtn
+        changeHarvestTimeBtn = binding.changeHarvestTimeBtn
+        harvestDateTimeHandler = TimeClassHandler(harvestDateTimeText,changeHarvestDateBtn,changeHarvestTimeBtn,this)
+
+        plantHealthText = binding.plantHealthText
+        diseaseText = binding.diseaseText
+        harvestedSpinner = binding.harvestedSpinner
+
+        setupSpeciesSpinner()
+
+        // set harvest spinner options
+        val harvestSpinAdapter: ArrayAdapter<String> = ArrayAdapter<String>(this,
+                                                                                android.R.layout.simple_spinner_item,
+                                                                                harvestSpinnerOptions)
+        harvestSpinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        harvestedSpinner.adapter = harvestSpinAdapter
 
         // for choosing an image to show
         selectImageBtn.setOnClickListener {
@@ -139,23 +178,93 @@ class AddPlantActivity : AppCompatActivity() {
             addNewPlant()
         }
 
-        // bind service
-        val intent = Intent(this@AddPlantActivity, MlModelService::class.java)
-        bindService(intent, conn, Context.BIND_AUTO_CREATE)
+        bindNeededService()
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        // if updating
+        updateUserId = intent.getStringExtra("userId")
+        Log.d("AddPlantActivity","userId: ${updateUserId}")
+        if (intent.getBooleanExtra("update",false)) {
+            Log.d("AddPlantActivity","We are in update mode")
+            binding.titlePart.text = "Update Plant"
+            binding.addPlantBtn.text = "Update Plant"
+            val plantId = intent.getStringExtra("plantId")
+            Log.d("AddPlantActivity","plantId: ${plantId}")
+            if (plantId != null) {
+                val chosenPlant = dummyData.getPlantById(plantId)
+                if (chosenPlant != null) {
+                    setData(chosenPlant)
+                }
+            }
+
+        }
+    }
+
+
+    fun setupSpeciesSpinner() {
+        speciesSpinnerIdxToId.clear()
+        val spinnerOptions = mutableListOf<String>()
+        for (i in 0..dummyData.SpeciesDummy.size-1) {
+            speciesSpinnerIdxToId.add(dummyData.SpeciesDummy[i].id)
+            spinnerOptions.add(dummyData.SpeciesDummy[i].name)
+        }
+        // set the spinner options
+        val spinAdapter: ArrayAdapter<String> = ArrayAdapter<String>(this,
+            android.R.layout.simple_spinner_item,
+            spinnerOptions)
+
+        spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        speciesSpinner.adapter = spinAdapter
+    }
+
+
+    public fun bindNeededService() {
+        // bind service
+        val intent = Intent(this@AddPlantActivity, MlModelService::class.java)
+        bindService(intent, conn, Context.BIND_AUTO_CREATE)
+    }
+
+    public fun setData(plant: Plant) {
+        updatePlantId = plant.id
+        Log.d("AddPlantActivity","set ediblePlantSpeciesId: ${plant.ediblePlantSpeciesId}")
+        speciesSpinner.setSelection(speciesSpinnerIdxToId.indexOf(plant.ediblePlantSpeciesId))
+        updateUserId = plant.userId
+        nameEditText.setText(plant.name)
+        diseaseText.setText(plant.disease)
+        plantDateTimeText.text = plant.plantedDate
+        harvestDateTimeText.text = plant.harvestStartDate
+        plantHealthText.setText(plant.plantHealth)
+        if (plant.harvested) {
+            harvestedSpinner.setSelection(harvestSpinnerOptions.indexOf("Harvested"))
+        } else {
+            harvestedSpinner.setSelection(harvestSpinnerOptions.indexOf("Not Harvested"))
+        }
+
+
     }
 
     private fun addNewPlant() {
-        val plantId = -1 // Must assign a proper id later
-        val ediblePlantSpeciesId = speciesSpinner.selectedItemPosition // must assign a proper id later
-        val userId = -1 // must assign a proper id later
+        var plantId: String = "" // Must assign a proper id later
+        if (updatePlantId != null) {
+            plantId = updatePlantId!!
+        }
+        val ediblePlantSpeciesId = harvestSpinnerOptions[speciesSpinner.selectedItemPosition] // must assign a proper id later
+        var userId = updateUserId // must assign a proper id later
+        if (userId==null){
+            userId = ""
+        }
         val name = nameEditText.text.toString()
-        val newPlant = Plant(plantId, ediblePlantSpeciesId, userId, name)
+        val disease = diseaseText.text.toString()
+        val plantedDate = plantDateTimeText.text.toString()
+        val harvestStartDate = harvestDateTimeText.text.toString()
+        val plantHealth = plantHealthText.text.toString()
+        val harvested = harvestedSpinner.selectedItem.toString() == "Harvested"
+        val newPlant = Plant(plantId, ediblePlantSpeciesId, userId, name,disease,plantedDate,harvestStartDate,plantHealth,harvested)
         // TODO: add the new plant
     }
 

@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/dashboard")
+@RequestMapping("/Dashboard")
 public class DashboardController {
 
     @GetMapping("/statistics")

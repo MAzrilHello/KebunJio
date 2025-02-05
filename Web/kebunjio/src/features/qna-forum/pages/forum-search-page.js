@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Appbar from '../../../components/Appbar'
 import MenuSidebar from '../components/menu-sidebar'
 import '../styling/forum-page.css'
@@ -6,26 +6,67 @@ import PostSneakPeak from '../components/post-sneak-peek';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { useNavigate } from "react-router-dom";
-import data from '../dummy-data/post.json'
 
 function ForumSearchPage() {
   let navigate = useNavigate();
  
   const routeChange = (post) =>{ 
-     navigate(`/forum/post/?id=${post.id}`, { state: { post } });
+     navigate(`/forum/post/?id=${post.Id}`, {state: {post : post}});
    }
 
-  const [search_results, setSearchResults] = useState(data)
+  const [posts, setPosts] = useState([])
+  const [search_results, setSearchResults] = useState([])
 
-  const [searchInput, setSearchInput] = useState('');
+    useEffect(() => {
+      async function fetchData() {
+          const postsRes = await fetch("/dummy-data/post.json");
+          const upvotesRes = await fetch("/dummy-data/upvote.json");
+          const usersRes = await fetch("/dummy-data/user.json");
+          const commentRes = await fetch("/dummy-data/reply.json");
+  
+          const posts = await postsRes.json();
+          const upvotes = await upvotesRes.json();
+          const users = await usersRes.json();
+          const comment = await commentRes.json();
+  
+          // Count upvotes per post
+          const upvoteCount = upvotes.reduce((acc, { postId }) => {
+              acc[postId] = (acc[postId] || 0) + 1;
+              return acc;
+          }, {});
+  
+          // Count replies per post
+          const commentCount = comment.reduce((acc, { postId }) => {
+              acc[postId] = (acc[postId] || 0) + 1;
+              return acc;
+          }, {});
+  
+          // Merge data
+          const mergedPosts = posts.map(post => ({
+              ...post,
+              username: users.find(user => user.id === post.UserId)?.username || "Unknown",
+              upvote: upvoteCount[post.Id] || 0,
+              comment: commentCount[post.Id] || 0
+          }));
+  
+          console.log(mergedPosts)
+          setPosts(mergedPosts)
+          setSearchResults(mergedPosts)
+      }
+  
+      fetchData();
+  }, []);
+
+  const [searchInput, setSearchInput] = useState('')
 
   const handleSearchInputChange = (event) => {
       setSearchInput(event.target.value);
   };
 
-  /*TODO: implement with call to API*/
-  const handleSearchSubmit = (event) => {
+  const handleSearchSubmit = () => {
     console.log(searchInput)
+    const filteredPosts = posts.filter(post => post.Title.includes(searchInput.toLowerCase()))
+    setSearchResults(filteredPosts)
 
     /*For call to API function */
     /* const strLength = getLength(searchInput)

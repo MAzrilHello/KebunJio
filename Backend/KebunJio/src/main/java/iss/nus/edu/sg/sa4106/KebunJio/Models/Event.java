@@ -7,7 +7,7 @@ import java.time.ZoneId;
 import java.util.Objects;
 import java.util.Date;
 
-@Document(collection = "events")
+@Document(collection = "Event")
 public class Event {
 
 	@Id

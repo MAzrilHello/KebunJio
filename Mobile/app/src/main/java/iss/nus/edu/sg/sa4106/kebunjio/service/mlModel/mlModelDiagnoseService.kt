@@ -25,7 +25,7 @@ class mlModelDiagnoseService : MlModelService() {
         return binder
     }
 
-    fun diagnosePlant(imageFile: File): String? {
+    override fun diagnosePlant(imageFile: File): String? {
 
         val urlString = "http://localhost:8080/api/diagnose"
 

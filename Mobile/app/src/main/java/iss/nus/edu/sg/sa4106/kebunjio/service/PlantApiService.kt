@@ -35,10 +35,15 @@ object PlantApiService  {
             for (i in 0 until jsonArray.length()) {
                 val plantJson = jsonArray.getJSONObject(i)
                 val plant = Plant(
-                    plantId = plantJson.getInt("plantId"),
-                    ediblePlantSpeciesId = plantJson.getInt("ediblePlantSpeciesId"),
-                    userId = plantJson.getInt("userId"),
-                    name = plantJson.getString("name")
+                    id = plantJson.getString("id"),
+                    ediblePlantSpeciesId = plantJson.getString("ediblePlantSpeciesId"),
+                    userId = plantJson.getString("userId"),
+                    name = plantJson.getString("name"),
+                    disease = plantJson.getString("disease"),
+                    plantedDate = plantJson.getString("plantedDate"),
+                    harvestStartDate = plantJson.getString("harvestStartDate"),
+                    plantHealth = plantJson.getString("plantHealth"),
+                    harvested = plantJson.getBoolean("harvested")
                 )
                 plantsList.add(plant)
             }

@@ -28,7 +28,7 @@ object NotificationHelper {
 
         // Build and display the notification
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-//            .setSmallIcon(R.drawable.ic_notification) // Replace with your app's notification icon
+            .setSmallIcon(R.drawable.app_icon)
             .setContentTitle(title)
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_HIGH)

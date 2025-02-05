@@ -1,0 +1,43 @@
+.user-profile {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.profile-header h1 {
+    color: green;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: darkgreen;
+}
+
+.plant-history {
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}

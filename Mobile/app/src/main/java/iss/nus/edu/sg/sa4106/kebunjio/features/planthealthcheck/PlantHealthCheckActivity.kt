@@ -1,5 +1,6 @@
 package iss.nus.edu.sg.sa4106.kebunjio.features.planthealthcheck
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -21,6 +22,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import iss.nus.edu.sg.sa4106.kebunjio.R
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityPlantHealthCheckBinding
+import iss.nus.edu.sg.sa4106.kebunjio.features.viewplantdetails.ViewPlantDetailsActivity
 import iss.nus.edu.sg.sa4106.kebunjio.service.mlModel.mlModelDiagnoseService
 import iss.nus.edu.sg.sa4106.kebunjio.service.PlantApiService
 import java.io.File
@@ -85,40 +87,31 @@ class PlantHealthCheckActivity : AppCompatActivity() {
         }
 
         binding.viewPlantsButton.setOnClickListener {
-            showFragment()
+            // The below scripts are opening a new ViewPlantDetailsActivity, not going back
+            // to the previous view.
+            //val intent = Intent(this, ViewPlantDetailsActivity::class.java)
+            //startActivity(intent)
+            // 'finish' is used to close the activity
+            finish()
         }
     }
 
-    private fun showFragment() {
-            binding.previewView.visibility = View.GONE
-            binding.captureButton.visibility = View.GONE
-            binding.galleryButton.visibility = View.GONE
-            binding.viewPlantsButton.visibility = View.GONE
-            binding.fragmentContainer.visibility = View.VISIBLE
-
-
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, PlantListFragment())
-                .addToBackStack(null)
-                .commit()
-
-//            getUserPlants()
-
-        }
-
-        // When user navigates back from fragment, show the UI elements again
-        override fun onBackPressed() {
-            super.onBackPressed()
-
-            // Show the camera preview and buttons again
-            binding.previewView.visibility = View.VISIBLE
-            binding.captureButton.visibility = View.VISIBLE
-            binding.galleryButton.visibility = View.VISIBLE
-            binding.viewPlantsButton.visibility = View.VISIBLE
-
-            // Hide the fragment container again
-            binding.fragmentContainer.visibility = View.GONE
-        }
+//    private fun showFragment() {
+//            binding.previewView.visibility = View.GONE
+//            binding.captureButton.visibility = View.GONE
+//            binding.galleryButton.visibility = View.GONE
+//            binding.viewPlantsButton.visibility = View.GONE
+//            binding.fragmentContainer.visibility = View.VISIBLE
+//
+//
+//            supportFragmentManager.beginTransaction()
+//                .replace(R.id.fragment_container, PlantListFragment())
+//                .addToBackStack(null)
+//                .commit()
+//
+////            getUserPlants()
+//
+//        }
 
     private fun startCamera() {
         Log.d("PlantHealthCheckActivity", "startCamera called")
@@ -242,8 +235,6 @@ class PlantHealthCheckActivity : AppCompatActivity() {
         }
         return file
     }
-
-
 
     //Logic for viewing user's own plant
 //    private fun getUserPlants() {

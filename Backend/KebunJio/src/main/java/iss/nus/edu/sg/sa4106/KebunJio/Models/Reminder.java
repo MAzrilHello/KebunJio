@@ -4,6 +4,9 @@ import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "Reminders")
 public class Reminder {
 	@Id
 	private String id;

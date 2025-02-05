@@ -4,7 +4,8 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+//import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.calendar.Calendar;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.Event;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ public class GoogleCalendarService {
 
             Calendar service = new Calendar.Builder(
                     new NetHttpTransport(),
-                    JacksonFactory.getDefaultInstance(),
+                    GsonFactory.getDefaultInstance(),
                     credential)
                     .setApplicationName(applicationName)
                     .build();

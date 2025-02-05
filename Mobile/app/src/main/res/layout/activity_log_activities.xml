@@ -11,6 +11,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical" >
         <TextView
+            android:id="@+id/title_part"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:text="Log Activities"
@@ -46,11 +47,10 @@
                 android:text="Activity Type: "
                 android:textSize="20sp"
                 />
-            <EditText
-                android:id="@+id/activity_type_text"
+            <Spinner
+                android:id="@+id/activity_type_spinner"
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content"
-                android:hint="ex. watering, adding fertiliser"
                 android:textSize="20sp"
                 />
         </LinearLayout>
@@ -92,18 +92,24 @@
                 android:textSize="20sp"
                 />
         </LinearLayout>
-        <Button
-            android:id="@+id/change_date_btn"
+        <LinearLayout
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_gravity="right"
-            android:text="Change Date" />
-        <Button
-            android:id="@+id/change_time_btn"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_gravity="right"
-            android:text="Change Time" />
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="right">
+            <Button
+                android:id="@+id/change_date_btn"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="right"
+                android:text="Change Date" />
+            <Button
+                android:id="@+id/change_time_btn"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="right"
+                android:text="Change Time" />
+        </LinearLayout>
         <Button
             android:id="@+id/log_activities_btn"
             android:layout_height="wrap_content"

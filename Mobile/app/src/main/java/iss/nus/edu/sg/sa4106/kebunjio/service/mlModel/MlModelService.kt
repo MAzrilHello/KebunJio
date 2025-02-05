@@ -154,7 +154,7 @@ open class MlModelService : Service() {
     }
 
     //ML model to diagnose plants
-    fun diagnosePlant(imageFile: File): String? {
+    open fun diagnosePlant(imageFile: File): String? {
         val connection = makePredictPlantSpeciesConnection()
 
         try {
