@@ -52,17 +52,28 @@ const GoogleAuthCallback = () => {
         handleCallback();
     }, []); // Empty dependency array since we only want to run this once
 
-    return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <div className="bg-white p-8 rounded-lg shadow-md">
-                <div className="flex flex-col items-center">
-                    {status === 'Processing...' && (
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-4" />
-                    )}
-                    <h2 className="text-xl font-semibold text-gray-800">{status}</h2>
-                </div>
-            </div>
-        </div>
+    return React.createElement(
+        'div',
+        { className: "flex items-center justify-center min-h-screen bg-gray-100" },
+        React.createElement(
+            'div',
+            { className: "bg-white p-8 rounded-lg shadow-md" },
+            React.createElement(
+                'div',
+                { className: "flex flex-col items-center" },
+                [
+                    status === 'Processing...' && React.createElement(
+                        'div',
+                        { className: "animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-4", key: "spinner" }
+                    ),
+                    React.createElement(
+                        'h2',
+                        { className: "text-xl font-semibold text-gray-800", key: "status" },
+                        status
+                    )
+                ]
+            )
+        )
     );
 };
 

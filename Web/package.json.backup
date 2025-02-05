@@ -8,9 +8,7 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
-    "@react-oauth/google": "^0.12.1",
     "bootstrap": "^5.3.3",
-    "kebunjio-web": "file:",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.8",
     "react-dom": "^18.2.0",
@@ -27,8 +25,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@babel/preset-react": "^7.26.3"
+  }
+}{
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "react": "^19.0.0",
+    "react-bootstrap": "^2.10.8",
+    "react-dom": "^19.0.0",
+    "react-scripts": "^5.0.1"
   }
 }
