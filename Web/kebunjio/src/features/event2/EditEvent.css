@@ -1,0 +1,183 @@
+.edit-event-page {
+  padding: 24px;
+  background: #fff;
+}
+
+.edit-event-page h1 {
+  color: #1D1B20;
+  font-size: 24px;
+  margin-bottom: 24px;
+  font-weight: 500;
+}
+
+.edit-form {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-row {
+  display: flex;
+  gap: 24px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.ant-picker {
+  width: 100% !important;
+  min-width: 300px !important;
+}
+
+.ant-input,
+.ant-input-textarea,
+.ant-picker {
+  background: #F7FDF7;
+  border: 1px solid #79747E;
+  border-radius: 4px;
+  height: 40px;
+  padding: 8px 12px;
+}
+
+.ant-input-textarea textarea {
+  height: auto !important;
+  min-height: 200px;
+  padding: 12px;
+}
+
+.ant-input:hover,
+.ant-input:focus,
+.ant-picker:hover,
+.ant-picker:focus {
+  border-color: #004d1f;
+  box-shadow: none;
+}
+
+.ant-picker-panel-container {
+  min-width: 320px !important;
+}
+
+.ant-picker-time-panel-column {
+  min-width: 80px !important;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #E0E0E0;
+}
+
+.upload-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.upload-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #E8F5E9;
+  color: #004d1f;
+  border: none;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.upload-btn:hover {
+  background: #C8E6C9;
+}
+
+.uploaded-file {
+  color: #49454F;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ant-picker-dropdown {
+  min-width: 320px !important;
+}
+
+.ant-picker-panel-container {
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1) !important;
+  border-radius: 8px !important;
+}
+
+.ant-picker-footer {
+  padding: 8px 12px !important;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+  }
+  
+  .ant-picker {
+    min-width: 100% !important;
+  }
+}
+
+.publish-btn {
+  background: #004d1f;
+  border: none;
+  height: 36px;
+  padding: 0 24px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.publish-btn:hover {
+  background: #006627 !important;
+}
+
+.image-upload-container {
+  margin: 20px 0;
+}
+
+.upload-button {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #e6f7ff;
+  border: 1px dashed #1890ff;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #1890ff;
+  transition: all 0.3s;
+}
+
+.upload-button:hover {
+  background-color: #bae7ff;
+}
+
+.image-preview {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.preview-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #d9d9d9;
+}
+
+.image-name {
+  color: #666;
+  font-size: 14px;
+} 
