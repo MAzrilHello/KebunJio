@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @CrossOrigin(origins = "*")
 @Slf4j
 public class PlantStatisticsController {
+    @Autowired
     private final PlantStatisticsService plantStatisticsService;
 
     @GetMapping
