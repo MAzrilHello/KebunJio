@@ -11,8 +11,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Document(collection = "Session")
 public class Session {
-	@Id
-	private String id;
 
 	@Id
 	private String id;

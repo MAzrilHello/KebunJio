@@ -5,8 +5,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import java.time.LocalDateTime;
 
-import org.hibernate.validator.constraints.NotBlank;
-
 import jakarta.validation.constraints.Size;
 
 @Data
