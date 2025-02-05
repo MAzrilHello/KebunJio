@@ -11,7 +11,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Document(collection = "Session")
 public class Session {
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 	@Id
 	private String id;
 	private User user;

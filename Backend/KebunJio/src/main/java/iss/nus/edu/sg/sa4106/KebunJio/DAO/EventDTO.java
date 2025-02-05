@@ -4,7 +4,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import java.time.LocalDateTime;
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 import jakarta.validation.constraints.Size;
 
 @Data

@@ -16,16 +16,20 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/app_icon"
-        android:roundIcon="@drawable/app_icon"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/security_config"
+        android:roundIcon="@drawable/app_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.KebunJio"
         tools:targetApi="31">
         <service
-            android:name=".service.mlModel.mlModelDiagnoseService"
+            android:name=".service.ReminderApiService"
             android:enabled="true"
             android:exported="true"></service>
+        <service
+            android:name=".service.mlModel.MlModelDiagnoseService"
+            android:enabled="true"
+            android:exported="true" />
         <service
             android:name=".service.mlModel.MlModelService"
             android:enabled="true"
@@ -65,9 +69,9 @@
 
         <activity
             android:name=".features.addplant.AddPlantActivity"
-            android:noHistory="true"
-            android:exported="false" />
-        <activity android:name=".features.reminders.ReminderActivity"></activity>
+            android:exported="false"
+            android:noHistory="true" />
+        <activity android:name=".features.reminders.ReminderActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
