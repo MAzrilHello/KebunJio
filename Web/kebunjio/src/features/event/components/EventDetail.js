@@ -45,18 +45,20 @@ const EventDetail = () => {
   };
   const description = event.description || "";
 
-  // the string needed to find
+  // 要查找的字符串
   const targetString = "The Google account has been successfully added";
 
+  // 检查 description 是否包含目标字符串
   const containsTargetString = description.includes(targetString);
 
+  // 如果包含目标字符串，截取目标字符串及其后面的部分直到下一个 "。"
   let targetStringPart = "";
   let remainingDescription = description;
 
   if (containsTargetString) {
-
+    // 找到目标字符串在 description 中的位置
     const targetIndex = description.indexOf(targetString);
-
+    // 从目标字符串位置截取到下一个 "."
     const endIndex = description.indexOf(".", targetIndex) + 1; // 包括句号
     targetStringPart = description.slice(targetIndex, endIndex);
     remainingDescription = description.slice(endIndex).trim();
@@ -71,7 +73,7 @@ const EventDetail = () => {
       </button>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* left side picture */}
+        {/* 左侧图片 */}
         <div className="bg-gray-200 aspect-square flex items-center justify-center">
           {event.picture ? (
             <img
@@ -84,7 +86,7 @@ const EventDetail = () => {
           )}
         </div>
 
-        {/* right side content */}
+        {/* 右侧内容 */}
         <div className="space-y-6">
           <h1 className="text-3xl font-bold">Event number {event.id}</h1>
           <div className="flex flex-col space-y-2">

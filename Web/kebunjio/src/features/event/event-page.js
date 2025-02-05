@@ -11,8 +11,8 @@ const EventList = () => {
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const eventsPerPage = 4;
-    const [searchName, setSearchName] = useState(''); // 用于存储搜索的名字
-    const [searchDate, setSearchDate] = useState(''); // 用于存储搜索的时间
+    const [searchName, setSearchName] = useState('');
+    const [searchDate, setSearchDate] = useState('');
 
     useEffect(() => {
         fetchEvents();
@@ -32,7 +32,7 @@ const EventList = () => {
         }
     };
 
-
+    // 根据 name 和 startDateTime 进行搜索
     const filteredEvents = events.filter((event) => {
         const matchesName = event.name.toLowerCase().includes(searchName.toLowerCase());
         const matchesDate = event.startDateTime
@@ -59,11 +59,12 @@ const EventList = () => {
         );
     }
 
+    // 计算分页的起始和结束位置
     const indexOfLastEvent = currentPage * eventsPerPage;
     const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
     const currentEvents = filteredEvents.slice(indexOfFirstEvent, indexOfLastEvent);
 
-
+    // 计算总页数
     const totalPages = Math.ceil(filteredEvents.length / eventsPerPage);
 
     const handlePageChange = (pageNumber) => {
@@ -74,7 +75,7 @@ const EventList = () => {
         <div className="container mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold text-gray-800">Upcoming Events</h1>
 
-            {/* search bar */}
+            {/* 搜索框 */}
             <div className="flex space-x-4 mb-4">
                 <input
                     type="text"
