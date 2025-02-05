@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Dashboard from './features/dashboard2/index';  // Updated import
-import { EventPage, EventDetail } from './features/event';
+// import { EventPage, EventDetail } from './features/event';
 import ForumTopPage from './features/qna-forum/pages/forum-top-page';
 import ForumMyPage from './features/qna-forum/pages/forum-my-post';
 import ForumNewPost from './features/qna-forum/pages/forum-new-post';
@@ -11,6 +11,7 @@ import UserProfilePage from './features/user-profile/user-profile-page';
 import ViewPost from './features/qna-forum/pages/forum-view-post'
 import LoginPage from './features/login-signup/login';
 import SignUpPage from './features/login-signup/signup';
+import EventPage from './features/event/event-page';
 
 import './index.css';
 import React, { useEffect } from 'react';
