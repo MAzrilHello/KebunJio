@@ -8,55 +8,35 @@ import {
   faChartLine, 
   faVirusCovid
 } from '@fortawesome/free-solid-svg-icons';
-import statisticsService from '../../services/statisticsService';
+import statisticsService from '../service/statisticsService';
 import './style.css';
 
 const Dashboard = () => {
-  console.log('Dashboard组件被加载');
   const [statistics, setStatistics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    console.log('Dashboard useEffect被触发');
     fetchStatistics();
   }, []);
 
   const fetchStatistics = async () => {
-    console.log('开始获取统计数据...');
     try {
       const data = await statisticsService.getLatestStatistics();
-      console.log('获取到的原始数据:', data);
+      console.log('Fetched data:', data);
       
       if (!data) {
-        console.log('警告: 获取到的数据为空');
-        setError('数据为空');
+        setError('No data available');
         return;
       }
-      
-      console.log('Dashboard数据:', {
-        日期: data.date,
-        总用户数: data.totalUsers,
-        已种植植物: data.totalPlantsPlanted,
-        已收获植物: data.totalPlantsHarvested,
-        病害报告数: data.totalDiseasesReported,
-        植物类型分布: data.popularPlantTypes,
-        病害类型分布: data.reportedDiseases
-      });
-      
+
       setStatistics(data);
       setError(null);
     } catch (err) {
-      console.error('获取Dashboard数据错误:', err);
-      console.error('错误详情:', {
-        message: err.message,
-        response: err.response,
-        stack: err.stack
-      });
-      setError('获取统计数据失败');
+      console.error('Error fetching data:', err);
+      setError('Failed to fetch statistics data');
     } finally {
       setLoading(false);
-      console.log('数据获取流程结束');
     }
   };
 
@@ -106,7 +86,7 @@ const Dashboard = () => {
 
   const diseaseOption = {
     title: {
-      text: 'Most reported disease',
+      text: 'Most reported diseases',
       left: 'left'
     },
     tooltip: {
@@ -144,7 +124,7 @@ const Dashboard = () => {
         <Col span={6}>
           <Card className="stat-card">
             <FontAwesomeIcon icon={faUser} className="stat-icon" />
-            <h2>Total User</h2>
+            <h2>Total Users</h2>
             <div className="stat-number">{statistics?.totalUsers || 0}</div>
           </Card>
         </Col>
@@ -168,7 +148,7 @@ const Dashboard = () => {
         <Col span={6}>
           <Card className="stat-card">
             <FontAwesomeIcon icon={faVirusCovid} className="stat-icon" />
-            <h2>Total Reported Disease</h2>
+            <h2>Total Reported Diseases</h2>
             <div className="stat-number">{statistics?.totalDiseasesReported || 0}</div>
           </Card>
         </Col>
@@ -190,4 +170,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard; 
+export default Dashboard;

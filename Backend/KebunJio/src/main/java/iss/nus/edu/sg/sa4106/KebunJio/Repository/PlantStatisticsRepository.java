@@ -9,5 +9,5 @@ import iss.nus.edu.sg.sa4106.KebunJio.Models.PlantStatistics;
 
 @Repository
 public interface PlantStatisticsRepository extends MongoRepository<PlantStatistics, String> {
-    Optional<PlantStatistics> findFirstByOrderByDateDesc();
+    PlantStatistics findTopByOrderByDateDesc();
 } 

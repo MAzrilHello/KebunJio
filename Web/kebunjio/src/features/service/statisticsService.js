@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:8080';
 
-// 创建一个axios实例
+// Create an axios instance for making requests to the backend
 const axiosInstance = axios.create({
     baseURL: API_BASE_URL,
     withCredentials: true,
@@ -13,23 +13,23 @@ const axiosInstance = axios.create({
 });
 
 const statisticsService = {
-    // 获取最新的统计数据
+    // Fetch the latest statistics for the dashboard
     getLatestStatistics: async () => {
-        console.log('statisticsService: 开始请求Dashboard数据...');
-        console.log('请求URL:', `${API_BASE_URL}/api/statistics`);
-        
+        console.log('Requesting Dashboard data...'); // For debugging
         try {
+            // Making GET request to fetch statistics from the backend
             const response = await axiosInstance.get('/api/statistics');
             
-            console.log('statisticsService: 收到响应');
-            console.log('响应状态:', response.status);
-            console.log('响应头:', response.headers);
-            console.log('响应数据:', response.data);
+            // Log response details for debugging purposes
+            console.log('Received response:', response);
+            console.log('Response data:', response.data);
             
-            return response.data;
+            return response.data;  // Return the data to be used in the frontend
         } catch (error) {
-            console.error('statisticsService: 请求失败');
-            console.error('错误信息:', {
+            console.error('Request failed:', error); // Log the error in case the request fails
+            
+            // Logging detailed error information for easier debugging
+            console.error('Error details:', {
                 message: error.message,
                 status: error.response?.status,
                 statusText: error.response?.statusText,
@@ -40,9 +40,11 @@ const statisticsService = {
                     headers: error.config?.headers
                 }
             });
-            throw error;
+
+            // Throw the error to be handled by the calling code (in `index.js`)
+            throw new Error('Failed to fetch statistics data.');
         }
     }
 };
 
-export default statisticsService; 
+export default statisticsService;

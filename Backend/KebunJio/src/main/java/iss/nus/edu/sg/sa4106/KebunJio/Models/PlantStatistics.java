@@ -1,35 +1,36 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Models;
 
-import lombok.Data; // ask what lombok is
+import lombok.Data;  // Lombok for getters, setters, etc.
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonProperty;  // Jackson annotations
 import java.util.Map;
 
-@Document(collection = "plant_statistics")
+@Document(collection = "plant_statistics")  // MongoDB collection name
+@Data  // Lombok to automatically generate getters, setters, toString(), equals(), hashCode()
 public class PlantStatistics {
+
     @Id
     private String id;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime date;
 
-    @Field("total_users")
+    @JsonProperty("date")  // Use @JsonProperty to ensure it serializes correctly to JSON
+    private String date;
+
+    @JsonProperty("total_users")  // Ensure this field is serialized as 'total_users' in JSON
     private Integer totalUsers;
 
-    @Field("total_plants_planted")
+    @JsonProperty("total_plants_planted")
     private Integer totalPlantsPlanted;
 
-    @Field("total_plants_harvested")
+    @JsonProperty("total_plants_harvested")
     private Integer totalPlantsHarvested;
 
-    @Field("total_diseases_reported")
+    @JsonProperty("total_diseases_reported")
     private Integer totalDiseasesReported;
 
-    @Field("popular_plant_types")
+    @JsonProperty("popular_plant_types")
     private Map<String, Integer> popularPlantTypes;
 
-    @Field("reported_diseases")
+    @JsonProperty("reported_diseases")
     private Map<String, Integer> reportedDiseases;
-} 
+}
