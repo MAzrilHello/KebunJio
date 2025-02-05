@@ -53,9 +53,10 @@ const LoginPage = () => {
         axios.post('/login', {
             emailOrUsername,
             password
-        })
+        }, { withCredentials: true })
             .then(response => {
                 if (response.status === 200) {
+                    
                     window.location.href = '/userProfile';
                 }
             })
