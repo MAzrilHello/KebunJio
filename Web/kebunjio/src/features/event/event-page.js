@@ -4,6 +4,7 @@ import EventCard from './components/EventCard';
 import EventDetail from './components/EventDetail';
 import GoogleAuthCallback from './components/GoogleAuthCallback';
 import { getAllEvents } from './services/eventService';
+import Appbar from "../../components/Appbar";
 
 const EventList = () => {
     // State management for events and UI states
@@ -55,8 +56,9 @@ const EventList = () => {
     }
 
     return (
-        
-        <div className="container mx-auto px-4 py-8">
+        <div>
+            <Appbar/>
+            <div className="container mx-auto px-4 py-8">
             {/* Header section with filters */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
                 <h1 className="text-3xl font-bold text-gray-800">Upcoming Events</h1>
@@ -108,6 +110,7 @@ const EventList = () => {
                 {/* Pagination components can be added here */}
             </div>
         </div>
+        </div>  
     );
 };
 
