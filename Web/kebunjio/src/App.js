@@ -39,7 +39,7 @@ function App() {
           <Route path="/user-profile/update" element={<ProtectedRoute element={<UserProfileEditPage />} />} />
           <Route path="/forum/:id/edit" element={<ProtectedRoute element={<ForumEditPost />} />} />
           <Route path="/admin/dashboard" element={<ProtectedRoute element={<Dashboard />} />} />
-          <Route path="/user/profile" element={<ProtectedRoute element={<UserProfilePage />} />} />
+          <Route path="/user/profile/" element={<ProtectedRoute element={<UserProfilePage />} />} />
           <Route path="/user/profile/edit" element={<ProtectedRoute element={<UserProfileEditPage />} />} />
         </Routes>
       </BrowserRouter>
