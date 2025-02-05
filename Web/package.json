@@ -8,6 +8,7 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
+    "@react-oauth/google": "^0.12.1",
     "bootstrap": "^5.3.3",
     "kebunjio-web": "file:",
     "react": "^18.2.0",

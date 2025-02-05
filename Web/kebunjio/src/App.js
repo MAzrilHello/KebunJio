@@ -14,13 +14,13 @@ import UserProfilePage from './features/user-profile/user-profile-page';
 import ViewPost from './features/qna-forum/pages/forum-view-post'
 import LoginPage from './features/login-signup/login';
 import SignUpPage from './features/login-signup/signup';
-// src/index.js 或 src/App.js
+
 import './index.css';
 import React, { useEffect } from 'react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 function App() {
   useEffect(() => {
-    // 确保 OAuth 客户端库已加载
+
     const script = document.createElement('script');
     script.src = 'https://accounts.google.com/gsi/client';
     script.async = true;

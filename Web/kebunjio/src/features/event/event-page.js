@@ -4,6 +4,7 @@ import EventCard from './components/EventCard';
 import EventDetail from './components/EventDetail';
 import GoogleAuthCallback from './components/GoogleAuthCallback';
 import { getAllEvents } from './services/eventService';
+import Appbar from "../../components/Appbar"
 
 const EventList = () => {
     const [events, setEvents] = useState([]);
@@ -72,67 +73,70 @@ const EventList = () => {
     };
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold text-gray-800">Upcoming Events</h1>
+        <div>
+            <Appbar/>
+            <div className="container mx-auto px-4 py-8">
+                <h1 className="text-3xl font-bold text-gray-800">Upcoming Events</h1>
 
-            {/* 搜索框 */}
-            <div className="flex space-x-4 mb-4">
-                <input
-                    type="text"
-                    placeholder="Search by event name"
-                    className="px-4 py-2 border border-gray-300 rounded"
-                    value={searchName}
-                    onChange={(e) => setSearchName(e.target.value)}
-                />
-                <input
-                    type="text"
-                    placeholder="Search by event date"
-                    className="px-4 py-2 border border-gray-300 rounded"
-                    value={searchDate}
-                    onChange={(e) => setSearchDate(e.target.value)}
-                />
-            </div>
+                {/* 搜索框 */}
+                <div className="flex space-x-4 mb-4">
+                    <input
+                        type="text"
+                        placeholder="Search by event name"
+                        className="px-4 py-2 border border-gray-300 rounded"
+                        value={searchName}
+                        onChange={(e) => setSearchName(e.target.value)}
+                    />
+                    <input
+                        type="text"
+                        placeholder="Search by event date"
+                        className="px-4 py-2 border border-gray-300 rounded"
+                        value={searchDate}
+                        onChange={(e) => setSearchDate(e.target.value)}
+                    />
+                </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
-                {currentEvents.map((event) => (
-                    <div key={event.id || event.eventId} className="event-card">
-                        <EventCard event={event} />
-                    </div>
-                ))}
-            </div>
-
-            {/* Pagination Controls */}
-            <div className="mt-8 flex justify-between items-center">
-                {/* Previous page button */}
-                <button
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
-                >
-                    Previous
-                </button>
-
-                {/* Page number links */}
-                <div className="flex space-x-2">
-                    {Array.from({ length: totalPages }, (_, index) => (
-                        <button
-                            key={index + 1}
-                            onClick={() => handlePageChange(index + 1)}
-                            className={`px-4 py-2 rounded ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-                        >
-                            {index + 1}
-                        </button>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+                    {currentEvents.map((event) => (
+                        <div key={event.id || event.eventId} className="event-card">
+                            <EventCard event={event}/>
+                        </div>
                     ))}
                 </div>
 
-                {/* Next page button */}
-                <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
-                >
-                    Next
-                </button>
+                {/* Pagination Controls */}
+                <div className="mt-8 flex justify-between items-center">
+                    {/* Previous page button */}
+                    <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                    >
+                        Previous
+                    </button>
+
+                    {/* Page number links */}
+                    <div className="flex space-x-2">
+                        {Array.from({length: totalPages}, (_, index) => (
+                            <button
+                                key={index + 1}
+                                onClick={() => handlePageChange(index + 1)}
+                                className={`px-4 py-2 rounded ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                            >
+                                {index + 1}
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Next page button */}
+                    <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                    >
+                        Next
+                    </button>
+                </div>
             </div>
         </div>
     );
@@ -141,9 +145,9 @@ const EventList = () => {
 const EventPage = () => {
     return (
         <Routes>
-            <Route path="/" element={<EventList />} />
-            <Route path="/:id" element={<EventDetail />} />
-            <Route path="/oauth2/callback" element={<GoogleAuthCallback />} />
+            <Route path="/" element={<EventList/>}/>
+            <Route path="/:id" element={<EventDetail/>}/>
+            <Route path="/oauth2/callback" element={<GoogleAuthCallback/>}/>
         </Routes>
     );
 };
