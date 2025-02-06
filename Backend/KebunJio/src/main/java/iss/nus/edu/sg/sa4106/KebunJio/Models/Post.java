@@ -15,7 +15,6 @@ import jakarta.validation.constraints.NotNull;
 public class Post {
 	@Id
 	private String id;
-
 	@NotNull(message="Title can not be null")
 	private String title;
 	@NotNull(message="Content can not be null")
@@ -25,16 +24,16 @@ public class Post {
 	private Boolean answerSolved;
 	private String userId;
 	private int upvote;
-
+	
 	public int getUpvote() {
 		return upvote;
 	}
-
+	
 	public void setUpvote(int upvote) {
 		this.upvote = upvote;
 	}
-
-
+	
+	
 
 	public String getUserId() {
 		return userId;

@@ -1,7 +1,5 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Models;
 
-import org.springframework.data.annotation.Id;
-
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
@@ -70,9 +68,9 @@ public class ActivityLog {
 	public void setTimestamp(LocalDateTime timestamp) {
 		this.timestamp = timestamp;
 	}
-
-
-
-
+	
+	
+    
+    
 
 }

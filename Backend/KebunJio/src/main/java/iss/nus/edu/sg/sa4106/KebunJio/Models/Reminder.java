@@ -1,33 +1,29 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Models;
 
-import org.springframework.data.annotation.Id;
-
 import java.time.LocalDateTime;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "Reminders")
 public class Reminder {
-	@Id
-	private String id;
+    private int reminderId;
+    private User user;
+    private Plant plant;
+    private String reminderType;
+    private LocalDateTime reminderDateTime;
+    private Boolean isRecurring;
+    private String recurrenceInterval;
+    private String status;
+    private LocalDateTime createdDateTime;
+    
+    public Reminder() {}
 
-	private User user;
-	private Plant plant;
-	private String reminderType;
-	private LocalDateTime reminderDateTime;
-	private Boolean isRecurring;
-	private String recurrenceInterval;
-	private String status;
-	private LocalDateTime createdDateTime;
-
-	public Reminder() {}
-
-	public String getReminderId() {
-		return this.id;
+	public int getReminderId() {
+		return reminderId;
 	}
 
-	public void setReminderId(String id) {
-		this.id = id;
+	public void setReminderId(int reminderId) {
+		this.reminderId = reminderId;
 	}
 
 	public User getUser() {
@@ -93,7 +89,7 @@ public class Reminder {
 	public void setCreatedDateTime(LocalDateTime createdDateTime) {
 		this.createdDateTime = createdDateTime;
 	}
-
-
+    
+    
 
 }

@@ -43,9 +43,7 @@ public class GoogleCalendarController {
 
     private Event convertMapToEvent(Map<String, Object> eventMap) {
         Event event = new Event();
-        if (eventMap.get("id") != null) {
-            event.setId((String) eventMap.get("id"));
-        }
+//        event.setEventId(((Number) eventMap.get("eventId")).intValue());
         event.setName((String) eventMap.get("title"));
         event.setDescription((String) eventMap.get("description"));
         event.setLocation((String) eventMap.get("location"));

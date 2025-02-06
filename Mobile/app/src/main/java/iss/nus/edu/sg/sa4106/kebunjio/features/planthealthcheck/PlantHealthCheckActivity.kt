@@ -1,5 +1,6 @@
 package iss.nus.edu.sg.sa4106.kebunjio.features.planthealthcheck
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -21,7 +22,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import iss.nus.edu.sg.sa4106.kebunjio.R
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityPlantHealthCheckBinding
-import iss.nus.edu.sg.sa4106.kebunjio.service.mlModel.MlModelDiagnoseService
+import iss.nus.edu.sg.sa4106.kebunjio.features.viewplantdetails.ViewPlantDetailsActivity
+import iss.nus.edu.sg.sa4106.kebunjio.service.mlModel.mlModelDiagnoseService
 import iss.nus.edu.sg.sa4106.kebunjio.service.PlantApiService
 import java.io.File
 import java.text.SimpleDateFormat
@@ -284,16 +286,14 @@ class PlantHealthCheckActivity : AppCompatActivity() {
 
     //Diagnose plant using ML service
     private fun diagnosePlant(imageFile: File) {
-        Thread {
-            val diagnosis = MlModelDiagnoseService().diagnosePlant(imageFile)
-            runOnUiThread {
-                if (diagnosis != null) {
-                    showToast("Diagnosis: $diagnosis")
-                } else {
-                    showToast("Failed to diagnose plant")
-                }
-            }
-        }.start()
+        val diagnosis = mlModelDiagnoseService().diagnosePlant(imageFile)
+        showToast("Diagnosing plant...")
+
+        if (diagnosis != null) {
+            showToast("Diagnosis result: $diagnosis")
+        } else {
+            showToast("Failed to diagnose plant")
+        }
     }
 
     private fun showToast(message: String) {

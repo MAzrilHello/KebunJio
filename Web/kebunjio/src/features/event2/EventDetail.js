@@ -52,7 +52,7 @@ const EventDetail = () => {
         <div className="event-detail-image">
           {event?.picture ? (
             <img
-              src={`http://localhost:3000/events/images/${event.picture}`}
+              src={`http://localhost:8080/api/events/images/${event.picture}`}
               alt={event.name}
               className="event-image"
             />

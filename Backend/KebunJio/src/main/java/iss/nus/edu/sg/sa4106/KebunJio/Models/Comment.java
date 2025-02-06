@@ -9,14 +9,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Comment {
 	@Id
 	private String id;
-
+	
 	private String postId;
 	private String userId;
 	private String commentContent;
 	private int likeCount;
 	private int dislikeCount;
 	private LocalDateTime publishedDateTime;
-
+	
 	public Comment() {}
 
 	public String getId() {
@@ -76,8 +76,8 @@ public class Comment {
 	}
 
 
-
-
+	
+	
 
 
 
