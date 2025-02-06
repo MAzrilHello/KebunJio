@@ -164,7 +164,7 @@ class DummyData {
 
     public fun urlList(): MutableList<String> {
         val theList = mutableListOf<String>()
-        for (i in 0..SpeciesDummy.size-1) {
+        for (i in 0..<SpeciesDummy.size) {
             theList.add(SpeciesDummy[i].imageURL)
         }
         return theList
@@ -172,7 +172,7 @@ class DummyData {
 
     public fun idList(): MutableList<String> {
         var theList = mutableListOf<String>()
-        for (i in 0..SpeciesDummy.size-1) {
+        for (i in 0..<SpeciesDummy.size) {
             theList.add(SpeciesDummy[i].id)
         }
         return theList

@@ -23,7 +23,7 @@ class TimeClassHandler(timeTextView: TextView, changeDateBtn: Button, changeTime
         this.changeDateBtn = changeDateBtn
         this.changeTimeBtn = changeTimeBtn
         this.context = context
-        this.timeTextView.text = pattern
+        this.timeTextView.text = ""
 
         this.changeDateBtn.setOnClickListener {
             changeDateTimePopup(true)
