@@ -245,11 +245,29 @@ class PlantSpeciesLogService : Service() {
             forIntent?.putExtra("responseCode",responseCode)
 
             val logList = mutableListOf<ActivityLog>()
+            var addFailErrors = 0
 
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 if (isList) {
                     val jsonArray = JSONArray(responseMessage)
                     for (i in 0..<jsonArray.length()) {
+                        try {
+                            val responseObject = JSONObject(responseMessage)
+                            val oneLog = ActivityLog(
+                                id = responseObject.getString("id"),
+                                userId = responseObject.getString("userId"),
+                                plantId = responseObject.getString("plantId"),
+                                activityType = responseObject.getString("activityType"),
+                                activityDescription = responseObject.getString("activityDescription"),
+                                timestamp = responseObject.getString("timestamp")
+                            )
+                            logList.add(oneLog)
+                        } catch (e: Error) {
+                           addFailErrors += 1
+                        }
+                    }
+                } else {
+                    try {
                         val responseObject = JSONObject(responseMessage)
                         val oneLog = ActivityLog(
                             id = responseObject.getString("id"),
@@ -260,20 +278,12 @@ class PlantSpeciesLogService : Service() {
                             timestamp = responseObject.getString("timestamp")
                         )
                         logList.add(oneLog)
+                    } catch (e: Error) {
+                        addFailErrors += 1
                     }
-                } else {
-                    val responseObject = JSONObject(responseMessage)
-                    val oneLog = ActivityLog(
-                        id = responseObject.getString("id"),
-                        userId = responseObject.getString("userId"),
-                        plantId = responseObject.getString("plantId"),
-                        activityType = responseObject.getString("activityType"),
-                        activityDescription = responseObject.getString("activityDescription"),
-                        timestamp = responseObject.getString("timestamp")
-                    )
-                    logList.add(oneLog)
                 }
             }
+            forIntent?.putExtra("addFailErrors",addFailErrors)
             forIntent?.putExtra("logList",ArrayList(logList))
             connection.disconnect()
             return logList

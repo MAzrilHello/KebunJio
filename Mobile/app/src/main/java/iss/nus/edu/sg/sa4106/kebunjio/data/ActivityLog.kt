@@ -7,6 +7,14 @@ data class ActivityLog(
     val userId: String,
     val plantId: String?,
     val activityType: String,
-    val activityDescription: String,
+    val activityDescription: String, // can be blank
     val timestamp: String
-) : Serializable
+
+
+) : Serializable {
+    public fun dataIsGood(): Boolean {
+        return (!plantId.equals("") &&
+                !activityType.equals("") &&
+                !timestamp.equals(""))
+    }
+}
