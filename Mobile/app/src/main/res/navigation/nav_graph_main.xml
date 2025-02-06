@@ -24,11 +24,15 @@
     <fragment
         android:id="@+id/loggedInFragment"
         android:name="iss.nus.edu.sg.sa4106.kebunjio.LoggedInFragment">
+        <action
+            android:id="@+id/action_loggedInFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <argument
+            android:name="session_id"
+            app:argType="string" />
+        <argument
+            android:name="user_id"
+            app:argType="string" />
     </fragment>
-    <argument
-        android:name="session_id"
-        app:argType="string" />
-    <argument
-        android:name="user_id"
-        app:argType="string" />
+
 </navigation>

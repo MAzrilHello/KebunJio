@@ -48,5 +48,7 @@ class LoginFragment : Fragment() {
             return
         }
         // attempt to login
+        binding.root.findNavController().navigate(R.id.action_loginFragment_to_loggedInFragment)
+
     }
 }

@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentLoggedInBinding
+import iss.nus.edu.sg.sa4106.kebunjio.features.logactivities.ChooseLogToViewFragment
+import iss.nus.edu.sg.sa4106.kebunjio.features.settings.SettingsFragment
+import iss.nus.edu.sg.sa4106.kebunjio.features.viewplantdetails.ChoosePlantToViewFragment
 
 
 class LoggedInFragment : Fragment() {
@@ -14,6 +17,9 @@ class LoggedInFragment : Fragment() {
     private val binding get() = _binding!!
     private var userId: String? = null
     private var sessionId: String? = null
+    private var logToViewFragment = ChooseLogToViewFragment()
+    private var plantFragment = ChoosePlantToViewFragment()
+    private var settingsFragment = SettingsFragment()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -21,13 +27,38 @@ class LoggedInFragment : Fragment() {
     ): View {
         _binding = FragmentLoggedInBinding.inflate(inflater, container,false)
 
-        val view = binding.root
+        val bottomNavigationView = binding.bottomNavigationView
+
+        setCurrentFragment(logToViewFragment)
+
+        bottomNavigationView.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.tracker_item -> setCurrentFragment(logToViewFragment)
+                R.id.my_plants_item -> setCurrentFragment(plantFragment)
+                R.id.guide_item -> null
+                R.id.settings_item -> setCurrentFragment(settingsFragment)
+            }
+            true
+        }
 
         return binding.root
     }
 
 
+
+    private fun setCurrentFragment(fragment: Fragment) {
+        childFragmentManager.beginTransaction().apply {
+            replace(R.id.flFragment, fragment)
+            commit()
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //settingsFragment.logoutButton.setOnClickListener {
+        //    binding.root.findNavController().navigate(R.id.action_loggedInFragment_to_loginFragment)
+        //}
     }
+
+
 }
