@@ -12,4 +12,10 @@ data class Plant(
     val harvestStartDate: String,
     val plantHealth: String,
     val harvested: Boolean
-) : Serializable
+) : Serializable {
+    public fun dataIsGood(): Boolean {
+        return (!ediblePlantSpeciesId.equals("") &&
+                !userId.equals("") &&
+                !name.equals("") && !plantedDate.equals(""))
+    }
+}

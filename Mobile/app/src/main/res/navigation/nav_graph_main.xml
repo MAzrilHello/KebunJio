@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph_main"
+    app:startDestination="@id/loginOrRegisterFragment"
+    >
+    <fragment
+        android:id="@+id/loginOrRegisterFragment"
+        android:name="iss.nus.edu.sg.sa4106.kebunjio.LoginOrRegisterFragment">
+        <action
+            android:id="@+id/action_loginOrRegisterFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="iss.nus.edu.sg.sa4106.kebunjio.LoginFragment">
+        <action
+            android:id="@+id/action_loginFragment_to_loginOrRegisterFragment"
+            app:destination="@id/loginOrRegisterFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_loggedInFragment"
+            app:destination="@id/loggedInFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loggedInFragment"
+        android:name="iss.nus.edu.sg.sa4106.kebunjio.LoggedInFragment">
+    </fragment>
+    <argument
+        android:name="session_id"
+        app:argType="string" />
+    <argument
+        android:name="user_id"
+        app:argType="string" />
+</navigation>
