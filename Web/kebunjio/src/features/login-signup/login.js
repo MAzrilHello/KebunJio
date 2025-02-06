@@ -1,15 +1,55 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './login-signup.css';
+import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
     const [emailOrUsername, setEmailOrUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [users, setUsers] = useState([]);
+    const {setAuthUser, setIsLoggedIn, setIsAdmin} = useAuth();
+
+    const navigate = useNavigate()
+
+    //temp function, will delete once backend is connected
+    useEffect(()=>{
+        async function fetchData(){
+            const usersRes = await fetch("/dummy-data/user-login-data.json")
+            const users = await usersRes.json()
+
+            setUsers(users)
+        }
+        fetchData()
+
+    },[])
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        const user = users.find(user =>
+            (user.Username === emailOrUsername || user.Username === emailOrUsername) &&
+            user.Password === password
+        );
+
+        if(user){
+            setAuthUser(user)
+            setIsLoggedIn(true)
+            if(user.Username==="Admin"){
+                setIsAdmin(true)
+            }
+            else{
+                setIsAdmin(false)
+            }
+            navigate(`/forum`)
+        }
+        else{
+            alert("Incorrect password or username")
+        }
+
+        //Ruihan's code, do not delete
+        /*
         axios.post('/login', {
             emailOrUsername,
             password
@@ -21,7 +61,7 @@ const LoginPage = () => {
             })
             .catch(err => {
                 setError('Invalid username or password');
-            });
+            });*/
     };
 
     return (

@@ -1,30 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Link } from 'react-router-dom';
 import EventCard from './components/EventCard';
 import EventDetail from './components/EventDetail';
 import GoogleAuthCallback from './components/GoogleAuthCallback';
 import { getAllEvents } from './services/eventService';
 
 const EventList = () => {
-    // State management for events and UI states
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [resultsPerPage, setResultsPerPage] = useState(50);
-    const [selectedDate, setSelectedDate] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const eventsPerPage = 4; // 每页显示 4 个卡片
+    const [searchName, setSearchName] = useState(''); // 用于存储搜索的名字
+    const [searchDate, setSearchDate] = useState(''); // 用于存储搜索的时间
 
-    // Fetch events when component mounts
     useEffect(() => {
         fetchEvents();
     }, []);
 
-    // Function to fetch events from the API
     const fetchEvents = async () => {
         try {
             setLoading(true);
             setError(null);
             const response = await getAllEvents();
-            // Ensure we have an array of events, otherwise use empty array
             setEvents(Array.isArray(response.data) ? response.data : []);
         } catch (error) {
             console.error('Error fetching events:', error);
@@ -34,7 +32,15 @@ const EventList = () => {
         }
     };
 
-    // Loading state display
+    // 根据 name 和 startDateTime 进行搜索
+    const filteredEvents = events.filter((event) => {
+        const matchesName = event.name.toLowerCase().includes(searchName.toLowerCase());
+        const matchesDate = event.startDateTime
+            ? event.startDateTime.includes(searchDate)
+            : true;
+        return matchesName && matchesDate;
+    });
+
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-screen">
@@ -43,7 +49,6 @@ const EventList = () => {
         );
     }
 
-    // Error state display
     if (error) {
         return (
             <div className="container mx-auto px-4 py-8 text-center">
@@ -54,64 +59,85 @@ const EventList = () => {
         );
     }
 
+    // 计算分页的起始和结束位置
+    const indexOfLastEvent = currentPage * eventsPerPage;
+    const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
+    const currentEvents = filteredEvents.slice(indexOfFirstEvent, indexOfLastEvent);
+
+    // 计算总页数
+    const totalPages = Math.ceil(filteredEvents.length / eventsPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
     return (
-        
         <div className="container mx-auto px-4 py-8">
-            {/* Header section with filters */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-                <h1 className="text-3xl font-bold text-gray-800">Upcoming Events</h1>
+            <h1 className="text-3xl font-bold text-gray-800">Upcoming Events</h1>
 
-                {/* Filter controls */}
-                <div className="flex flex-col md:flex-row gap-4 mt-4 md:mt-0">
-                    {/* Date filter */}
-                    <div className="flex flex-col">
-                        <label className="text-sm text-gray-600 mb-1">Date</label>
-                        <input
-                            type="date"
-                            value={selectedDate}
-                            onChange={(e) => setSelectedDate(e.target.value)}
-                            className="border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                        />
-                    </div>
-
-                    {/* Results per page selector */}
-                    <div className="flex flex-col">
-                        <label className="text-sm text-gray-600 mb-1">Result per page</label>
-                        <select
-                            value={resultsPerPage}
-                            onChange={(e) => setResultsPerPage(Number(e.target.value))}
-                            className="border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                        >
-                            <option value={10}>10</option>
-                            <option value={20}>20</option>
-                            <option value={50}>50</option>
-                        </select>
-                    </div>
-                </div>
+            {/* 搜索框 */}
+            <div className="flex space-x-4 mb-4">
+                <input
+                    type="text"
+                    placeholder="Search by event name"
+                    className="px-4 py-2 border border-gray-300 rounded"
+                    value={searchName}
+                    onChange={(e) => setSearchName(e.target.value)}
+                />
+                <input
+                    type="text"
+                    placeholder="Search by event date"
+                    className="px-4 py-2 border border-gray-300 rounded"
+                    value={searchDate}
+                    onChange={(e) => setSearchDate(e.target.value)}
+                />
             </div>
 
-            {/* Event cards grid */}
-            {events.length === 0 ? (
-                <div className="bg-gray-100 border border-gray-300 text-gray-700 px-4 py-3 rounded text-center">
-                    No events found.
-                </div>
-            ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {events.map((event) => (
-                        <EventCard key={event.id || event.eventId} event={event} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+                {currentEvents.map((event) => (
+                    <div key={event.id || event.eventId} className="event-card">
+                        <EventCard event={event} />
+                    </div>
+                ))}
+            </div>
+
+            {/* Pagination Controls */}
+            <div className="mt-8 flex justify-between items-center">
+                {/* Previous page button */}
+                <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                >
+                    Previous
+                </button>
+
+                {/* Page number links */}
+                <div className="flex space-x-2">
+                    {Array.from({ length: totalPages }, (_, index) => (
+                        <button
+                            key={index + 1}
+                            onClick={() => handlePageChange(index + 1)}
+                            className={`px-4 py-2 rounded ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                        >
+                            {index + 1}
+                        </button>
                     ))}
                 </div>
-            )}
 
-            {/* Pagination placeholder */}
-            <div className="mt-8 flex justify-center gap-2">
-                {/* Pagination components can be added here */}
+                {/* Next page button */}
+                <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                >
+                    Next
+                </button>
             </div>
         </div>
     );
 };
 
-// Main component with route configuration
 const EventPage = () => {
     return (
         <Routes>

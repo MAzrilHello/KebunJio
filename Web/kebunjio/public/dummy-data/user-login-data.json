@@ -1,0 +1,17 @@
+[
+    {
+        "Id": 2,
+        "Username": "Kelly",
+        "Password": "Yasmine",
+        "IsAdmin": false,
+        "Email":"kelly@gmail.com",
+        "PhoneNumber":"99998888"
+
+    },
+    {
+        "Id": 1,
+        "Username": "Admin",
+        "Password": "123456",
+        "IsAdmin": true
+    }
+]
