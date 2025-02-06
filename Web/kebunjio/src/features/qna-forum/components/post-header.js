@@ -9,8 +9,12 @@ import '../styling/forum-page.css'
 import placeholderImage from '../../../media/placeholder.jpg';
 import { useNavigate } from "react-router-dom";
 
+import { useAuth } from "../../../context/AuthContext";
+
 const PostHeader = ({post}) =>{
     const navigate = useNavigate()
+    
+    const {authUser,isAdmin} = useAuth()
 
     const deletePost = () => {
         alert("Delete post")
@@ -54,8 +58,7 @@ const PostHeader = ({post}) =>{
                 <Col xs="auto">
                 
                 {
-                    /*For further implementation, now show all dropdown 
-                    post.username==="Kelly"?(<Dropdown>
+                    post.username===authUser.Username?(<Dropdown>
                         <Dropdown.Toggle className="three-dot">
                         </Dropdown.Toggle>
                             <Dropdown.Menu>
@@ -63,15 +66,16 @@ const PostHeader = ({post}) =>{
                                 <Dropdown.Item onClick={()=>{alert("Delete post")}}>Delete Post</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>):(<div></div>)
-                */}
-                <Dropdown>
+                }
+                {
+                    isAdmin?(<Dropdown>
                         <Dropdown.Toggle className="three-dot">
                         </Dropdown.Toggle>
                             <Dropdown.Menu>
-                                <Dropdown.Item onClick={()=>{navigate(`/forum/${post.Id}/edit`, {state:{post}})}}>Edit Post</Dropdown.Item>
-                                <Dropdown.Item onClick={deletePost}>Delete Post</Dropdown.Item>
+                                <Dropdown.Item onClick={()=>{alert("Delete post")}}>Delete Post</Dropdown.Item>
                             </Dropdown.Menu>
-                </Dropdown>
+                        </Dropdown>):(<div></div>)
+                }
                 </Col>
             </Row>
         </Container>
