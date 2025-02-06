@@ -4,12 +4,14 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from "react-bootstrap/Col";
 import Dropdown from 'react-bootstrap/Dropdown';
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 
 import '../styling/forum-page.css'
 import placeholderImage from '../../../media/placeholder.jpg';
 
 const ReplyHeader = ({username, time, onEdit, onDelete}) =>{
+    const {authUser,isAdmin} = useAuth()
+
     return(
         <Container className="post-header">
             <Row className="align-items-center">
@@ -28,7 +30,8 @@ const ReplyHeader = ({username, time, onEdit, onDelete}) =>{
                 </Col>
                 <Col xs="auto">
                 {
-                    <Dropdown>
+                    username===authUser.Username?(
+                        <Dropdown>
                         <Dropdown.Toggle className="three-dot">
                         </Dropdown.Toggle>
                             <Dropdown.Menu>
@@ -36,6 +39,18 @@ const ReplyHeader = ({username, time, onEdit, onDelete}) =>{
                                 <Dropdown.Item onClick={onDelete}>Delete reply</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
+                    ):(<div></div>)
+                }
+                                {
+                    isAdmin?(
+                        <Dropdown>
+                        <Dropdown.Toggle className="three-dot">
+                        </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={onDelete}>Delete reply</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    ):(<div></div>)
                 }
                 </Col>
             </Row>
