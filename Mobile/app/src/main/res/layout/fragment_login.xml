@@ -63,6 +63,7 @@
                 android:layout_width="wrap_content"
                 android:textSize="20sp"
                 android:layout_weight="10"
+                android:inputType="textPassword"
                 />
         </LinearLayout>
         <Button
@@ -71,5 +72,11 @@
             android:layout_width="wrap_content"
             android:layout_gravity="center"
             android:text="Login" />
+        <Button
+            android:id="@+id/back_btn"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:text="Back" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
