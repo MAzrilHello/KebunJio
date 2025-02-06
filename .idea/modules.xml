@@ -3,6 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/KebunJio.iml" filepath="$PROJECT_DIR$/.idea/KebunJio.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/KebunJio.Mobile.KebunJio.iml" filepath="$PROJECT_DIR$/.idea/modules/KebunJio.Mobile.KebunJio.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/KebunJio.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/KebunJio.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Mobile.KebunJio.iml" filepath="$PROJECT_DIR$/.idea/modules/Mobile.KebunJio.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Mobile.KebunJio.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Mobile.KebunJio.app.iml" />
     </modules>
   </component>
 </project>

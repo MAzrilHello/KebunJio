@@ -1,14 +1,15 @@
 package iss.nus.edu.sg.sa4106.KebunJio.DAO;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import java.time.LocalDateTime;
-
-import org.hibernate.validator.constraints.NotBlank;
 
 import jakarta.validation.constraints.Size;
 
 @Data
 public class EventDTO {
+    private String eventId;
     @NotBlank(message = "Event name is required")
     private String name;
     

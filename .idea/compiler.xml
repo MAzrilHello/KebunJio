@@ -9,6 +9,10 @@
         <module name="KebunJio" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="KebunJio.app" target="22" />
+      <module name="Mobile.KebunJio.app" target="22" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

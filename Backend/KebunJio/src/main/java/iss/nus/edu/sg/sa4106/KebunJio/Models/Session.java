@@ -1,5 +1,7 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Models;
 
+import org.springframework.data.annotation.Id;
+
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
@@ -19,7 +21,7 @@ public class Session {
 	private LocalDateTime lastActionDateTime;
 	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	private LocalDateTime endDateTime;
-	
+
 	public Session() {}
 
 	public String getId() {
@@ -61,7 +63,7 @@ public class Session {
 	public void setEndDateTime(LocalDateTime endDateTime) {
 		this.endDateTime = endDateTime;
 	}
-	
-	
+
+
 
 }
