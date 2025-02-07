@@ -3,7 +3,7 @@ import { Layout, Input, Button, TimePicker, DatePicker, message } from 'antd';
 import { CalendarOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import moment from 'moment';
-import eventService from '../../services/eventService';
+import eventService from '../../service/eventService';
 import './EditEvent.css';
 import axios from 'axios';
 

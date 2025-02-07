@@ -1,5 +1,6 @@
 package iss.nus.edu.sg.sa4106.kebunjio
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -48,7 +49,7 @@ class LoginFragment : Fragment() {
             return
         }
         // attempt to login
-        binding.root.findNavController().navigate(R.id.action_loginFragment_to_loggedInFragment)
-
+        val intent = Intent(requireContext(), LoggedInTestActivity::class.java)
+        startActivity(intent)
     }
 }

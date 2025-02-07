@@ -8,7 +8,7 @@ import {
   faChartLine, 
   faVirusCovid
 } from '@fortawesome/free-solid-svg-icons';
-import statisticsService from '../../services/statisticsService';
+import statisticsService from '../service/statisticsService';
 import './style.css';
 
 const Dashboard = () => {

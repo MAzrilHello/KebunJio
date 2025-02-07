@@ -7,15 +7,16 @@ import android.util.Log
 import org.json.JSONObject
 import java.io.DataOutputStream
 import java.io.File
+import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 
 
-class mlModelDiagnoseService : MlModelService() {
+class MlModelDiagnoseService : MlModelService() {
 
     inner class LocalBinder : Binder() {
-        fun getService(): mlModelDiagnoseService {
-            return this@mlModelDiagnoseService
+        fun getService(): MlModelDiagnoseService {
+            return this@MlModelDiagnoseService
         }
     }
 
@@ -27,49 +28,63 @@ class mlModelDiagnoseService : MlModelService() {
 
     override fun diagnosePlant(imageFile: File): String? {
 
-        val urlString = "http://localhost:8080/api/diagnose"
+        val urlString = "http://10.0.2.2:5000/api/diagnose"
+        var connection: HttpURLConnection? = null
 
-        val connection = (URL(urlString).openConnection() as HttpURLConnection)
-
-
-        val url = "http://localhost:8080/api/diagnose"
-
-
-        try {
+        return try {
             val boundary = "Boundary-${System.currentTimeMillis()}"
             val lineEnd = "\r\n"
             val twoHyphens = "--"
+            Log.d("mlModelDiagnoseService", "Connecting to Flask endpoint: $urlString")
 
+            val url = URL(urlString)
+            connection = url.openConnection() as HttpURLConnection
+            connection.requestMethod = "POST"
+            connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=$boundary")
+            connection.doOutput = true
+            connection.doInput = true
+            connection.useCaches = false
             connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=$boundary")
 
-            val outputStream = DataOutputStream(connection.outputStream)
+            Log.d("mlModelDiagnoseService", "Sending image file: ${imageFile.name}")
 
-            outputStream.writeBytes("$twoHyphens$boundary$lineEnd")
-            outputStream.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"${imageFile.name}\"$lineEnd")
-            outputStream.writeBytes("Content-Type: image/jpeg$lineEnd")
-            outputStream.writeBytes("Content-Transfer-Encoding: binary$lineEnd")
-            outputStream.writeBytes(lineEnd)
-            outputStream.write(imageFile.readBytes())
-            outputStream.writeBytes(lineEnd)
-            outputStream.writeBytes("$twoHyphens$boundary$twoHyphens$lineEnd")
-            outputStream.flush()
-            outputStream.close()
+            DataOutputStream(connection.outputStream).use { outputStream ->
+                outputStream.writeBytes("$twoHyphens$boundary$lineEnd")
+                outputStream.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"${imageFile.name}\"$lineEnd")
+                outputStream.writeBytes("Content-Type: image/jpeg$lineEnd")
+                outputStream.writeBytes("Content-Transfer-Encoding: binary$lineEnd")
+                outputStream.writeBytes(lineEnd)
+                outputStream.write(imageFile.readBytes())
+                outputStream.writeBytes(lineEnd)
+                outputStream.writeBytes("$twoHyphens$boundary$twoHyphens$lineEnd")
+                outputStream.flush()
+            }
 
             val responseCode = connection.responseCode
-            val responseMessage = connection.inputStream.bufferedReader().use { it.readText() }
+            val responseMessage = if (responseCode == HttpURLConnection.HTTP_OK) {
+                connection.inputStream.bufferedReader().use { it.readText() }
+            } else {
+                connection.errorStream?.bufferedReader()?.use { it.readText() } ?: "Error: No response"
+            }
 
             Log.d("mlModelDiagnoseService", "Response Code: $responseCode")
             Log.d("mlModelDiagnoseService", "Response Message: $responseMessage")
 
-            val responseObject = JSONObject(responseMessage)
-            return responseObject.getString("diagnosis")
-
-        } catch (e: Exception) {
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                val responseObject = JSONObject(responseMessage)
+                val status = responseObject.getString("status")
+                val details = responseObject.getString("details")
+                "Diagnosis: $status, Details: $details"
+            } else {
+                Log.d("mlModelDiagnoseService", "Unexpected response code: $responseCode")
+                null
+            }
+        } catch (e: IOException) {
             e.printStackTrace()
             Log.d("mlModelDiagnoseService", "Failed to send image for diagnosis.")
+            null
         } finally {
-            connection.disconnect()
+            connection?.disconnect()
         }
-        return null
     }
 }

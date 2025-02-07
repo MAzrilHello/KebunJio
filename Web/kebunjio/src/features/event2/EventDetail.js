@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Layout, Button, message } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeftOutlined, ClockCircleOutlined, EnvironmentOutlined } from '@ant-design/icons';
-import eventService from '../../services/eventService';
+import eventService from '../../service/eventService';
 import "./EventDetail.css";
 import moment from 'moment';
 
