@@ -49,7 +49,7 @@ class LoginFragment : Fragment() {
             return
         }
         // attempt to login
-        val intent = Intent(requireContext(), LoggedInTestActivity::class.java)
-        startActivity(intent)
+        binding.root.findNavController().navigate(R.id.action_loginFragment_to_loggedInFragment)
+
     }
 }
