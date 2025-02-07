@@ -21,10 +21,11 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build and start the backend
+      - name: Build backend and start the backend server
         run: |
-          mvn clean install -DskipTests=true  # Build backend
-          mvn spring-boot:run  # Run backend to check if it starts without issues
+          cd Backend/KebunJio  # Ensure you're in the right directory where pom.xml is located
+          mvn clean install -DskipTests=true  # Build the backend
+          mvn spring-boot:run  # Run the backend to check if it starts without issues
 
   frontend:
     runs-on: ubuntu-latest
@@ -38,11 +39,11 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci  # This will install all dependencies from package-lock.json
         working-directory: Web/kebunjio
 
       - name: Build frontend
-        run: npm run build  # Run build to check if frontend works without errors
+        run: npm run build  # Run the build command after dependencies are installed
         working-directory: Web/kebunjio
 
   mobile:
@@ -63,6 +64,9 @@ jobs:
           build-tools-version: '34.0.0'
           platform-version: '34'
 
+      - name: Ensure gradlew is executable
+        run: chmod +x ./gradlew  # This ensures gradlew has execute permissions
+
       - name: Build mobile app (Debug APK)
-        run: ./gradlew assembleDebug  # Ensure the mobile app builds without errors
+        run: ./gradlew assembleDebug  # Now it should work without permission issues
         working-directory: Mobile
