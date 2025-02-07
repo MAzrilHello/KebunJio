@@ -10,6 +10,16 @@
         <action
             android:id="@+id/action_loginOrRegisterFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_loginOrRegisterFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="iss.nus.edu.sg.sa4106.kebunjio.RegisterAccountFragment">
+        <action
+            android:id="@+id/action_registerFragment_to_loginOrRegisterFragment"
+            app:destination="@id/loginOrRegisterFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
