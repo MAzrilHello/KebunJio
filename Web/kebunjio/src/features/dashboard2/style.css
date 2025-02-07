@@ -7,10 +7,11 @@
 
 .stat-card {
   text-align: left;
-  background: #f0f9f0;
+  background: #80ffb3;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  height: 150px;
 }
 
 .stat-card:hover {
