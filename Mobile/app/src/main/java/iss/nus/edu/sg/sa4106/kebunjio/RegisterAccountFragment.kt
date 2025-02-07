@@ -99,9 +99,10 @@ class RegisterAccountFragment : Fragment() {
             outputStream.close()
 
             val responseCode = connection.responseCode
+            connection.disconnect()
             Log.d("RegisterAccountFragment","Response Code: ${responseCode}")
             activity?.runOnUiThread {
-                if (responseCode == 201) {
+                if (responseCode in 200..299) {
                     Log.d("RegisterAccountFragment","Success!")
                     makeToast("Account successfully created",Toast.LENGTH_SHORT)
                     binding.root.findNavController().navigate(R.id.action_registerFragment_to_loginOrRegisterFragment)

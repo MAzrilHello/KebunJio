@@ -23,7 +23,7 @@ class ChoosePlantToViewFragment : Fragment() {
     private var _binding: ActivityChoosePlantToViewBinding? = null
     private val binding get() = _binding!!
     private val dummy = DummyData()
-    private val userId = "a"
+    private var userId = "a"
 
     lateinit var plantToViewText: TextView
     lateinit var plantList: ListView
@@ -36,6 +36,12 @@ class ChoosePlantToViewFragment : Fragment() {
     ): View {
         _binding = ActivityChoosePlantToViewBinding.inflate(layoutInflater)
         return binding.root
+    }
+
+
+    public fun loadForNewUserId(userId: String) {
+        this.userId = userId
+        TODO("Get list of user's plants")
     }
 
 

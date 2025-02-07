@@ -12,8 +12,8 @@ public class ActivityLog {
 	
 	@Id
     private String id;
-    private User user;
-    private Plant plant;
+    private String userId;
+    private String plantId;
     private String activityType;
     private String activityDescription;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -29,20 +29,20 @@ public class ActivityLog {
 		this.id = id;
 	}
 
-	public User getUser() {
-		return user;
+	public String getUserId() {
+		return userId;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
-	public Plant getPlant() {
-		return plant;
+	public String getPlantId() {
+		return plantId;
 	}
 
-	public void setPlant(Plant plant) {
-		this.plant = plant;
+	public void setPlantId(String plantId) {
+		this.plantId = plantId;
 	}
 
 	public String getActivityType() {
