@@ -24,6 +24,9 @@ class LoginOrRegisterFragment : Fragment() {
         binding.loginBtn.setOnClickListener {
             view.findNavController().navigate(R.id.action_loginOrRegisterFragment_to_loginFragment)
         }
+        binding.registerBtn.setOnClickListener {
+            view.findNavController().navigate(R.id.action_loginOrRegisterFragment_to_registerFragment)
+        }
 
         return binding.root
     }
