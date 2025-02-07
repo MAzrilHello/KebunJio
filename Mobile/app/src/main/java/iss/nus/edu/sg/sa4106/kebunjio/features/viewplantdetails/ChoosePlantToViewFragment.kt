@@ -16,14 +16,19 @@ import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityChoosePlantToViewBindi
 
 // for testing
 import iss.nus.edu.sg.sa4106.kebunjio.DummyData
+import iss.nus.edu.sg.sa4106.kebunjio.data.ActivityLog
+import iss.nus.edu.sg.sa4106.kebunjio.data.Plant
 import iss.nus.edu.sg.sa4106.kebunjio.features.addplant.AddPlantActivity
 
 class ChoosePlantToViewFragment : Fragment() {
 
     private var _binding: ActivityChoosePlantToViewBinding? = null
     private val binding get() = _binding!!
-    private val dummy = DummyData()
-    private val userId = "a"
+    //private val dummy = DummyData()
+    private var userId = "a"
+    private var speciesIdToNameDict: HashMap<String, String> = hashMapOf<String, String>()
+    private var usersPlantList = arrayListOf<Plant>()
+    private var usersActivityLogList = arrayListOf<ActivityLog>()
 
     lateinit var plantToViewText: TextView
     lateinit var plantList: ListView
@@ -39,6 +44,14 @@ class ChoosePlantToViewFragment : Fragment() {
     }
 
 
+    public fun loadNewData(userId: String, speciesIdToNameDict: HashMap<String, String>, usersPlantList: ArrayList<Plant>, usersActivityLogList: ArrayList<ActivityLog>) {
+        this.userId = userId
+        this.speciesIdToNameDict = speciesIdToNameDict
+        this.usersPlantList = usersPlantList
+        this.usersActivityLogList =  usersActivityLogList
+    }
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
@@ -48,7 +61,7 @@ class ChoosePlantToViewFragment : Fragment() {
         plantList = binding.plantList
         addFAB = binding.addFab
 
-        val userPlants = dummy.getUserPlants(userId)
+        //val userPlants = dummy.getUserPlants(userId)
         //val idList: MutableList<Int> = mutableListOf<Int>()
         //val nameList: MutableList<String> = mutableListOf<String>()
 
@@ -57,19 +70,20 @@ class ChoosePlantToViewFragment : Fragment() {
         //    nameList.add(userPlants[i].name)
         //}
 
-        if (userPlants.size==0) {
-            plantToViewText.text = "No plants to view"
-        } else {
-            plantToViewText.text = "Choose Plant to View"
-        }
+        //if (userPlants.size==0) {
+        //    plantToViewText.text = "No plants to view"
+        //} else {
+        //    plantToViewText.text = "Choose Plant to View"
+        //}
 
         addFAB.setOnClickListener {
             val intent = Intent(requireContext(),AddPlantActivity::class.java)
             intent.putExtra("userId",userId)
+            intent.putExtra("speciesIdToNameDict",speciesIdToNameDict)
             Log.d("ChoosePlantToViewActivity","putExtra userId: ${userId}")
             this.startActivity(intent)
         }
 
-        plantList.adapter = PlantToChooseAdapter(requireContext(),userPlants)
+        //plantList.adapter = PlantToChooseAdapter(requireContext(),userPlants)
     }
 }

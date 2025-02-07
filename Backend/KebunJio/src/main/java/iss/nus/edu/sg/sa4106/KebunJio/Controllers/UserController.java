@@ -26,7 +26,7 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestParam String emailOrUsername,
+    public ResponseEntity<User> login(@RequestParam String emailOrUsername,
     		                      @RequestParam String password,
     		                      HttpSession sessionObj,
     		                      Model model){
@@ -35,6 +35,7 @@ public class UserController {
     			// get the adminUser Info
     			User adminUser = userService.loginUser(emailOrUsername, password);
     			sessionObj.setAttribute("loggedInUser",adminUser);
+    			return new ResponseEntity<User>(adminUser,HttpStatus.OK);
     		}else {
     			User user = userService.loginUser(emailOrUsername, password);
     			if(user == null) {
@@ -43,13 +44,12 @@ public class UserController {
     			}else {
     				sessionObj.setAttribute("loggedInUser", user);
     				sessionObj.setAttribute("userId", user.getId());
-    				return new ResponseEntity<>(HttpStatus.OK);
+    				return new ResponseEntity<User>(user,HttpStatus.OK);
     			}
     		}
     	}catch(Exception e) {
     		throw new RuntimeException("Login failed");
     	}
-    	return new ResponseEntity<>(HttpStatus.OK);
     }
 //    public String login(@RequestParam String emailOrUsername,
 //                        @RequestParam String password,

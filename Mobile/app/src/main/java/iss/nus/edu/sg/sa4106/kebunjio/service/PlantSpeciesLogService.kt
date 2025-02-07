@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
+import android.util.Log
 import iss.nus.edu.sg.sa4106.kebunjio.data.ActivityLog
 import iss.nus.edu.sg.sa4106.kebunjio.data.EdiblePlantSpecies
 import iss.nus.edu.sg.sa4106.kebunjio.data.Plant
@@ -16,9 +17,7 @@ import java.net.URL
 class PlantSpeciesLogService : Service() {
 
     companion object {
-        val startUrl = "http://localhost:8080/api"
-
-
+        val startUrl = "http://10.0.2.2:8080/api"
 
 
         fun createOrUpdatePlant(thePlant: Plant,isUpdate: Boolean, forIntent: Intent?): Plant? {
@@ -65,19 +64,9 @@ class PlantSpeciesLogService : Service() {
 
             var returnPlant: Plant? = null
 
-            if (responseCode == HttpURLConnection.HTTP_OK) {
+            if (responseCode in 200..299) {
                 val responseObject = JSONObject(responseMessage)
-                returnPlant = Plant(
-                    id = responseObject.getString("id"),
-                    ediblePlantSpeciesId = responseObject.getString("ediblePlantSpeciesId"),
-                    userId = responseObject.getString("userId"),
-                    name = responseObject.getString("name"),
-                    disease = responseObject.getString("disease"),
-                    plantedDate = responseObject.getString("plantedDate"),
-                    harvestStartDate = responseObject.getString("harvestStartDate"),
-                    plantHealth = responseObject.getString("plantHealth"),
-                    harvested = responseObject.getBoolean("harvested")
-                )
+                returnPlant = Plant.getFromResponseObject(responseObject)
             }
 
             connection.disconnect()
@@ -213,7 +202,7 @@ class PlantSpeciesLogService : Service() {
                 // find by userId
                 fullUrl = "${startUrl}/ActivityLog/Users/${id}"
                 isList = true
-                forIntent?.setAction("get_activity_log_byname")
+                forIntent?.setAction("get_activity_log_byuser")
             } else if (singleUserOrPlant == "plant") {
                 // find by plantId
                 fullUrl = "${startUrl}/ActivityLog/Plants/${id}"
@@ -226,41 +215,38 @@ class PlantSpeciesLogService : Service() {
                 forIntent?.setAction("get_activity_log")
             }
 
+            Log.d("PlantSpeciesLogService","get_activity_logs URL: ${fullUrl} isList: ${isList}")
+
             val url = URL(fullUrl)
             val connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
 
             connection.doInput = true
-            connection.doOutput = true
+            //connection.doOutput = true
             connection.useCaches = false
 
-            val outputStream = DataOutputStream(connection.outputStream)
+            //val outputStream = DataOutputStream(connection.outputStream)
 
-            outputStream.flush()
-            outputStream.close()
+            //outputStream.flush()
+            //outputStream.close()
 
             val responseCode = connection.responseCode
+            Log.d("PlantSpeciesLogService","get_activity_logs responseCode: ${responseCode}")
             val responseMessage = connection.inputStream.bufferedReader().use { it.readText() }
+            Log.d("PlantSpeciesLogService","get_activity_logs responseMessage: ${responseMessage}")
 
             forIntent?.putExtra("responseCode",responseCode)
 
             val logList = mutableListOf<ActivityLog>()
             var addFailErrors = 0
 
-            if (responseCode == HttpURLConnection.HTTP_OK) {
+            if (responseCode in 200..299) {
                 if (isList) {
                     val jsonArray = JSONArray(responseMessage)
                     for (i in 0..<jsonArray.length()) {
                         try {
-                            val responseObject = JSONObject(responseMessage)
-                            val oneLog = ActivityLog(
-                                id = responseObject.getString("id"),
-                                userId = responseObject.getString("userId"),
-                                plantId = responseObject.getString("plantId"),
-                                activityType = responseObject.getString("activityType"),
-                                activityDescription = responseObject.getString("activityDescription"),
-                                timestamp = responseObject.getString("timestamp")
-                            )
+                            val responseObject = jsonArray.getJSONObject(i)
+                            val oneLog = ActivityLog.getFromResponseObject(responseObject)
                             logList.add(oneLog)
                         } catch (e: Error) {
                            addFailErrors += 1
@@ -269,14 +255,7 @@ class PlantSpeciesLogService : Service() {
                 } else {
                     try {
                         val responseObject = JSONObject(responseMessage)
-                        val oneLog = ActivityLog(
-                            id = responseObject.getString("id"),
-                            userId = responseObject.getString("userId"),
-                            plantId = responseObject.getString("plantId"),
-                            activityType = responseObject.getString("activityType"),
-                            activityDescription = responseObject.getString("activityDescription"),
-                            timestamp = responseObject.getString("timestamp")
-                        )
+                        val oneLog = ActivityLog.getFromResponseObject(responseObject)
                         logList.add(oneLog)
                     } catch (e: Error) {
                         addFailErrors += 1
@@ -292,7 +271,7 @@ class PlantSpeciesLogService : Service() {
         fun getSpecies(id: String?, byName: Boolean = false, forIntent: Intent? = null): MutableList<EdiblePlantSpecies> {
             val isList: Boolean
             val fullUrl: String
-            if (id == null) {
+            if (id == null|| id == "") {
                 fullUrl = "${startUrl}/EdiblePlant"
                 isList = true
                 forIntent?.setAction("get_species_all")
@@ -305,69 +284,46 @@ class PlantSpeciesLogService : Service() {
                 isList = false
                 forIntent?.setAction("get_species_byid")
             }
-
+            Log.d("PlantSpeciesLogService","get_species URL: ${fullUrl} isList: ${isList}")
             val url = URL(fullUrl)
             val connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
 
             connection.doInput = true
-            connection.doOutput = true
+            //connection.doOutput = true
             connection.useCaches = false
 
-            val outputStream = DataOutputStream(connection.outputStream)
+            //val outputStream = DataOutputStream(connection.outputStream)
 
-            outputStream.flush()
-            outputStream.close()
+            //outputStream.flush()
+            //outputStream.close()
 
             val responseCode = connection.responseCode
+            Log.d("PlantSpeciesLogService","get_species responseCode: ${responseCode}")
             val responseMessage = connection.inputStream.bufferedReader().use { it.readText() }
+            Log.d("PlantSpeciesLogService","get_species responseMessage: ${responseMessage}")
 
             forIntent?.putExtra("responseCode",responseCode)
 
             val speciesList = mutableListOf<EdiblePlantSpecies>()
 
-            if (responseCode == HttpURLConnection.HTTP_OK) {
+            if (responseCode in  200..299) {
 
                 if (isList) {
+                    Log.d("PlantSpeciesLogService","get_species Converting to json array")
                     val jsonArray = JSONArray(responseMessage)
+                    Log.d("PlantSpeciesLogService","get_species Array size: ${jsonArray.length()}")
                     for (i in 0..<jsonArray.length()) {
-                        val responseObject = JSONObject(responseMessage)
-                        val oneSpecies = EdiblePlantSpecies(
-                            id = responseObject.getString("id"),
-                            name = responseObject.getString("name"),
-                            scientificName = responseObject.getString("scientificName"),
-                            ediblePlantGroup = responseObject.getString("ediblePlantGroup"),
-                            description = responseObject.getString("description"),
-                            wateringTips = responseObject.getString("wateringTips"),
-                            sunlight = responseObject.getString("sunlight"),
-                            soilType = responseObject.getString("soilType"),
-                            harvestTime = responseObject.getString("harvestTime"),
-                            commonPests = responseObject.getString("commonPests"),
-                            growingSpace = responseObject.getString("growingSpace"),
-                            fertilizerTips = responseObject.getString("fertilizerTips"),
-                            specialNeeds = responseObject.getString("specialNeeds"),
-                            imageURL = responseObject.getString("imageURL")
-                        )
+                        Log.d("PlantSpeciesLogService","get_species Return No. ${i+1}")
+                        Log.d("PlantSpeciesLogService","get_species Reading Response Object")
+                        val responseObject = jsonArray.getJSONObject(i)
+                        val oneSpecies = EdiblePlantSpecies.getFromResponseObject(responseObject)
                         speciesList.add(oneSpecies)
                     }
                 } else {
+                    Log.d("PlantSpeciesLogService","get_species Reading Response Object")
                     val responseObject = JSONObject(responseMessage)
-                    val oneSpecies = EdiblePlantSpecies(
-                        id = responseObject.getString("id"),
-                        name = responseObject.getString("name"),
-                        scientificName = responseObject.getString("scientificName"),
-                        ediblePlantGroup = responseObject.getString("ediblePlantGroup"),
-                        description = responseObject.getString("description"),
-                        wateringTips = responseObject.getString("wateringTips"),
-                        sunlight = responseObject.getString("sunlight"),
-                        soilType = responseObject.getString("soilType"),
-                        harvestTime = responseObject.getString("harvestTime"),
-                        commonPests = responseObject.getString("commonPests"),
-                        growingSpace = responseObject.getString("growingSpace"),
-                        fertilizerTips = responseObject.getString("fertilizerTips"),
-                        specialNeeds = responseObject.getString("specialNeeds"),
-                        imageURL = responseObject.getString("imageURL")
-                    )
+                    val oneSpecies = EdiblePlantSpecies.getFromResponseObject(responseObject)
                     speciesList.add(oneSpecies)
                 }
             }
@@ -386,68 +342,51 @@ class PlantSpeciesLogService : Service() {
             if (byUser) {
                 fullUrl = "${startUrl}/Plants/Users/${id}"
                 isList = true
-                forIntent?.setAction("get_plants_byname")
+                forIntent?.setAction("get_plants_byuser")
             } else {
                 fullUrl = "${startUrl}/Plants/${id}"
                 isList = false
                 forIntent?.setAction("get_plants")
             }
-
+            Log.d("PlantSpeciesLogService","get_plants URL: ${fullUrl}")
             val url = URL(fullUrl)
             val connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
 
             connection.doInput = true
-            connection.doOutput = true
+            //connection.doOutput = true
             connection.useCaches = false
 
-            val outputStream = DataOutputStream(connection.outputStream)
+            //val outputStream = DataOutputStream(connection.outputStream)
 
-            outputStream.flush()
-            outputStream.close()
+            //outputStream.flush()
+            //outputStream.close()
 
             val responseCode = connection.responseCode
             val responseMessage = connection.inputStream.bufferedReader().use { it.readText() }
+
+            Log.d("PlantSpeciesLogService","get_plants Response Code: ${responseCode}")
 
             forIntent?.putExtra("responseCode",responseCode)
 
             val plantList = mutableListOf<Plant>()
 
-            if (responseCode == HttpURLConnection.HTTP_OK) {
+            if (responseCode in 200..299) {
 
                 if (isList) {
                     val jsonArray = JSONArray(responseMessage)
                     for (i in 0..<jsonArray.length()) {
                         val responseObject = jsonArray.getJSONObject(i)
-                        val onePlant = Plant(
-                            id = responseObject.getString("id"),
-                            ediblePlantSpeciesId = responseObject.getString("ediblePlantSpeciesId"),
-                            userId = responseObject.getString("userId"),
-                            name = responseObject.getString("name"),
-                            disease = responseObject.getString("disease"),
-                            plantedDate = responseObject.getString("plantedDate"),
-                            harvestStartDate = responseObject.getString("harvestStartDate"),
-                            plantHealth = responseObject.getString("plantHealth"),
-                            harvested = responseObject.getBoolean("harvested")
-                        )
+                        val onePlant = Plant.getFromResponseObject(responseObject)
                         plantList.add(onePlant)
                     }
                 } else {
                     val responseObject = JSONObject(responseMessage)
-                    val onePlant = Plant(
-                        id = responseObject.getString("id"),
-                        ediblePlantSpeciesId = responseObject.getString("ediblePlantSpeciesId"),
-                        userId = responseObject.getString("userId"),
-                        name = responseObject.getString("name"),
-                        disease = responseObject.getString("disease"),
-                        plantedDate = responseObject.getString("plantedDate"),
-                        harvestStartDate = responseObject.getString("harvestStartDate"),
-                        plantHealth = responseObject.getString("plantHealth"),
-                        harvested = responseObject.getBoolean("harvested")
-                    )
+                    val onePlant = Plant.getFromResponseObject(responseObject)
                     plantList.add(onePlant)
                 }
             }
+            Log.d("PlantSpeciesLogService","get_plants Array Size: ${plantList.size}")
             forIntent?.putExtra("plantList",ArrayList(plantList))
             connection.disconnect()
             return plantList
@@ -467,12 +406,15 @@ class PlantSpeciesLogService : Service() {
             }.start()
         } else if (intent.action.equals("get_plants")) {
             // get plant
+
             val idTry: String? = intent.getStringExtra("id")
             val id: String
             id = if (idTry == null) {""} else {idTry}
             val byUser: Boolean = intent.getBooleanExtra("byUser",false)
+            Log.d("PlantSpeciesLogService","get_plants $id $byUser")
             Thread{
                 getPlants(id,byUser,returnIntent)
+                Log.d("PlantSpeciesLogService","get_plants completed")
                 sendBroadcast(returnIntent)
             }.start()
         } else if (intent.action.equals("change_plant")) {
