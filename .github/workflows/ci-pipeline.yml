@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Code
+    - name: Checkout code
       uses: actions/checkout@v3
 
     - name: Set up Node.js for Frontend
@@ -90,11 +90,11 @@ jobs:
 
     - name: Install Frontend Dependencies
       working-directory: Web/kebunjio
-      run: npm ci  # Install dependencies in a clean and reliable way
+      run: npm ci  # This ensures a clean install of the dependencies
 
     - name: Build React Frontend
       working-directory: Web/kebunjio
-      run: CI=false npm run build  # Skip react-scripts's built-in CI check for faster builds
+      run: CI=false npm run build  # Skip CI checks for faster builds
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
