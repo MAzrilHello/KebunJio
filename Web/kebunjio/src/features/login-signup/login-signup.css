@@ -2,7 +2,7 @@
 
 .login-container {
     display: flex;
-    justify-content: end;
+    justify-content: center;
     align-items: center;
     height: 100vh;
     background-color: #1b4b2a;
@@ -10,8 +10,10 @@
 }
 
 .login-logo img {
-    width: 300px;
-    margin-bottom: 20px;
+    width: 50px;
+    margin-bottom: 10px;
+    justify-content: center;
+    align-items: center;
 }
 
 .login-form {
@@ -20,12 +22,13 @@
     padding: 30px;
     border-radius: 10px;
     width: 40vw;
-    height: 100vh;
+    height: 60vh;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     flex-direction: column;
     justify-content: center;
     padding: 50px;
     gap: 10px;
+    align-items: center;
 }
 
 .login-form h2 {
@@ -80,7 +83,7 @@
 
 .signup-container {
     display: flex;
-    justify-content: end;
+    justify-content: center;
     align-items: center;
     height: 100vh;
     background-color: #1b4b2a;
@@ -88,8 +91,8 @@
 }
 
 .signup-logo img {
-    width: 300px;
-    margin-bottom: 20px;
+    width: 50px;
+    margin-bottom: 10px;
 }
 
 .signup-form {
@@ -99,7 +102,7 @@
     padding: 30px;
     border-radius: 10px;
     width: 40vw;
-    height: 100vh;
+    height: 80vh;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     align-items: center;
     justify-content: center;
@@ -152,4 +155,12 @@
 
 .login-link a:hover {
     text-decoration: underline;
+}
+
+.form-structure {
+    display:flex;
+    flex-direction: row; 
+    align-items: center;
+    gap: 10px;
+    margin: 0px;
 }
