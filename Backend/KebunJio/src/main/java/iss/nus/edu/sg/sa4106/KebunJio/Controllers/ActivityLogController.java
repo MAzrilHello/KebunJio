@@ -50,11 +50,7 @@ public class ActivityLogController {
 	public ResponseEntity<List<ActivityLog>> getUserActivities(@PathVariable String userId) {
         try {
             List<ActivityLog> findActLog = actLogService.getAllUserActivityLog(userId);
-            if (findActLog.size() > 0) {
-            	return ResponseEntity.ok(findActLog);
-            } else {
-            	return ResponseEntity.notFound().build();
-            }
+            return ResponseEntity.ok(findActLog);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }

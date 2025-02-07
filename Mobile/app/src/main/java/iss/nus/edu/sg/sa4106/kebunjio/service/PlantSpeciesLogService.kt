@@ -215,41 +215,38 @@ class PlantSpeciesLogService : Service() {
                 forIntent?.setAction("get_activity_log")
             }
 
+            Log.d("PlantSpeciesLogService","get_activity_logs URL: ${fullUrl} isList: ${isList}")
+
             val url = URL(fullUrl)
             val connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
 
             connection.doInput = true
-            connection.doOutput = true
+            //connection.doOutput = true
             connection.useCaches = false
 
-            val outputStream = DataOutputStream(connection.outputStream)
+            //val outputStream = DataOutputStream(connection.outputStream)
 
-            outputStream.flush()
-            outputStream.close()
+            //outputStream.flush()
+            //outputStream.close()
 
             val responseCode = connection.responseCode
+            Log.d("PlantSpeciesLogService","get_activity_logs responseCode: ${responseCode}")
             val responseMessage = connection.inputStream.bufferedReader().use { it.readText() }
+            Log.d("PlantSpeciesLogService","get_activity_logs responseMessage: ${responseMessage}")
 
             forIntent?.putExtra("responseCode",responseCode)
 
             val logList = mutableListOf<ActivityLog>()
             var addFailErrors = 0
 
-            if (responseCode == HttpURLConnection.HTTP_OK) {
+            if (responseCode in 200..299) {
                 if (isList) {
                     val jsonArray = JSONArray(responseMessage)
                     for (i in 0..<jsonArray.length()) {
                         try {
-                            val responseObject = JSONObject(responseMessage)
-                            val oneLog = ActivityLog(
-                                id = responseObject.getString("id"),
-                                userId = responseObject.getString("userId"),
-                                plantId = responseObject.getString("plantId"),
-                                activityType = responseObject.getString("activityType"),
-                                activityDescription = responseObject.getString("activityDescription"),
-                                timestamp = responseObject.getString("timestamp")
-                            )
+                            val responseObject = jsonArray.getJSONObject(i)
+                            val oneLog = ActivityLog.getFromResponseObject(responseObject)
                             logList.add(oneLog)
                         } catch (e: Error) {
                            addFailErrors += 1
@@ -258,14 +255,7 @@ class PlantSpeciesLogService : Service() {
                 } else {
                     try {
                         val responseObject = JSONObject(responseMessage)
-                        val oneLog = ActivityLog(
-                            id = responseObject.getString("id"),
-                            userId = responseObject.getString("userId"),
-                            plantId = responseObject.getString("plantId"),
-                            activityType = responseObject.getString("activityType"),
-                            activityDescription = responseObject.getString("activityDescription"),
-                            timestamp = responseObject.getString("timestamp")
-                        )
+                        val oneLog = ActivityLog.getFromResponseObject(responseObject)
                         logList.add(oneLog)
                     } catch (e: Error) {
                         addFailErrors += 1

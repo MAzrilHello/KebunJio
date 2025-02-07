@@ -68,7 +68,7 @@ class AddPlantActivity : AppCompatActivity() {
     lateinit var diseaseText: EditText
     lateinit var harvestedSpinner: Spinner
 
-    private var dummyData: DummyData = DummyData()
+    //private var dummyData: DummyData = DummyData()
 
     private var harvestSpinnerOptions = mutableListOf("Harvested","Not Harvested")
 
@@ -155,7 +155,6 @@ class AddPlantActivity : AppCompatActivity() {
         diseaseText = binding.diseaseText
         harvestedSpinner = binding.harvestedSpinner
 
-        setupSpeciesSpinner()
 
         // set harvest spinner options
         val harvestSpinAdapter: ArrayAdapter<String> = ArrayAdapter<String>(this,
@@ -186,33 +185,39 @@ class AddPlantActivity : AppCompatActivity() {
             insets
         }
 
-        // if updating
+        // get data from intent
         updateUserId = intent.getStringExtra("userId")
+        val speciesIdToNameDict = (intent.getSerializableExtra("speciesIdToNameDict") as HashMap<String, String>)!!
+        setupSpeciesSpinner(speciesIdToNameDict)
         Log.d("AddPlantActivity","userId: ${updateUserId}")
         if (intent.getBooleanExtra("update",false)) {
             Log.d("AddPlantActivity","We are in update mode")
             binding.titlePart.text = "Update Plant"
             binding.addPlantBtn.text = "Update Plant"
-            val plantId = intent.getStringExtra("plantId")
-            Log.d("AddPlantActivity","plantId: ${plantId}")
-            if (plantId != null) {
-                val chosenPlant = dummyData.getPlantById(plantId)
-                if (chosenPlant != null) {
-                    setData(chosenPlant)
-                }
-            }
+            //val plantId = intent.getStringExtra("plantId")
+            //Log.d("AddPlantActivity","plantId: ${plantId}")
+            //if (plantId != null) {
+            //    val chosenPlant = dummyData.getPlantById(plantId)
+            //    if (chosenPlant != null) {
+            //        setData(chosenPlant)
+            //    }
+            //}
 
         }
     }
 
 
-    fun setupSpeciesSpinner() {
+    fun setupSpeciesSpinner(speciesIdToNameDict: HashMap<String, String>) {
         speciesSpinnerIdxToId.clear()
         val spinnerOptions = mutableListOf<String>()
-        for (i in 0..dummyData.SpeciesDummy.size-1) {
-            speciesSpinnerIdxToId.add(dummyData.SpeciesDummy[i].id)
-            spinnerOptions.add(dummyData.SpeciesDummy[i].name)
+        for ( key in speciesIdToNameDict.keys) {
+            speciesSpinnerIdxToId.add(key)
+            spinnerOptions.add(speciesIdToNameDict[key]!!)
         }
+        //for (i in 0..dummyData.SpeciesDummy.size-1) {
+        //    speciesSpinnerIdxToId.add(dummyData.SpeciesDummy[i].id)
+        //    spinnerOptions.add(dummyData.SpeciesDummy[i].name)
+        //}
         // set the spinner options
         val spinAdapter: ArrayAdapter<String> = ArrayAdapter<String>(this,
             android.R.layout.simple_spinner_item,
