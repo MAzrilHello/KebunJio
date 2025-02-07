@@ -21,7 +21,6 @@ jobs:
   backend:
     name: Build and Run Backend
     runs-on: ubuntu-latest
-    if: github.event.pull_request.changed_files > 0 && contains(github.event.pull_request.files, 'Backend/')  # Only run if there are changes in the Backend folder
 
     steps:
     - name: Checkout Code
@@ -43,7 +42,6 @@ jobs:
   mobile:
     name: Build and Generate APK for Mobile
     runs-on: ubuntu-latest
-    if: github.event.pull_request.changed_files > 0 && contains(github.event.pull_request.files, 'Mobile/')  # Only run if there are changes in the Mobile folder
 
     steps:
     - name: Checkout Code
@@ -78,7 +76,6 @@ jobs:
   frontend:
     name: Build React Frontend
     runs-on: ubuntu-latest
-    if: github.event.pull_request.changed_files > 0 && contains(github.event.pull_request.files, 'Web/')  # Only run if there are changes in the Web folder
 
     steps:
     - name: Checkout code
