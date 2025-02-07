@@ -13,7 +13,7 @@ public class ActivityLog {
 	@Id
     private String id;
     private User user;
-    private Plant plant;
+    private Plant plant; 
     private String activityType;
     private String activityDescription;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
