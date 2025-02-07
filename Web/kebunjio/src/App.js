@@ -5,7 +5,7 @@ import Dashboard from './features/dashboard2/index';  // Updated import
 
 import Events from './features/event2/index'
 import EditEvent from './features/event2/EditEvent';
-import EventDetail from './features/event/components/EventDetail';
+import AdminEventDetail from './features/event2/EventDetail';
 import ForumTopPage from './features/qna-forum/pages/forum-top-page';
 import ForumMyPage from './features/qna-forum/pages/forum-my-post';
 import ForumNewPost from './features/qna-forum/pages/forum-new-post';
@@ -45,7 +45,6 @@ function App() {
           <Route path="/signup" element={<SignUpPage />} />
 
           <Route path="/events" element={<EventPage/>}/> {/* 使用/*来匹配子路由 */}
-          <Route path="/events/edit/*" element={<EditEvent/>}/>
 
           <Route path="/forum" element={<ProtectedRoute element={<ForumTopPage />} />} />
           <Route path="/forum/search" element={<ProtectedRoute element={<ForumSearchPage />} />} />
@@ -59,6 +58,8 @@ function App() {
 
           <Route path="/admin/dashboard" element={<ProtectedRoute element={<Dashboard />} />} />
           <Route path="/admin/events" element={<ProtectedRoute element={<Events />} />} />
+          <Route path="/admin/events/:id" element={<ProtectedRoute element={<AdminEventDetail />} />} />
+          <Route path="/admin/events/edit/*" element={<EditEvent/>}/>
 
         </Routes>
       </BrowserRouter>

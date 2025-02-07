@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import eventService from '../service/eventService';
 import moment from 'moment';
 import Appbar from '../../components/Appbar';
+import placeholderImage from '../../media/event-placeholder.jpeg'
 
 const { Content } = Layout;
 
@@ -34,7 +35,16 @@ const Events = () => {
   };
 
   useEffect(() => {
-    fetchEvents();
+    //Chingnam's code, do not delete
+    //fetchEvents();
+
+    //Kelly's code, can delete after connect to backend
+    async function fetchData(){
+      const eventsRes = await fetch("/dummy-data/event.json")
+      const eventsData = await eventsRes.json()
+      setEvents(eventsData)
+    }
+    fetchData()
   }, [pageSize]);
 
   const handlePageChange = (page) => {
@@ -92,17 +102,17 @@ const Events = () => {
 
   // 处理编辑事件
   const handleEditEvent = (event) => {
-    navigate(`/events/edit/${event.id}`, { state: { event } });
+    navigate(`/admin/events/edit/${event.id}`, { state: { event } });
   };
 
   // 处理查看详情
   const handleViewMore = (event) => {
-    navigate(`/events/${event.id}`, { state: { event } });
+    navigate(`/admin/events/${event.id}`, { state: { event } });
   };
 
   // 处理添加新事件
   const handleAddNewEvent = () => {
-    navigate('/events/edit/new');
+    navigate(`/admin/events/edit/new`);
   };
 
   const formatDateTime = (dateTime) => {
@@ -126,7 +136,7 @@ const Events = () => {
               </div>
               <div className="header-right">
                 <div className="filter-item">
-                  <div className="filter-label">Label</div>
+                  <div className="filter-label">Event Name</div>
                   <div className="input-wrapper">
                     <Input placeholder="Event name" suffix={<CloseCircleOutlined />} />
                   </div>
@@ -164,7 +174,8 @@ const Events = () => {
               {events.map(event => (
                 <Card key={event.id} className="event-card">
                   <div className="event-image-container">
-                    {event.picture ? (
+                    <img src={placeholderImage}></img>
+                    {/*event.picture ? (
                       <img 
                         src={`http://localhost:8080/api/events/images/${event.picture}`} 
                         alt={event.name} 
@@ -178,7 +189,7 @@ const Events = () => {
                       <div className="event-image placeholder-image">
                         <div className="placeholder-text">No Image</div>
                       </div>
-                    )}
+                    )*/}
                     <Dropdown
                       menu={{ items: getDropdownItems(event) }}
                       trigger={['click']}
@@ -199,6 +210,14 @@ const Events = () => {
                       </div>
                       <div className="day">
                         {moment(event.startDateTime || new Date()).format('D')}
+                      </div>
+                    </div>
+                    <div className="event-date">
+                      <div className="month">
+                        {moment(event.endDateTime || new Date()).format('MMM').toUpperCase()}
+                      </div>
+                      <div className="day">
+                        {moment(event.endDateTime || new Date()).format('D')}
                       </div>
                     </div>
                     <div className="event-content">
