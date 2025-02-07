@@ -2,7 +2,6 @@ package iss.nus.edu.sg.sa4106.KebunJio.Controllers;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.Reminder;
 import iss.nus.edu.sg.sa4106.KebunJio.Services.ReminderService;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentLoginBinding
@@ -46,10 +47,21 @@ class LoginFragment : Fragment() {
         val username = binding.usernameText.text.toString()
         val password = binding.passwordText.text.toString()
         if (username.equals("") || password.equals("")) {
+            makeToast("Please key in a valid username and password")
             return
         }
         // attempt to login
         binding.root.findNavController().navigate(R.id.action_loginFragment_to_loggedInFragment)
+        // do not start intent here, rely on the navigation map
+        //val intent = Intent(requireContext(), LoggedInTestActivity::class.java)
+        //startActivity(intent)
+    }
 
+    private fun makeToast(text: String) {
+        val msg = Toast.makeText(
+            getActivity(),
+            text, Toast.LENGTH_LONG
+        )
+        msg.show()
     }
 }
