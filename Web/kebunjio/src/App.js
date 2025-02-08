@@ -3,7 +3,6 @@ import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import React, { useEffect } from 'react';
 
-
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
 
@@ -56,7 +55,6 @@ function App() {
           <Route path="/forum/post" element={<ProtectedRoute element={<ViewPost />} />} />
 
           {<Route path="/user-profile" element={<ProtectedRoute element={<UserProfilePage />} />} />}
-          {/*<Route path="/user-profile/edit" element={<ProtectedRoute element={<UserProfileEditPage />} />} />*/}
           <Route path="/forum/:id/edit" element={<ProtectedRoute element={<ForumEditPost />} />} />
 
           <Route path="/admin/dashboard" element={<ProtectedRoute element={<Dashboard />} />} />
