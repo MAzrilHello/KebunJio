@@ -1,5 +1,6 @@
 package iss.nus.edu.sg.sa4106.kebunjio
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,8 +8,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentLoggedInBinding
+import iss.nus.edu.sg.sa4106.kebunjio.features.browseguides.BrowseGuidesActivity
 import iss.nus.edu.sg.sa4106.kebunjio.features.logactivities.ChooseLogToViewFragment
 import iss.nus.edu.sg.sa4106.kebunjio.features.settings.SettingsFragment
+import iss.nus.edu.sg.sa4106.kebunjio.features.tracker.TrackerActivity
 import iss.nus.edu.sg.sa4106.kebunjio.features.viewplantdetails.ChoosePlantToViewFragment
 
 
@@ -33,9 +36,10 @@ class LoggedInFragment : Fragment() {
 
         bottomNavigationView.setOnNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.tracker_item -> setCurrentFragment(logToViewFragment)
+                R.id.tracker_item -> startTrackerActivity() // Launch TrackerActivity
+//                R.id.tracker_item -> setCurrentFragment(logToViewFragment)
                 R.id.my_plants_item -> setCurrentFragment(plantFragment)
-                R.id.guide_item -> null
+                R.id.guide_item -> startBrowseGuidesActivity()
                 R.id.settings_item -> setCurrentFragment(settingsFragment)
             }
             true
@@ -51,6 +55,21 @@ class LoggedInFragment : Fragment() {
             replace(R.id.flFragment, fragment)
             commit()
         }
+    }
+    private fun startTrackerActivity() {
+        val intent = Intent(requireContext(), TrackerActivity::class.java).apply {
+            putExtra("user_id", userId)
+            putExtra("session_id", sessionId)
+        }
+        startActivity(intent)
+    }
+
+    private fun startBrowseGuidesActivity() {
+        val intent = Intent(requireContext(), BrowseGuidesActivity::class.java).apply {
+            putExtra("user_id", userId)
+            putExtra("session_id", sessionId)
+        }
+        startActivity(intent)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

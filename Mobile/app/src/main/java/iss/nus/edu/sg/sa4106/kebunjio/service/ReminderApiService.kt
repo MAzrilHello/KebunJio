@@ -3,26 +3,28 @@ package iss.nus.edu.sg.sa4106.kebunjio.service
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 
-class ReminderApiService : Service() {
-    companion object {
-        private const val BASE_URL = "http://10.0.2.2:8080"
+object ReminderApiService {
+    private const val BASE_URL = "http://10.0.2.2:8080"
 
-        fun addReminder(reminderData: JSONObject): String? {
-            val fullUrl = "$BASE_URL/reminders/add"
-            return sendPostRequest(fullUrl, reminderData.toString())
-        }
+    suspend fun addReminder(reminderData: JSONObject): String? {
+        val fullUrl = "$BASE_URL/reminders/add"
+        return sendPostRequest(fullUrl, reminderData.toString())
+    }
 
-        fun getRemindersByUser(userId: String): String? {
-            val fullUrl = "$BASE_URL/reminders/user/$userId"
-            return sendGetRequest(fullUrl)
-        }
+    suspend fun getRemindersByUser(userId: String): String? {
+        val fullUrl = "$BASE_URL/reminders/user/$userId"
+        return sendGetRequest(fullUrl)
+    }
 
-        private fun sendPostRequest(urlString: String, jsonInput: String): String? {
-            return try {
+    private suspend fun sendPostRequest(urlString: String, jsonInput: String): String? {
+        return withContext(Dispatchers.IO) {
+            try {
                 val url = URL(urlString)
                 val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "POST"
@@ -47,9 +49,11 @@ class ReminderApiService : Service() {
                 null
             }
         }
+    }
 
-        private fun sendGetRequest(urlString: String): String? {
-            return try {
+    private suspend fun sendGetRequest(urlString: String): String? {
+        return withContext(Dispatchers.IO) {
+            try {
                 val url = URL(urlString)
                 val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
@@ -67,8 +71,5 @@ class ReminderApiService : Service() {
                 null
             }
         }
-    }
-    override fun onBind(intent: Intent): IBinder {
-        TODO("Return the communication channel to the service.")
     }
 }
