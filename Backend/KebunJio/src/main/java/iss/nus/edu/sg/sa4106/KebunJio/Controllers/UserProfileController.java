@@ -34,10 +34,10 @@ public class UserProfileController {
     		return new ResponseEntity<>(message,HttpStatus.NOT_FOUND);
     	}
     	
-    	List<Plant> history = plantHistoryService.getPlantsByUser(user);
+    	List<Plant> history = plantHistoryService.getPlantsByUserId(user.getId());
     	
     	long totalPlanted = history.size();
-    	long uniquePlantTypes = history.stream().map(Plant::getEdiblePlantSpecies).distinct().count();
+    	long uniquePlantTypes = history.stream().map(Plant::getEdiblePlantSpeciesId).distinct().count();
     	
     	UserprofileDAO userProfileInfo = new UserprofileDAO(user,history,totalPlanted,uniquePlantTypes);
     	

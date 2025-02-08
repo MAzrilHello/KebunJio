@@ -64,12 +64,12 @@
             android:exported="false" />
         <activity android:name=".LoggedInTestActivity" />
 
-        <service
+      <service
             android:name=".service.reminders.ReminderService"
             android:enabled="true"
             android:exported="true" />
 
-        <activity
+      <activity
             android:name=".features.addplant.AddPlantActivity"
             android:exported="false"
             android:noHistory="true" />
