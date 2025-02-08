@@ -79,9 +79,12 @@ jobs:
       - name: Grant execute permissions for gradlew
         run: chmod +x Mobile/gradlew
 
+      - name: Sync Gradle Dependencies
+        run: ./gradlew dependencies --refresh-dependencies
+
       - name: Generate APK for Mobile
         working-directory: Mobile
-        run: ./gradlew assembleDebug
+        run: ./gradlew clean assembleDebug --stacktrace --info
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
