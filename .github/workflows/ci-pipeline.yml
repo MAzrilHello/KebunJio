@@ -64,6 +64,9 @@ jobs:
         with:
           build-tools-version: '34.0.0'
           platform-version: '34'
+
+      - name: Clear Gradle Cache
+        run: rm -rf ~/.gradle/caches
   
       - name: Grant execute permissions for gradlew
         working-directory: Mobile
@@ -71,7 +74,8 @@ jobs:
   
       - name: Build APK
         working-directory: Mobile
-        run: ./gradlew assembleDebug
+        run: |
+          ./gradlew assembleDebug -x lint --warning-mode=none --stacktrace --info
   
       - name: Upload APK
         uses: actions/upload-artifact@v4
