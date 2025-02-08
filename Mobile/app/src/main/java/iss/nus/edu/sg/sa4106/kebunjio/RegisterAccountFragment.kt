@@ -69,47 +69,54 @@ class RegisterAccountFragment : Fragment() {
             val fullUrl = "http://10.0.2.2:8080/api/Users/signup"
             val url = URL(fullUrl)
             val connection = url.openConnection() as HttpURLConnection
-            connection.requestMethod = "POST"
-            connection.connectTimeout = 15000  // 15 seconds
-            connection.readTimeout = 15000    // 15 seconds
+            try {
 
-            connection.doInput = true
-            connection.doOutput = true
-            connection.useCaches = false
+                connection.requestMethod = "POST"
+                connection.connectTimeout = 15000  // 15 seconds
+                connection.readTimeout = 15000    // 15 seconds
 
-            connection.setRequestProperty("Content-Type", "application/json")
-            connection.setRequestProperty("Accept", "application/json")
+                connection.doInput = true
+                connection.doOutput = true
+                connection.useCaches = false
 
-            Log.d("RegisterAccountFragment","Registering json")
-            val registerJson = JSONObject().apply {
-                put("email",registerDAO.email)
-                put("username",registerDAO.username)
-                put("password",registerDAO.password)
-                put("confirmPassword",registerDAO.confirmPassword)
-                put("contactPhone",registerDAO.contactPhone)
-            }
+                connection.setRequestProperty("Content-Type", "application/json")
+                connection.setRequestProperty("Accept", "application/json")
 
-            Log.d("RegisterAccountFragment","Data output stream")
-            val outputStream = DataOutputStream(connection.outputStream)
-            Log.d("RegisterAccountFragment","Write json bytes")
-            outputStream.writeBytes(registerJson.toString())
-            Log.d("RegisterAccountFragment","Flush data")
-            outputStream.flush()
-            Log.d("RegisterAccountFragment","Close output stream")
-            outputStream.close()
-
-            val responseCode = connection.responseCode
-            connection.disconnect()
-            Log.d("RegisterAccountFragment","Response Code: ${responseCode}")
-            activity?.runOnUiThread {
-                if (responseCode in 200..299) {
-                    Log.d("RegisterAccountFragment","Success!")
-                    makeToast("Account successfully created",Toast.LENGTH_SHORT)
-                    binding.root.findNavController().navigate(R.id.action_registerFragment_to_loginOrRegisterFragment)
-                } else {
-                    Log.d("RegisterAccountFragment","Fail!")
-                    makeToast("Error in account creation: ${responseCode}",Toast.LENGTH_SHORT)
+                Log.d("RegisterAccountFragment","Registering json")
+                val registerJson = JSONObject().apply {
+                    put("email",registerDAO.email)
+                    put("username",registerDAO.username)
+                    put("password",registerDAO.password)
+                    put("confirmPassword",registerDAO.confirmPassword)
+                    put("contactPhone",registerDAO.contactPhone)
                 }
+
+                Log.d("RegisterAccountFragment","Data output stream")
+                val outputStream = DataOutputStream(connection.outputStream)
+                Log.d("RegisterAccountFragment","Write json bytes")
+                outputStream.writeBytes(registerJson.toString())
+                Log.d("RegisterAccountFragment","Flush data")
+                outputStream.flush()
+                Log.d("RegisterAccountFragment","Close output stream")
+                outputStream.close()
+
+                val responseCode = connection.responseCode
+                Log.d("RegisterAccountFragment","Response Code: ${responseCode}")
+                activity?.runOnUiThread {
+                    if (responseCode in 200..299) {
+                        Log.d("RegisterAccountFragment","Success!")
+                        makeToast("Account successfully created",Toast.LENGTH_SHORT)
+                        binding.root.findNavController().navigate(R.id.action_registerFragment_to_loginOrRegisterFragment)
+                    } else {
+                        Log.d("RegisterAccountFragment","Fail!")
+                        makeToast("Error in account creation: ${responseCode}",Toast.LENGTH_SHORT)
+                    }
+                }
+            } catch (e: Exception) {
+                makeToast("Error in account creation: ${e.toString()}")
+                Log.d("RegisterAccountFragment","Error in account creation: ${e.toString()}")
+            } finally {
+                connection.disconnect()
             }
 
 

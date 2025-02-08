@@ -1,15 +1,12 @@
 package iss.nus.edu.sg.sa4106.kebunjio.features.addplant
 
 import android.content.BroadcastReceiver
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.ServiceConnection
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.os.IBinder
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -17,16 +14,22 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import iss.nus.edu.sg.sa4106.kebunjio.R
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityAddPlantBinding
 import iss.nus.edu.sg.sa4106.kebunjio.data.Plant
 import iss.nus.edu.sg.sa4106.kebunjio.DummyData
+import iss.nus.edu.sg.sa4106.kebunjio.HandleNulls
 import iss.nus.edu.sg.sa4106.kebunjio.TimeClassHandler
+import iss.nus.edu.sg.sa4106.kebunjio.data.ActivityLog
+import iss.nus.edu.sg.sa4106.kebunjio.data.EdiblePlantSpecies
+import iss.nus.edu.sg.sa4106.kebunjio.service.PlantSpeciesLogService
 import iss.nus.edu.sg.sa4106.kebunjio.service.mlModel.MlModelService
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
@@ -40,6 +43,7 @@ class AddPlantActivity : AppCompatActivity() {
     // for the UI
     private var updatePlantId: String? = null
     private var updateUserId: String? = null
+    private var sessionCookie: String = ""
 
     private var _binding: ActivityAddPlantBinding? = null
     private val binding get() = _binding!!
@@ -68,49 +72,7 @@ class AddPlantActivity : AppCompatActivity() {
     lateinit var diseaseText: EditText
     lateinit var harvestedSpinner: Spinner
 
-    //private var dummyData: DummyData = DummyData()
-
-    private var harvestSpinnerOptions = mutableListOf("Harvested","Not Harvested")
-
-    // services
-    //variables for service, set bound to false
-    private var svc: MlModelService? = null
-    private var isBound: Boolean? = false
-
-
-
-    //set up service to connection
-    val conn = object : ServiceConnection {
-        override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
-            svc = (p1 as MlModelService.LocalBinder).getService()
-            isBound = true
-        }
-
-        override fun onServiceDisconnected(p0: ComponentName?) {
-            isBound = false
-            svc = null
-        }
-
-    }
-
-    //create BroadcastReceiver object
-    private val recv = object : BroadcastReceiver(){
-        override fun onReceive(context: Context, intent: Intent){
-
-            //get intent action
-            val action = intent.action
-
-
-            if(action.equals("Predict Species")){
-                // need to assign the species index to the dropdown
-                runOnUiThread {
-                }
-
-            } else if (action.equals("Species List")) {
-                // assign the species list as dropdown values
-            }
-        }
-    }
+    private var harvestSpinnerOptions = mutableListOf("Not Harvested","Harvested")
 
     // for choosing an image
     val galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
@@ -124,6 +86,30 @@ class AddPlantActivity : AppCompatActivity() {
         }
 
     }
+
+    // for communicating with spring boot api
+    protected var receiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action
+            val responseCode = intent.getIntExtra("responseCode",-2)
+            if (responseCode in 200..299) {
+
+            } else if (responseCode == -1) {
+                Log.d("AddPlantActivity","${action}: response error: ${intent.getStringExtra("exception")}")
+                makeToast("Error in adding/ updating: ${responseCode}")
+                return
+            } else {
+                Log.d("AddPlantActivity","${action}: response with no error: ${responseCode}")
+                makeToast("Error in adding/ updating: ${responseCode}")
+                return
+            }
+            if (action == "create_plant") {
+                makeToast("Successfully added/ updated the plant")
+                goBack(true)
+            }
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -177,7 +163,9 @@ class AddPlantActivity : AppCompatActivity() {
             addNewPlant()
         }
 
-        bindNeededService()
+        binding.backBtn.setOnClickListener{
+            goBack(false)
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -185,8 +173,11 @@ class AddPlantActivity : AppCompatActivity() {
             insets
         }
 
+        initReceiver()
+
         // get data from intent
         updateUserId = intent.getStringExtra("userId")
+        sessionCookie = HandleNulls.ifNullString(intent.getStringExtra("sessionCookie"))
         val speciesIdToNameDict = (intent.getSerializableExtra("speciesIdToNameDict") as HashMap<String, String>)!!
         setupSpeciesSpinner(speciesIdToNameDict)
         Log.d("AddPlantActivity","userId: ${updateUserId}")
@@ -214,6 +205,8 @@ class AddPlantActivity : AppCompatActivity() {
             speciesSpinnerIdxToId.add(key)
             spinnerOptions.add(speciesIdToNameDict[key]!!)
         }
+        speciesSpinnerIdxToId.add("")
+        spinnerOptions.add("Others")
         //for (i in 0..dummyData.SpeciesDummy.size-1) {
         //    speciesSpinnerIdxToId.add(dummyData.SpeciesDummy[i].id)
         //    spinnerOptions.add(dummyData.SpeciesDummy[i].name)
@@ -225,13 +218,6 @@ class AddPlantActivity : AppCompatActivity() {
 
         spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         speciesSpinner.adapter = spinAdapter
-    }
-
-
-    public fun bindNeededService() {
-        // bind service
-        val intent = Intent(this@AddPlantActivity, MlModelService::class.java)
-        bindService(intent, conn, Context.BIND_AUTO_CREATE)
     }
 
     public fun setData(plant: Plant) {
@@ -269,21 +255,18 @@ class AddPlantActivity : AppCompatActivity() {
         val harvestStartDate = harvestDateTimeText.text.toString()
         val plantHealth = plantHealthText.text.toString()
         val harvested = harvestedSpinner.selectedItem.toString() == "Harvested"
+        // check that all values are good
+        if (name.equals("") || plantedDate.equals("")) {
+
+        }
         val newPlant = Plant(plantId, ediblePlantSpeciesId, userId, name,disease,plantedDate,harvestStartDate,plantHealth,harvested)
         // TODO: add the new plant
-    }
-
-    //function for subscribe to broadcast
-    protected fun subscribeToActions(){
-        val filter = IntentFilter()
-        filter.addAction("Predict Species")
-        filter.addAction("Species List")
-        registerReceiver(recv, filter, RECEIVER_EXPORTED)
-    }
-
-    //function for unsubscribe to broadcast
-    protected fun unsubscribeToActions(){
-        unregisterReceiver(recv)
+        val intent = Intent(this, PlantSpeciesLogService::class.java)
+        intent.setAction("change_plant")
+        intent.putExtra("plant",newPlant)
+        intent.putExtra("isUpdate",false)
+        intent.putExtra("sessionCookie",sessionCookie)
+        this.startService(intent)
     }
 
 
@@ -319,11 +302,14 @@ class AddPlantActivity : AppCompatActivity() {
         val flaskUrl = "http://$use_as_ip:5000/predictSpecies"
         Log.d("predictImage","flaskUrl: $flaskUrl")
 
+        val url = URL(flaskUrl)
+        val connection = url.openConnection() as HttpURLConnection
+
         try {
-            val url = URL(flaskUrl)
-            val connection = url.openConnection() as HttpURLConnection
 
             connection.requestMethod = "POST"
+            connection.connectTimeout = 15000  // 15 seconds
+            connection.readTimeout = 15000    // 15 seconds
             connection.doInput = true
             connection.doOutput = true
             connection.useCaches = false
@@ -380,6 +366,32 @@ class AddPlantActivity : AppCompatActivity() {
             runOnUiThread {
                 predictSpeciesText.text = "Species: ERROR"
             }
+        } finally {
+            connection.disconnect()
         }
+    }
+
+    private fun makeToast(text: String,length: Int = Toast.LENGTH_LONG) {
+        val msg = Toast.makeText(
+            this,
+            text, length
+        )
+        msg.show()
+    }
+
+    private fun goBack(haveUpdate: Boolean) {
+        val response = Intent()
+        setResult(RESULT_OK, response)
+        response.putExtra("haveUpdate",haveUpdate)
+        finish()
+    }
+
+
+    protected fun initReceiver() {
+        val filter = IntentFilter()
+        filter.addAction("create_plant")
+        filter.addAction("update_plant")
+        ContextCompat.registerReceiver(this, receiver, filter, ContextCompat.RECEIVER_EXPORTED)
+        Log.d("AddPlantActivity","initReceiver completed")
     }
 }

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import iss.nus.edu.sg.sa4106.kebunjio.data.User
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentLoginBinding
+import iss.nus.edu.sg.sa4106.kebunjio.service.CookieHandling
 import org.json.JSONObject
 import java.io.DataOutputStream
 import java.net.HttpURLConnection
@@ -75,38 +76,50 @@ class LoginFragment : Fragment() {
             val fullUrl = "$partUrl?emailOrUsername=$encodedUsername&password=$encodedPassword"
             val url = URL(fullUrl)
             val connection = url.openConnection() as HttpURLConnection
-            connection.requestMethod = "POST"
-            connection.connectTimeout = 15000  // 15 seconds
-            connection.readTimeout = 15000    // 15 seconds
 
-            connection.doInput = true
-            connection.doOutput = true
-            connection.useCaches = false
+            try {
 
-            Log.d("LoginFragment","Data output stream")
-            val outputStream = DataOutputStream(connection.outputStream)
-            Log.d("LoginFragment","Flush data")
-            outputStream.flush()
-            Log.d("LoginFragment","Close output stream")
-            outputStream.close()
-            val responseCode = connection.responseCode
-            val responseMessage = connection.inputStream.bufferedReader().use { it.readText() }
-            connection.disconnect()
-            Log.d("LoginFragment","Response Code: ${responseCode}")
-            activity?.runOnUiThread {
-                if (responseCode in 200..299) {
-                    makeToast("Successfully logged in!",Toast.LENGTH_SHORT)
-                    val responseObject = JSONObject(responseMessage)
-                    val theUser = User.getFromResponseObject(responseObject)
-                    Log.d("LoginFragment","Navigating to LoggedInFragment")
-                    val action = LoginFragmentDirections.actionLoginFragmentToLoggedInFragment(theUser)
-                    binding.root.findNavController().navigate(action)
-                    //val action = LoginFragmentDirections.actionLoginFragmentToLoggedInFragment()
-                    //binding.root.findNavController().navigate(R.id.action_loginFragment_to_loggedInFragment)
-                } else {
-                    makeToast("Please input a valid username/ email and password!",Toast.LENGTH_SHORT)
+                connection.requestMethod = "POST"
+                connection.connectTimeout = 15000  // 15 seconds
+                connection.readTimeout = 15000    // 15 seconds
+
+                connection.doInput = true
+                connection.doOutput = true
+                connection.useCaches = false
+
+                Log.d("LoginFragment","Data output stream")
+                val outputStream = DataOutputStream(connection.outputStream)
+                Log.d("LoginFragment","Flush data")
+                outputStream.flush()
+                Log.d("LoginFragment","Close output stream")
+                outputStream.close()
+                val responseCode = connection.responseCode
+                val responseMessage = connection.inputStream.bufferedReader().use { it.readText() }
+                Log.d("LoginFragment","Response Code: ${responseCode}")
+                activity?.runOnUiThread {
+                    if (responseCode in 200..299) {
+                        makeToast("Successfully logged in!",Toast.LENGTH_SHORT)
+                        val responseObject = JSONObject(responseMessage)
+                        val theUser = User.getFromResponseObject(responseObject)
+                        val sessionCookie = CookieHandling.extractSessionCookie(connection)
+                        Log.d("LoginFragment","Cookie: ${sessionCookie}")
+                        Log.d("LoginFragment","Navigating to LoggedInFragment")
+                        val action = LoginFragmentDirections.actionLoginFragmentToLoggedInFragment(theUser,sessionCookie)
+                        binding.root.findNavController().navigate(action)
+                        //val action = LoginFragmentDirections.actionLoginFragmentToLoggedInFragment()
+                        //binding.root.findNavController().navigate(R.id.action_loginFragment_to_loggedInFragment)
+                    } else {
+                        makeToast("Please input a valid username/ email and password!",Toast.LENGTH_SHORT)
+                    }
                 }
+            } catch (e: Exception) {
+                makeToast("Error in login: ${e.toString()}")
+                Log.d("LoginFragment","Error in login: ${e.toString()}")
+            } finally {
+                connection.disconnect()
             }
+
+
         }.start()
     }
 
