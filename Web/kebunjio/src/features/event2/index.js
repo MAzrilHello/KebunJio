@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Card, Button, Input, Select, Dropdown, message, Pagination } from 'antd';
+import { Layout, Card, Button, Input, Select, Dropdown, message, Pagination, Spin } from 'antd';
 import { EllipsisOutlined, CloseCircleOutlined, CalendarOutlined, LeftOutlined, RightOutlined, EditOutlined, DeleteOutlined, ClockCircleOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import './style.css';
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +10,7 @@ const { Content } = Layout;
 
 const Events = () => {
   const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [totalElements, setTotalElements] = useState(0);
