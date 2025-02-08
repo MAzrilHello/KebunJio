@@ -46,47 +46,34 @@ jobs:
 
   # Mobile Build and APK Generation
   mobile:
-    name: Build and Generate APK for Mobile
+    name: Build APK for Mobile
     runs-on: ubuntu-latest
-
+  
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-
+  
       - name: Set up JDK 17 for Mobile
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-
+  
       - name: Set up Android SDK for Mobile
         uses: android-actions/setup-android@v3
         with:
           build-tools-version: '34.0.0'
           platform-version: '34'
-
-      - name: Clear Gradle Cache
-        run: rm -rf ~/.gradle/caches
-
-      - name: Cache Gradle Dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/settings.gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
+  
       - name: Grant execute permissions for gradlew
-        run: chmod +x Mobile/gradlew
-
-      - name: Sync Gradle Dependencies
-        run: ./gradlew dependencies --refresh-dependencies
-
-      - name: Generate APK for Mobile
         working-directory: Mobile
-        run: ./gradlew clean assembleDebug --stacktrace --info
-
-      - name: Upload APK artifact
+        run: chmod +x gradlew
+  
+      - name: Build APK
+        working-directory: Mobile
+        run: ./gradlew assembleDebug
+  
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
