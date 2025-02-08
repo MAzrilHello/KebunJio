@@ -19,7 +19,7 @@ import EventPage from './features/event/event-page';
 import React, { useEffect } from 'react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import ForumEditPost from './features/qna-forum/pages/forum-edit-post';
-import UserProfilePage from './features/user-profile2/UserProfilePage';
+import UserProfilePage from './features/user-profile/user-profile-page';
 //import UserProfileEditPage from './features/user-profile/user-profile-edit-page';
 
 import { AuthProvider } from './context/AuthContext';
