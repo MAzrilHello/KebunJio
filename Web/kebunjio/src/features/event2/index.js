@@ -12,6 +12,8 @@ const { Content } = Layout;
 
 const Events = () => {
   const [events, setEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
+  const [filterSearch, setFilterSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
@@ -43,6 +45,7 @@ const Events = () => {
       const eventsRes = await fetch("/dummy-data/event.json")
       const eventsData = await eventsRes.json()
       setEvents(eventsData)
+      setFilteredEvents(eventsData)
     }
     fetchData()
   }, [pageSize]);
@@ -119,6 +122,15 @@ const Events = () => {
     return moment(dateTime).format('MMM D, YYYY h:mm A');
   };
 
+  const onSearchChange = (event) =>{
+    setFilterSearch(event.target.value)
+  }
+
+  const onClickSearch = () =>{
+    const filteredEventFromSearch = events.filter(event => event.name.toLowerCase().includes(filterSearch.toLowerCase()))
+    setFilteredEvents(filteredEventFromSearch)
+  }
+
   return (
     <div>
       <Appbar/>
@@ -138,7 +150,7 @@ const Events = () => {
                 <div className="filter-item">
                   <div className="filter-label">Event Name</div>
                   <div className="input-wrapper">
-                    <Input placeholder="Event name" suffix={<CloseCircleOutlined />} />
+                    <Input placeholder="Event name" suffix={<CloseCircleOutlined />} value={filterSearch} onChange={onSearchChange}/>
                   </div>
                 </div>
                 <div className="filter-item">
@@ -149,6 +161,9 @@ const Events = () => {
                       suffix={<CalendarOutlined />}
                     />
                   </div>
+                </div>
+                <div className="filter-item">
+                  <Button style={{backgroundColor:"#002E14", color:"white", height:"60px"}} onClick={onClickSearch}>Search</Button>
                 </div>
                 <div className="filter-item">
                   <div className="filter-label">Result per page</div>
@@ -171,7 +186,7 @@ const Events = () => {
             </div>
 
             <div className="events-grid">
-              {events.map(event => (
+              {filteredEvents.map(event => (
                 <Card key={event.id} className="event-card">
                   <div className="event-image-container">
                     <img src={placeholderImage}></img>
