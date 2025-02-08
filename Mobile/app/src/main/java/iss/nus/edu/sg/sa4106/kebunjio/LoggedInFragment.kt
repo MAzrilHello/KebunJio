@@ -1,5 +1,6 @@
 package iss.nus.edu.sg.sa4106.kebunjio
 
+import android.content.Intent
 import android.app.Activity.RESULT_OK
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -23,8 +24,10 @@ import iss.nus.edu.sg.sa4106.kebunjio.data.EdiblePlantSpecies
 import iss.nus.edu.sg.sa4106.kebunjio.data.Plant
 import iss.nus.edu.sg.sa4106.kebunjio.data.User
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentLoggedInBinding
+import iss.nus.edu.sg.sa4106.kebunjio.features.browseguides.BrowseGuidesActivity
 import iss.nus.edu.sg.sa4106.kebunjio.features.logactivities.ChooseLogToViewFragment
 import iss.nus.edu.sg.sa4106.kebunjio.features.settings.SettingsFragment
+import iss.nus.edu.sg.sa4106.kebunjio.features.tracker.TrackerActivity
 import iss.nus.edu.sg.sa4106.kebunjio.features.viewplantdetails.ChoosePlantToViewFragment
 import iss.nus.edu.sg.sa4106.kebunjio.service.PlantSpeciesLogService
 
@@ -162,9 +165,10 @@ class LoggedInFragment : Fragment() {
         logToViewFragment.loadNewData(userId,plantIdToNameDict,usersActivityLogList)
         bottomNavigationView.setOnNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.tracker_item -> null//setCurrentFragment(logToViewFragment)
+                R.id.tracker_item -> startActivity(Intent(requireContext(), TrackerActivity::class.java))
+//                R.id.tracker_item -> setCurrentFragment(logToViewFragment)
                 R.id.my_plants_item -> setCurrentFragment(plantFragment)
-                R.id.guide_item -> null
+                R.id.guide_item -> startActivity(Intent(requireContext(), BrowseGuidesActivity::class.java))
                 R.id.settings_item -> setCurrentFragment(settingsFragment)
             }
             true
