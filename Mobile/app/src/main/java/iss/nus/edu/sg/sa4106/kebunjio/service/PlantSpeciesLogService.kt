@@ -88,7 +88,13 @@ class PlantSpeciesLogService : Service() {
             } finally {
                 forIntent?.putExtra("responseCode",responseCode)
                 forIntent?.putExtra("plant",returnPlant)
-                forIntent?.putExtra("sessionCookie",finalCookie)
+                if (finalCookie == "") {
+                    Log.d("PlantSpeciesLogService","${action} will not update the previous cookie")
+                    forIntent?.putExtra("sessionCookie",sessionCookie)
+                } else {
+                    forIntent?.putExtra("sessionCookie",finalCookie)
+                }
+
                 connection.disconnect()
             }
 
@@ -424,7 +430,6 @@ class PlantSpeciesLogService : Service() {
             }.start()
         } else if (intent.action.equals("get_plants")) {
             // get plant
-
             val idTry: String? = intent.getStringExtra("id")
             val id: String
             id = if (idTry == null) {""} else {idTry}

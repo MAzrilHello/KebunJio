@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.registerReceiver
 import iss.nus.edu.sg.sa4106.kebunjio.R
@@ -26,6 +27,8 @@ import java.io.File
 
 
 class PlantToChooseAdapter(private val context: Context,
+                           protected var haveUpdateLauncher: ActivityResultLauncher<Intent>,
+                           protected var sessionCookie: String,
                            protected var userId: String,
                            protected var usersPlantList: ArrayList<Plant>,
                            protected var speciesIdToNameDict: HashMap<String, String>,
@@ -76,6 +79,7 @@ class PlantToChooseAdapter(private val context: Context,
         val viewPlantBtn = binding.viewPlantBtn
         val editPlantBtn = binding.editPlantBtn
         val deletePlantBtn = binding.deletePlantBtn
+        var currentPlant = usersPlantList[position]
         Log.d("ChoosePlantAdapter","Position ${position}'s TextView: ${showPlantName}")
 
         showPlantName.text = usersPlantList[position].name
@@ -95,12 +99,13 @@ class PlantToChooseAdapter(private val context: Context,
         }
 
         editPlantBtn.setOnClickListener{
-            //val intent = Intent(getContext(), AddPlantActivity::class.java)
-            //intent.putExtra("userId",userId)
-            //intent.putExtra("speciesIdToNameDict",speciesIdToNameDict)
-            //intent.putExtra("update", true)
-            //intent.putExtra("plantId", usersPlantList[position].id)
-            //getContext().startActivity(intent)
+            val intent = Intent(getContext(), AddPlantActivity::class.java)
+            intent.putExtra("userId",userId)
+            intent.putExtra("speciesIdToNameDict",speciesIdToNameDict)
+            intent.putExtra("sessionCookie",sessionCookie)
+            intent.putExtra("currentPlant",currentPlant)
+            intent.putExtra("update", true)
+            haveUpdateLauncher.launch(intent)
         }
 
         //showSpeciesImg.setOnClickListener {

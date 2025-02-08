@@ -40,7 +40,8 @@ class ChoosePlantToViewFragment : Fragment() {
     private var plantListAdapter: PlantToChooseAdapter? = null
     lateinit var addFAB: FloatingActionButton
 
-    private lateinit var launcher: ActivityResultLauncher<Intent>
+    //private lateinit var launcher: ActivityResultLauncher<Intent>
+    private lateinit var haveUpdateLauncher: ActivityResultLauncher<Intent>
 
 
     override fun onCreateView(
@@ -52,14 +53,14 @@ class ChoosePlantToViewFragment : Fragment() {
     }
 
 
-    public fun loadNewData(sessionCookie: String,userId: String, speciesIdToNameDict: HashMap<String, String>, usersPlantList: ArrayList<Plant>, usersActivityLogList: ArrayList<ActivityLog>) {
-        this.sessionCookie = sessionCookie
-        this.userId = userId
-        this.speciesIdToNameDict = speciesIdToNameDict
-        this.usersPlantList = usersPlantList
-        this.usersActivityLogList =  usersActivityLogList
-        reloadPlantList()
-    }
+    //public fun loadNewData(sessionCookie: String,userId: String, speciesIdToNameDict: HashMap<String, String>, usersPlantList: ArrayList<Plant>, usersActivityLogList: ArrayList<ActivityLog>) {
+    //    this.sessionCookie = sessionCookie
+    //    this.userId = userId
+    //    this.speciesIdToNameDict = speciesIdToNameDict
+    //    this.usersPlantList = usersPlantList
+    //    this.usersActivityLogList =  usersActivityLogList
+    //    reloadPlantList()
+    //}
 
     public fun loadNewData(loggedInFragment: LoggedInFragment) {
         this.loggedInFragment = loggedInFragment
@@ -68,6 +69,7 @@ class ChoosePlantToViewFragment : Fragment() {
 
         this.usersPlantList = loggedInFragment.usersPlantList
         this.usersActivityLogList = loggedInFragment.usersActivityLogList
+        this.haveUpdateLauncher = loggedInFragment.haveUpdateLauncher
 
         this.speciesIdToNameDict.clear()
         for (i in 0..loggedInFragment.speciesList.size-1) {
@@ -92,7 +94,8 @@ class ChoosePlantToViewFragment : Fragment() {
             intent.putExtra("speciesIdToNameDict",speciesIdToNameDict)
             intent.putExtra("sessionCookie",sessionCookie)
             Log.d("ChoosePlantToViewActivity","putExtra userId: ${userId}")
-            launcher.launch(intent)
+            //launcher.launch(intent)
+            haveUpdateLauncher.launch(intent)
             //this.startActivity(intent)
         }
 
@@ -102,27 +105,27 @@ class ChoosePlantToViewFragment : Fragment() {
             plantToViewText.text = "Choose Plant to View"
         }
 
-        launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            result: ActivityResult ->
-                if (result.resultCode==RESULT_OK) {
-                    val haveUpdate = result.data?.getBooleanExtra("haveUpdate",false)
-                    if (haveUpdate==true) {
-                        //TODO("Trigger Logged In Fragment to update the plants")
-                        Log.d("ChoosePlantToViewFragment","Triggering re-download")
-                        loggedInFragment?.tryPullAllUserPlants()
-                    }
-                }
-        }
-        if (plantListAdapter == null) {
-            plantListAdapter = PlantToChooseAdapter(requireContext(),
-                                                    userId,
-                                                    usersPlantList,
-                                                    speciesIdToNameDict,
-                                                    usersActivityLogList)
-            plantList.adapter = plantListAdapter
-        }
-        reloadPlantList()
-        Log.d("ChoosePlantToViewFragment","onViewCreated has run")
+        //launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        //    result: ActivityResult ->
+        //        if (result.resultCode==RESULT_OK) {
+        //            val haveUpdate = result.data?.getBooleanExtra("haveUpdate",false)
+        //            if (haveUpdate==true) {
+        //                //TODO("Trigger Logged In Fragment to update the plants")
+        //                Log.d("ChoosePlantToViewFragment","Triggering re-download")
+        //                loggedInFragment?.tryPullAllUserPlants()
+        //            }
+        //        }
+        //}
+        plantListAdapter = PlantToChooseAdapter(requireContext(),
+            haveUpdateLauncher,
+            sessionCookie,
+            userId,
+            usersPlantList,
+            speciesIdToNameDict,
+            usersActivityLogList)
+        plantList.adapter = plantListAdapter
+        //reloadPlantList()
+        //Log.d("ChoosePlantToViewFragment","onViewCreated has run")
     }
 
     private fun reloadPlantList() {
@@ -133,7 +136,5 @@ class ChoosePlantToViewFragment : Fragment() {
         } else {
             Log.d("ChoosePlantToViewFragment","Adapter not initialised, skipping reload")
         }
-
-
     }
 }

@@ -93,7 +93,7 @@ class AddPlantActivity : AppCompatActivity() {
             val action = intent.action
             val responseCode = intent.getIntExtra("responseCode",-2)
             if (responseCode in 200..299) {
-
+                Log.d("AddPlantActivity","${action} successful: ${responseCode}")
             } else if (responseCode == -1) {
                 Log.d("AddPlantActivity","${action}: response error: ${intent.getStringExtra("exception")}")
                 makeToast("Error in adding/ updating: ${responseCode}")
@@ -104,7 +104,10 @@ class AddPlantActivity : AppCompatActivity() {
                 return
             }
             if (action == "create_plant") {
-                makeToast("Successfully added/ updated the plant")
+                makeToast("Successfully created the plant")
+                goBack(true)
+            } else if (action == "update_plant") {
+                makeToast("Successfully updated the plant")
                 goBack(true)
             }
         }
@@ -185,15 +188,8 @@ class AddPlantActivity : AppCompatActivity() {
             Log.d("AddPlantActivity","We are in update mode")
             binding.titlePart.text = "Update Plant"
             binding.addPlantBtn.text = "Update Plant"
-            //val plantId = intent.getStringExtra("plantId")
-            //Log.d("AddPlantActivity","plantId: ${plantId}")
-            //if (plantId != null) {
-            //    val chosenPlant = dummyData.getPlantById(plantId)
-            //    if (chosenPlant != null) {
-            //        setData(chosenPlant)
-            //    }
-            //}
-
+            val currentPlant = intent.getSerializableExtra("currentPlant") as Plant
+            setData(currentPlant)
         }
     }
 
@@ -207,11 +203,6 @@ class AddPlantActivity : AppCompatActivity() {
         }
         speciesSpinnerIdxToId.add("")
         spinnerOptions.add("Others")
-        //for (i in 0..dummyData.SpeciesDummy.size-1) {
-        //    speciesSpinnerIdxToId.add(dummyData.SpeciesDummy[i].id)
-        //    spinnerOptions.add(dummyData.SpeciesDummy[i].name)
-        //}
-        // set the spinner options
         val spinAdapter: ArrayAdapter<String> = ArrayAdapter<String>(this,
             android.R.layout.simple_spinner_item,
             spinnerOptions)
@@ -220,15 +211,28 @@ class AddPlantActivity : AppCompatActivity() {
         speciesSpinner.adapter = spinAdapter
     }
 
-    public fun setData(plant: Plant) {
+    private fun setData(plant: Plant) {
         updatePlantId = plant.id
         Log.d("AddPlantActivity","set ediblePlantSpeciesId: ${plant.ediblePlantSpeciesId}")
-        speciesSpinner.setSelection(speciesSpinnerIdxToId.indexOf(plant.ediblePlantSpeciesId))
+        val speciesIdx = speciesSpinnerIdxToId.indexOf(plant.ediblePlantSpeciesId)
+        Log.d("AddPlantActivity","speciesSpinnerIdxToId: ${speciesSpinnerIdxToId}")
+        Log.d("AddPlantActivity","Update species Id: ${plant.ediblePlantSpeciesId}")
+        Log.d("AddPlantActivity","Update species idx: ${speciesIdx}")
+        if (speciesIdx==-1) {
+            speciesSpinner.setSelection(speciesSpinnerIdxToId.size-1)
+        } else {
+            speciesSpinner.setSelection(speciesIdx)
+        }
         updateUserId = plant.userId
         nameEditText.setText(plant.name)
         diseaseText.setText(plant.disease)
         plantDateTimeText.text = plant.plantedDate
-        harvestDateTimeText.text = plant.harvestStartDate
+        if (plant.harvestStartDate == "null") {
+            harvestDateTimeText.text = ""
+        } else {
+            harvestDateTimeText.text = plant.harvestStartDate
+        }
+
         plantHealthText.setText(plant.plantHealth)
         if (plant.harvested) {
             harvestedSpinner.setSelection(harvestSpinnerOptions.indexOf("Harvested"))
@@ -244,7 +248,7 @@ class AddPlantActivity : AppCompatActivity() {
         if (updatePlantId != null) {
             plantId = updatePlantId!!
         }
-        val ediblePlantSpeciesId = harvestSpinnerOptions[speciesSpinner.selectedItemPosition] // must assign a proper id later
+        val ediblePlantSpeciesId = speciesSpinnerIdxToId[speciesSpinner.selectedItemPosition] // must assign a proper id later
         var userId = updateUserId // must assign a proper id later
         if (userId==null){
             userId = ""
@@ -257,14 +261,15 @@ class AddPlantActivity : AppCompatActivity() {
         val harvested = harvestedSpinner.selectedItem.toString() == "Harvested"
         // check that all values are good
         if (name.equals("") || plantedDate.equals("")) {
-
+            makeToast("Please ensure name and planted date are filled")
+            return
         }
         val newPlant = Plant(plantId, ediblePlantSpeciesId, userId, name,disease,plantedDate,harvestStartDate,plantHealth,harvested)
         // TODO: add the new plant
         val intent = Intent(this, PlantSpeciesLogService::class.java)
         intent.setAction("change_plant")
         intent.putExtra("plant",newPlant)
-        intent.putExtra("isUpdate",false)
+        intent.putExtra("isUpdate",plantId != "")
         intent.putExtra("sessionCookie",sessionCookie)
         this.startService(intent)
     }

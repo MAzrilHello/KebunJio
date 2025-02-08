@@ -1,5 +1,6 @@
 package iss.nus.edu.sg.sa4106.kebunjio
 
+import android.app.Activity.RESULT_OK
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -10,6 +11,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.registerReceiver
 import androidx.fragment.app.Fragment
@@ -44,12 +48,12 @@ class LoggedInFragment : Fragment() {
     private var userActivityLogReady: Boolean = false
     private lateinit var bottomNavigationView: BottomNavigationView
 
+    // this receiver is for downloading data only
     protected var receiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action
             val responseCode = intent.getIntExtra("responseCode",-2)
             if (responseCode in 200..299) {
-
             } else if (responseCode == -1) {
                 Log.d("LoggedInFragmentReceiver","${action}: response error: ${intent.getStringExtra("exception")}")
             } else {
@@ -79,7 +83,9 @@ class LoggedInFragment : Fragment() {
         }
     }
 
-    protected fun initReceiver() {
+    public lateinit var haveUpdateLauncher: ActivityResultLauncher<Intent>
+
+    private fun initReceiver() {
         val filter = IntentFilter()
         //filter.addAction("create_plant")
         //filter.addAction("update_plant")
@@ -100,6 +106,21 @@ class LoggedInFragment : Fragment() {
         registerReceiver(requireContext(), receiver, filter, ContextCompat.RECEIVER_EXPORTED)
     }
 
+    private fun initHaveUpdateLauncher() {
+        haveUpdateLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                result: ActivityResult ->
+            if (result.resultCode== RESULT_OK) {
+                val haveUpdate = result.data?.getBooleanExtra("haveUpdate",false)
+                if (haveUpdate==true) {
+                    // update the cookie
+                    sessionCookie = HandleNulls.ifNullString(result.data?.getStringExtra("sessionCookie"))
+                    Log.d("LoggedInFragment","Triggering re-download")
+                    tryPullAllUserPlants()
+                }
+            }
+        }
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -114,6 +135,7 @@ class LoggedInFragment : Fragment() {
         Log.d("LoggdInFragment","loggedUser: ${loggedUser!!.id}")
 
         initReceiver()
+        initHaveUpdateLauncher()
         tryPullAllSpecies()
         tryPullAllUserPlants()
         // do not need to pull all user activities, plants will pull immediately after
