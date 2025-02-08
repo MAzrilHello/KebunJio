@@ -1,106 +1,110 @@
 name: Build and Test
 
 on:
-  push:
-    branches:
-      - staging_v2  # Trigger the pipeline only when changes are pushed to staging_v2
-    paths:
-      - 'Backend/**'  # Trigger on changes in the 'Backend' folder
-      - 'Web/**'      # Trigger on changes in the 'Web' folder
-      - 'Mobile/**'   # Trigger on changes in the 'Mobile' folder
   pull_request:
     branches:
-      - staging_v2  # Trigger on PRs to staging_v2
+      - staging_v2
+    types:
+      - opened        
+      - synchronize   
+      - reopened     
     paths:
-      - 'Backend/**'  # Trigger on PRs that affect the 'Backend' folder
-      - 'Web/**'      # Trigger on PRs that affect the 'Web' folder
-      - 'Mobile/**'   # Trigger on PRs that affect the 'Mobile' folder
+      - 'Backend/**'
+      - 'Web/**'
+      - 'Mobile/**'
 
 jobs:
   # Backend Build
   backend:
-    name: Build and Run Backend
+    name: Build Backend
     runs-on: ubuntu-latest
-    if: github.event.pull_request.changed_files > 0 && contains(github.event.pull_request.files, 'Backend/')  # Only run if there are changes in the Backend folder
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-    - name: Set up JDK 17 for Backend
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+      - name: Set up JDK 17 for Backend
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-    - name: Build and Run Backend
-      run: |
-        cd Backend/KebunJio  # Ensure you're in the right directory where pom.xml is located
-        mvn clean install -DskipTests=true  # Build the backend
-        mvn spring-boot:run  # Run the backend to check if it starts without issues
+      - name: Clear Maven Cache
+        run: rm -rf ~/.m2/repository
 
-  # Mobile Build
+      - name: Cache Maven Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/*.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build Backend
+        working-directory: Backend/KebunJio
+        run: mvn clean install -DskipTests=true
+
+  # Mobile Build and APK Generation
   mobile:
-    name: Build and Generate APK for Mobile
+    name: Build APK for Mobile
     runs-on: ubuntu-latest
-    if: github.event.pull_request.changed_files > 0 && contains(github.event.pull_request.files, 'Mobile/')  # Only run if there are changes in the Mobile folder
-
+  
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v3
+  
+      - name: Set up JDK 17 for Mobile
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+  
+      - name: Set up Android SDK for Mobile
+        uses: android-actions/setup-android@v3
+        with:
+          build-tools-version: '34.0.0'
+          platform-version: '34'
+  
+      - name: Grant execute permissions for gradlew
+        working-directory: Mobile
+        run: chmod +x gradlew
+  
+      - name: Build APK
+        working-directory: Mobile
+        run: ./gradlew assembleDebug
+  
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-apk
+          path: Mobile/app/build/outputs/apk/debug/app-debug.apk
 
-    - name: Set up JDK 17 for Mobile
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-
-    - name: Set up Android SDK for Mobile
-      uses: android-actions/setup-android@v3
-      with:
-        build-tools-version: '34.0.0'
-        platform-version: '34'
-
-    - name: Grant execute permissions for gradlew
-      run: chmod +x Mobile/gradlew
-
-    - name: Generate APK for Mobile
-      working-directory: Mobile
-      run: ./gradlew assembleDebug  # This builds the app and generates the APK
-
-    - name: Upload APK artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: app-debug-apk
-        path: Mobile/app/build/outputs/apk/debug/app-debug.apk
-
-  # Frontend Build
+  # Frontend Build and Upload
   frontend:
     name: Build React Frontend
     runs-on: ubuntu-latest
-    if: github.event.pull_request.changed_files > 0 && contains(github.event.pull_request.files, 'Web/')  # Only run if there are changes in the Web folder
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-    - name: Set up Node.js for Frontend
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
-        cache-dependency-path: Web/kebunjio/package-lock.json  # Cache dependencies based on package-lock.json
+      - name: Set up Node.js for Frontend
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: Web/kebunjio/package-lock.json
 
-    - name: Install Frontend Dependencies
-      working-directory: Web/kebunjio
-      run: npm ci  # This ensures a clean install of the dependencies
+      - name: Install Frontend Dependencies
+        working-directory: Web/kebunjio
+        run: npm ci
 
-    - name: Build React Frontend
-      working-directory: Web/kebunjio
-      run: CI=false npm run build  # Skip CI checks for faster builds
+      - name: Build React Frontend
+        working-directory: Web/kebunjio
+        run: CI=false npm run build
 
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: build
-        path: Web/kebunjio/build  # Upload the production build folder
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: Web/kebunjio/build

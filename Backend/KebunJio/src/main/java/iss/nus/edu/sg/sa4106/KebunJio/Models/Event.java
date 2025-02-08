@@ -7,22 +7,20 @@ import java.time.ZoneId;
 import java.util.Objects;
 import java.util.Date;
 
-@Document(collection = "events")
+@Document(collection = "Event")
 public class Event {
 
 	@Id
 	private String id;
-	private int eventId; // when I try to remove it the maven app cannot run
+
 	private String name;
 	private String location;
 	private LocalDateTime startDateTime;
 	private LocalDateTime endDateTime;
 	private String description;
 	private String picture;
-
 	public Event() {}
-
-	public Event(String id, String eventId,String name, String location,
+	public Event(String id, String name, String location,
 				 LocalDateTime startDateTime, LocalDateTime endDateTime,
 				 String description, String picture) {
 		this.id = id;
@@ -35,11 +33,11 @@ public class Event {
 	}
 
 	public String getId() {
-		return id;
+		return this.id;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setId(String eventId) {
+		this.id = eventId;
 	}
 
 	public String getName() {
@@ -96,7 +94,6 @@ public class Event {
 				.setDescription(this.description)
 				.setLocation(this.location);
 
-		// Convert LocalDateTime to Date
 		Date startDate = Date.from(this.startDateTime.atZone(ZoneId.systemDefault()).toInstant());
 		Date endDate = Date.from(this.endDateTime.atZone(ZoneId.systemDefault()).toInstant());
 
@@ -117,8 +114,7 @@ public class Event {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Event event = (Event) o;
-		return 
-				Objects.equals(id, event.id) &&
+		return Objects.equals(id, event.id) &&
 				Objects.equals(name, event.name) &&
 				Objects.equals(location, event.location) &&
 				Objects.equals(startDateTime, event.startDateTime) &&

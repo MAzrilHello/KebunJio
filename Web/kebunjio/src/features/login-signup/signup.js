@@ -37,10 +37,10 @@ const SignUpPage = () => {
 
     return (
         <div className="signup-container">
-            <div className="signup-logo">
-                <img src="/logo.jpg" alt="Logo" />
-            </div>
             <div className="signup-form">
+                <div className="login-logo">
+                    <img src="./logo_appbar.png"/>
+                </div>
                 <h2>Sign up</h2>
                 <form onSubmit={handleSubmit}>
                     <input
