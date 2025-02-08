@@ -57,10 +57,9 @@ class LoggedInFragment : Fragment() {
         }
     }
     private fun startTrackerActivity() {
-        val intent = Intent(requireContext(), TrackerActivity::class.java).apply {
-            putExtra("user_id", userId)
-            putExtra("session_id", sessionId)
-        }
+        val intent = Intent(requireContext(), TrackerActivity::class.java)
+        intent.putExtra("userId", userId)
+        intent.putExtra("sessionId", sessionId)
         startActivity(intent)
     }
 
