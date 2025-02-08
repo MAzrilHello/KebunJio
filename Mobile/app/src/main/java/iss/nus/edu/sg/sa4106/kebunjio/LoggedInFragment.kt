@@ -36,10 +36,10 @@ class LoggedInFragment : Fragment() {
 
         bottomNavigationView.setOnNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.tracker_item -> startTrackerActivity() // Launch TrackerActivity
+                R.id.tracker_item -> startActivity(Intent(requireContext(), TrackerActivity::class.java))
 //                R.id.tracker_item -> setCurrentFragment(logToViewFragment)
                 R.id.my_plants_item -> setCurrentFragment(plantFragment)
-                R.id.guide_item -> startBrowseGuidesActivity()
+                R.id.guide_item -> startActivity(Intent(requireContext(), BrowseGuidesActivity::class.java))
                 R.id.settings_item -> setCurrentFragment(settingsFragment)
             }
             true
@@ -55,20 +55,6 @@ class LoggedInFragment : Fragment() {
             replace(R.id.flFragment, fragment)
             commit()
         }
-    }
-    private fun startTrackerActivity() {
-        val intent = Intent(requireContext(), TrackerActivity::class.java)
-        intent.putExtra("userId", userId)
-        intent.putExtra("sessionId", sessionId)
-        startActivity(intent)
-    }
-
-    private fun startBrowseGuidesActivity() {
-        val intent = Intent(requireContext(), BrowseGuidesActivity::class.java).apply {
-            putExtra("user_id", userId)
-            putExtra("session_id", sessionId)
-        }
-        startActivity(intent)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
