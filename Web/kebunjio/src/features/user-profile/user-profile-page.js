@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button'
 import Table  from "react-bootstrap/Table";
 import Appbar from '../../components/Appbar';
-import "./user-profile-new.css"
+import "./userProfileStyle.css"
 import Card from 'react-bootstrap/Card';
 
 const UserProfilePage = () => {
