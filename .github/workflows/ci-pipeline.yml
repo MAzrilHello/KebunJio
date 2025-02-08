@@ -29,6 +29,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Clear Maven Cache
+        run: rm -rf ~/.m2/repository
+
       - name: Cache Maven Dependencies
         uses: actions/cache@v3
         with:
@@ -39,8 +42,7 @@ jobs:
 
       - name: Build Backend
         working-directory: Backend/KebunJio
-        run: |
-          mvn clean install -DskipTests=true  # Build the backend
+        run: mvn clean install -DskipTests=true
 
   # Mobile Build and APK Generation
   mobile:
@@ -63,6 +65,9 @@ jobs:
           build-tools-version: '34.0.0'
           platform-version: '34'
 
+      - name: Clear Gradle Cache
+        run: rm -rf ~/.gradle/caches
+
       - name: Cache Gradle Dependencies
         uses: actions/cache@v3
         with:
@@ -74,9 +79,12 @@ jobs:
       - name: Grant execute permissions for gradlew
         run: chmod +x Mobile/gradlew
 
+      - name: Sync Gradle Dependencies
+        run: ./gradlew dependencies --refresh-dependencies
+
       - name: Generate APK for Mobile
         working-directory: Mobile
-        run: ./gradlew assembleDebug
+        run: ./gradlew clean assembleDebug --stacktrace --info
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
