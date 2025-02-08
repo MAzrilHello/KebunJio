@@ -10,18 +10,35 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import statisticsService from '../service/statisticsService';
 import './style.css';
+import Appbar from '../../components/Appbar';
 
 const Dashboard = () => {
-  console.log('Dashboard组件被加载');
+  //console.log('Dashboard组件被加载');
   const [statistics, setStatistics] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  
+  //Chingnam's code, do not delete
+  //const [loading, setLoading] = useState(true);
+  //const [error, setError] = useState(null);
+
 
   useEffect(() => {
+    /*Chingnam's code, do not delete
     console.log('Dashboard useEffect被触发');
     fetchStatistics();
+    */
+
+    //Kelly's code with dummy data, comment the code below after integrate with backend
+    async function fetchData() {
+      const statisticsRes = await fetch("/dummy-data/plantStatistics.json");
+      const statisticsData = await statisticsRes.json()
+      setStatistics(statisticsData)
+    }
+
+    fetchData()
+
   }, []);
 
+  /*Chingnam's code, do not delete
   const fetchStatistics = async () => {
     console.log('开始获取统计数据...');
     try {
@@ -58,19 +75,21 @@ const Dashboard = () => {
       setLoading(false);
       console.log('数据获取流程结束');
     }
-  };
+  };*/
 
+  /*Chingnam's code, do not delete
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
         <Spin size="large" />
       </div>
     );
-  }
+  }*/
 
+  /*Chingnam's code, do not delete
   if (error) {
     return <Alert message={error} type="error" style={{ margin: '24px' }} />;
-  }
+  }*/
 
   const plantTypeOption = {
     title: {
@@ -137,55 +156,58 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="dashboard">
-      <h1>Dashboard</h1>
-      
-      <Row gutter={[16, 16]}>
-        <Col span={6}>
-          <Card className="stat-card">
-            <FontAwesomeIcon icon={faUser} className="stat-icon" />
-            <h2>Total User</h2>
-            <div className="stat-number">{statistics?.totalUsers || 0}</div>
-          </Card>
-        </Col>
-        
-        <Col span={6}>
-          <Card className="stat-card">
-            <FontAwesomeIcon icon={faSeedling} className="stat-icon" />
-            <h2>Total Plants Planted</h2>
-            <div className="stat-number">{statistics?.totalPlantsPlanted || 0}</div>
-          </Card>
-        </Col>
-        
-        <Col span={6}>
-          <Card className="stat-card">
-            <FontAwesomeIcon icon={faChartLine} className="stat-icon" />
-            <h2>Total Plants Harvested</h2>
-            <div className="stat-number">{statistics?.totalPlantsHarvested || 0}</div>
-          </Card>
-        </Col>
-        
-        <Col span={6}>
-          <Card className="stat-card">
-            <FontAwesomeIcon icon={faVirusCovid} className="stat-icon" />
-            <h2>Total Reported Disease</h2>
-            <div className="stat-number">{statistics?.totalDiseasesReported || 0}</div>
-          </Card>
-        </Col>
-      </Row>
+    <div>
+      <Appbar/>
+      <div className="dashboard">
+            <h1 style={{fontSize:"1.5rem"}}>Dashboard</h1>
+            
+            <Row gutter={[16, 16]} style={{marginTop:"16px"}}>
+              <Col span={6}>
+                <Card className="stat-card">
+                  <FontAwesomeIcon icon={faUser} className="stat-icon" />
+                  <h2 style={{fontSize:"1.1rem"}}>Total User</h2>
+                  <div className="stat-number">{statistics?.totalUsers || 0}</div>
+                </Card>
+              </Col>
+              
+              <Col span={6}>
+                <Card className="stat-card">
+                  <FontAwesomeIcon icon={faSeedling} className="stat-icon" />
+                  <h2 style={{fontSize:"1.1rem"}}>Total Plants Planted</h2>
+                  <div className="stat-number">{statistics?.totalPlantsPlanted || 0}</div>
+                </Card>
+              </Col>
+              
+              <Col span={6}>
+                <Card className="stat-card">
+                  <FontAwesomeIcon icon={faChartLine} className="stat-icon" />
+                  <h2 style={{fontSize:"1.1rem"}}>Total Plants Harvested</h2>
+                  <div className="stat-number">{statistics?.totalPlantsHarvested || 0}</div>
+                </Card>
+              </Col>
+              
+              <Col span={6}>
+                <Card className="stat-card">
+                  <FontAwesomeIcon icon={faVirusCovid} className="stat-icon" />
+                  <h2 style={{fontSize:"1.1rem"}}>Total Reported Disease</h2>
+                  <div className="stat-number">{statistics?.totalDiseasesReported || 0}</div>
+                </Card>
+              </Col>
+            </Row>
 
-      <Row gutter={[16, 16]} style={{ marginTop: '20px' }}>
-        <Col span={12}>
-          <Card>
-            <ReactECharts option={plantTypeOption} />
-          </Card>
-        </Col>
-        <Col span={12}>
-          <Card>
-            <ReactECharts option={diseaseOption} />
-          </Card>
-        </Col>
-      </Row>
+            <Row gutter={[16, 16]} style={{ marginTop: '20px' }}>
+              <Col span={12}>
+                <Card>
+                  <ReactECharts option={plantTypeOption} />
+                </Card>
+              </Col>
+              <Col span={12}>
+                <Card>
+                  <ReactECharts option={diseaseOption} />
+                </Card>
+              </Col>
+            </Row>
+          </div>
     </div>
   );
 };

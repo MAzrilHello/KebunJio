@@ -3,9 +3,10 @@ import { Layout, Input, Button, TimePicker, DatePicker, message } from 'antd';
 import { CalendarOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import moment from 'moment';
-import eventService from '../../service/eventService';
+import eventService from '../service/eventService';
 import './EditEvent.css';
 import axios from 'axios';
+import Appbar from '../../components/Appbar';
 
 const { Content } = Layout;
 
@@ -80,7 +81,9 @@ const EditEvent = () => {
   };
 
   return (
-    <Content className="edit-event-page">
+    <div>
+      <Appbar/>
+      <Content className="edit-event-page">
       <h1>{isNewEvent ? 'New Event' : 'Edit Event'}</h1>
       
       <div className="edit-form">
@@ -124,7 +127,7 @@ const EditEvent = () => {
 
         <div className="form-group">
           <Input.TextArea 
-            placeholder="Type your question"
+            placeholder="Type your event description"
             rows={6}
             value={eventData.description}
             onChange={e => setEventData(prev => ({ ...prev, description: e.target.value }))}
@@ -167,6 +170,8 @@ const EditEvent = () => {
         </div>
       </div>
     </Content>
+    </div>
+    
   );
 };
 

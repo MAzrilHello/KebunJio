@@ -66,26 +66,29 @@ const LoginPage = () => {
 
     return (
         <div className="login-container">
-            <div className="login-logo">
-                <img src="/logo.jpg" alt="Logo" />
-            </div>
             <div className="login-form">
+                <div className="login-logo">
+                    <img src="./logo_appbar.png"/>
+                </div>
                 <h2>Log in</h2>
                 <form onSubmit={handleSubmit}>
                     <input
-                        type="text"
-                        placeholder="Enter email or user name"
-                        value={emailOrUsername}
-                        onChange={(e) => setEmailOrUsername(e.target.value)}
-                        required
-                    />
+                            id="username"
+                            type="text"
+                            placeholder="Enter email or user name"
+                            value={emailOrUsername}
+                            onChange={(e) => setEmailOrUsername(e.target.value)}
+                            required
+                        />
                     <input
+                        id="password"
                         type="password"
                         placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
-                    />
+                        />
+
                     <button type="submit" className="login-btn">Log in</button>
                 </form>
                 {error && <p className="error-message">{error}</p>}
