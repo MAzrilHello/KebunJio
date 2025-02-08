@@ -55,14 +55,6 @@
         <activity
             android:name=".features.viewplantdetails.ViewPlantDetailsActivity"
             android:exported="false" />
-        <activity
-            android:name=".features.viewplantdetails.ChoosePlantToViewActivity"
-            android:exported="false" />
-        <activity
-            android:name=".features.browseguides.BrowseGuidesActivity"
-            android:exported="false" />
-        <activity android:name=".LoggedInTestActivity"
-            />
 
         <service
             android:name=".service.reminders.ReminderService"
