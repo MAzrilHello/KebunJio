@@ -19,6 +19,8 @@ const UserProfilePage = () => {
 
     const [plants,setPlants] = useState([])
 
+    const [avatar, setAvatar] = useState(authUser.Avatar || process.env.PUBLIC_URL + "/logo.jpg");
+
     const userInfo = {
         totalPlant:authUser.totalPlant,
         totalHarvested:authUser.totalHarvested,
@@ -45,6 +47,18 @@ const UserProfilePage = () => {
                 setPhoneNumber(value);
             }
     };
+
+    const handleAvatarChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                setAvatar(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
 
     /*
     const [userProfile, setUserProfile] = useState(null);
@@ -87,9 +101,28 @@ const UserProfilePage = () => {
                 </div>
                 <div className="user-profile-container">
                     <Card className="user-profile-card">
+                        <div className="avatar-container">
+                            <label htmlFor="avatar-upload">
+                                <img
+                                    src={avatar}
+                                    alt="User Avatar"
+                                    className="user-avatar"
+                                />
+                            </label>
+                            {isEdit && (
+                                <input
+                                    type="file"
+                                    id="avatar-upload"
+                                    accept="image/*"
+                                    onChange={handleAvatarChange}
+                                    style={{display: "none"}}
+                                />
+                            )}
+                        </div>
+
                         <div>
-                            {isEdit?(
-                                <div>                          
+                            {isEdit ? (
+                                <div>
                                     <label htmlFor='username'>Username:</label>
                                     <input
                                         type="text"
@@ -99,13 +132,13 @@ const UserProfilePage = () => {
                                         onChange={handleInputChange}
                                     />
                                 </div>
-                            ):(
+                            ) : (
                                 <p>Username: {username}</p>
                             )}
                         </div>
                         <div>
-                            {isEdit?(
-                                <div>                          
+                            {isEdit ? (
+                                <div>
                                     <label htmlFor='email'>Email:</label>
                                     <input
                                         type="email"
@@ -116,14 +149,14 @@ const UserProfilePage = () => {
 
                                     />
                                 </div>
-                            ):(
+                            ) : (
                                 <p>Email: {email}</p>
                             )}
                         </div>
                         <div>
-                            {isEdit?(
-                                <div>                          
-                                        <div>                          
+                            {isEdit ? (
+                                <div>
+                                    <div>
                                         <label htmlFor='phone'>Phone:</label>
                                         <input
                                             type="tel"
@@ -135,11 +168,11 @@ const UserProfilePage = () => {
                                         />
                                     </div>
                                 </div>
-                            ):(
+                            ) : (
                                 <p>Phone: {phone}</p>
                             )}
                         </div>
-                        <Button onClick={onEdit} style={{backgroundColor:"white",color:"#002E14"}}>Edit</Button>
+                        <Button onClick={onEdit} style={{backgroundColor: "white", color: "#002E14"}}>Edit</Button>
                     </Card>
                 </div>
             </div>

@@ -30,7 +30,7 @@ public class UserProfileController {
     public ResponseEntity showProfilePage(HttpSession sessionObj) {
     	User user = (User) sessionObj.getAttribute("loggedInUser");
     	if(user == null) {
-    		String message =  "Can not foun User";
+    		String message =  "Can not found User";
     		return new ResponseEntity<>(message,HttpStatus.NOT_FOUND);
     	}
     	
