@@ -52,16 +52,6 @@ class ChoosePlantToViewFragment : Fragment() {
         return binding.root
     }
 
-
-    //public fun loadNewData(sessionCookie: String,userId: String, speciesIdToNameDict: HashMap<String, String>, usersPlantList: ArrayList<Plant>, usersActivityLogList: ArrayList<ActivityLog>) {
-    //    this.sessionCookie = sessionCookie
-    //    this.userId = userId
-    //    this.speciesIdToNameDict = speciesIdToNameDict
-    //    this.usersPlantList = usersPlantList
-    //    this.usersActivityLogList =  usersActivityLogList
-    //    reloadPlantList()
-    //}
-
     public fun loadNewData(loggedInFragment: LoggedInFragment) {
         this.loggedInFragment = loggedInFragment
         this.sessionCookie = loggedInFragment.sessionCookie
@@ -75,6 +65,7 @@ class ChoosePlantToViewFragment : Fragment() {
         for (i in 0..loggedInFragment.speciesList.size-1) {
             this.speciesIdToNameDict[loggedInFragment.speciesList[i].id] = loggedInFragment.speciesList[i].name
         }
+        Log.d("ChoosePlantToViewFragment","speciesIdToNameDict size: ${speciesIdToNameDict.size}")
         reloadPlantList()
     }
 
@@ -92,6 +83,7 @@ class ChoosePlantToViewFragment : Fragment() {
             val intent = Intent(requireContext(),AddPlantActivity::class.java)
             intent.putExtra("userId",userId)
             intent.putExtra("speciesIdToNameDict",speciesIdToNameDict)
+            Log.d("ChoosePlantToViewFragment","speciesIdToNameDict size: ${speciesIdToNameDict.size}")
             intent.putExtra("sessionCookie",sessionCookie)
             Log.d("ChoosePlantToViewActivity","putExtra userId: ${userId}")
             //launcher.launch(intent)
@@ -116,7 +108,10 @@ class ChoosePlantToViewFragment : Fragment() {
         //            }
         //        }
         //}
-        plantListAdapter = PlantToChooseAdapter(requireContext(),
+        Log.d("ChoosePlantToViewFragment","speciesIdToNameDict size: ${speciesIdToNameDict.size}")
+        plantListAdapter = PlantToChooseAdapter(
+            requireContext(),
+            loggedInFragment!!,
             haveUpdateLauncher,
             sessionCookie,
             userId,

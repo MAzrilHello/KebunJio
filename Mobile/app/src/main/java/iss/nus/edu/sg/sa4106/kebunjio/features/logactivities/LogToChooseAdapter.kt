@@ -14,8 +14,10 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.registerReceiver
+import iss.nus.edu.sg.sa4106.kebunjio.LoggedInFragment
 import iss.nus.edu.sg.sa4106.kebunjio.R
 import iss.nus.edu.sg.sa4106.kebunjio.data.ActivityLog
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ViewActLogToChooseBinding
@@ -26,24 +28,39 @@ import java.io.File
 
 
 class LogToChooseAdapter(private val context: Context,
-                         protected var userActLogList: MutableList<ActivityLog>,
-                         protected var plantIdToName: MutableMap<String, String>
+                         protected var loggedInFragment: LoggedInFragment,
+                         protected var haveUpdateLauncher: ActivityResultLauncher<Intent>,
+                         protected var sessionCookie: String,
+                         protected var userId: String,
+                         protected var userActLogList: ArrayList<ActivityLog>,
+                         protected var plantIdToNameDict: HashMap<String, String>
         ): ArrayAdapter<Any?>(context, R.layout.view_plant_to_choose) {
-
-    //private var _binding: ViewPlantToChooseBinding? = null
-    //private val binding get() = _binding!!
-
-    //lateinit var showSpeciesImg: ImageButton
-    //private var showSpeciesImgArray: MutableList<ImageButton> = mutableListOf<ImageButton>()
-    //lateinit var showPlantName: TextView
-    //lateinit var viewPlantBtn: Button
-    //lateinit var deletePlantBtn: Button
-    //lateinit var storedLogId:  MutableList<Int>
 
 
     init {
         addAll(*arrayOfNulls<Any>(userActLogList.size))
     }
+
+    public fun resetData(userId: String,
+                         userActLogList: ArrayList<ActivityLog>,
+                         plantIdToNameDict: HashMap<String, String>){
+        Log.d("ChooseLogToViewFragment","Reset data begins ${userId}, ${userActLogList.size}, ${plantIdToNameDict.size}")
+        this.userId = userId
+        this.userActLogList.clear()
+        this.userActLogList.addAll(userActLogList)
+        // this weird method is used here for reasons
+        val plantIdToNameDictCopy = HashMap<String,String>(plantIdToNameDict)
+        this.plantIdToNameDict.clear()
+        for (key in plantIdToNameDictCopy.keys) {
+            this.plantIdToNameDict[key] = plantIdToNameDictCopy[key]!!
+        }
+        //this.plantIdToNameDict.putAll(plantIdToNameDict)
+
+        //Log.d("LogToChooseAdapter","plantIdToNameDict new size: ${this.plantIdToNameDict.size}")
+        Log.d("LogToChooseAdapter","notifyDataSetChanged size ${this.userActLogList.size}")
+        notifyDataSetChanged()
+    }
+
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
         var _view = view
         val binding: ViewActLogToChooseBinding
@@ -58,16 +75,19 @@ class LogToChooseAdapter(private val context: Context,
         } else {
             binding = ViewActLogToChooseBinding.bind(_view)
         }
+
+        // hide view if it's data does not exist
+        if (position >= userActLogList.size) {
+            _view.visibility = View.GONE
+            return _view
+        }
+
         val positionId = userActLogList[position].id
-        Log.d("LogToChooseAdapter","do for positionId: ${positionId}")
+        val currentActivityLog = userActLogList[position]
         val userId = userActLogList[position].userId
         val activityType = userActLogList[position].activityType
         val timestamp = userActLogList[position].timestamp
         val plantId = userActLogList[position].plantId
-        //showSpeciesImg = _view!!.findViewById<ImageButton>(R.id.show_species_choose_img)
-        //Log.d("ChoosePlantAdapter","Position ${position}'s ImageButton: ${showSpeciesImg}")
-        //showSpeciesImgArray.add(showSpeciesImg)
-        //Log.d("ChoosePlantAdapter","ImgArray Size: ${showSpeciesImgArray.size}")
         val whichPlantText = binding.whichPlantText
         val activityTypeText = binding.activityTypeText
         val lastTimeText = binding.lastTimeText
@@ -76,20 +96,14 @@ class LogToChooseAdapter(private val context: Context,
         val deleteLogBtn = binding.deleteLogBtn
 
         if (plantId != null) {
-            whichPlantText.text = plantIdToName[plantId]
+            whichPlantText.text = plantIdToNameDict[plantId]
         } else {
             whichPlantText.text = ""
         }
         activityTypeText.text = activityType
         lastTimeText.text = timestamp
 
-        // setup to receive broadcast from MyDownloadService
-        //initReceiver()
 
-        //if (imgUrls.size > position) {
-        //    val url = imgUrls[position]
-        //    requestImageDL(url,position)
-        //}
 
         viewLogBtn.setOnClickListener{
             //val intent = Intent(getContext(), ViewPlantDetailsActivity::class.java)
@@ -100,13 +114,12 @@ class LogToChooseAdapter(private val context: Context,
         editLogBtn.setOnClickListener{
             val thisId = positionId
             val intent = Intent(getContext(), LogActivitiesActivity::class.java)
-            intent.putExtra("update", true)
-            Log.d("LogToChooseAdapter","putExtra update: true")
-            intent.putExtra("logId", thisId)
-            Log.d("LogToChooseAdapter","putExtra logId: ${thisId}")
             intent.putExtra("userId",userId)
-            Log.d("LogToChooseAdapter","putExtra userId: ${userId}")
-            getContext().startActivity(intent)
+            intent.putExtra("plantIdToNameDict",plantIdToNameDict)
+            intent.putExtra("sessionCookie",sessionCookie)
+            intent.putExtra("currentActivityLog",currentActivityLog)
+            intent.putExtra("update", true)
+            haveUpdateLauncher.launch(intent)
         }
 
         //showSpeciesImg.setOnClickListener {

@@ -38,9 +38,9 @@ class LoginFragment : Fragment() {
         navigateToLoggedInFragment()
 
         binding.loginBtn.setOnClickListener{
-            navigateToLoggedInFragment()
+            //navigateToLoggedInFragment()
 
-//            attemptLogin()
+            attemptLogin()
             // for now should just switch to Logged In Fragment
             // set username to 'username'
         }

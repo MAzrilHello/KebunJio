@@ -8,7 +8,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import iss.nus.edu.sg.sa4106.kebunjio.DummyData
 import iss.nus.edu.sg.sa4106.kebunjio.R
-import iss.nus.edu.sg.sa4106.kebunjio.adapter.GuideAdapter
+//import iss.nus.edu.sg.sa4106.kebunjio.adapter.GuideAdapter
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityBrowseGuidesBinding
 
 
@@ -16,7 +16,7 @@ import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityBrowseGuidesBinding
 class BrowseGuidesActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityBrowseGuidesBinding
-    private lateinit var guideAdapter: GuideAdapter
+    //private lateinit var guideAdapter: GuideAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,8 +34,8 @@ class BrowseGuidesActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         val dummyData = DummyData()
         val speciesList = dummyData.SpeciesDummy
-        guideAdapter = GuideAdapter(speciesList)
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        binding.recyclerView.adapter = guideAdapter
+        //guideAdapter = GuideAdapter(speciesList)
+        //binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        //binding.recyclerView.adapter = guideAdapter
     }
 }
