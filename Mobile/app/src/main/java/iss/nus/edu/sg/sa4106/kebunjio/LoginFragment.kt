@@ -113,8 +113,10 @@ class LoginFragment : Fragment() {
                     }
                 }
             } catch (e: Exception) {
-                makeToast("Error in login: ${e.toString()}")
-                Log.d("LoginFragment","Error in login: ${e.toString()}")
+                activity?.runOnUiThread {
+                    makeToast("Error in login: ${e.toString()}")
+                    Log.d("LoginFragment","Error in login: ${e.toString()}")
+                }
             } finally {
                 connection.disconnect()
             }
