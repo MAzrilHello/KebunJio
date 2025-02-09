@@ -86,16 +86,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="gone"
         android:text="Select an Image" />
 
     <ImageView
         android:id="@+id/show_chosen_img"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:scaleType="centerCrop" />
+    <Button
+        android:id="@+id/predict_species_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_gravity="center" />
-
+        android:layout_gravity="center"
+        android:text="Guess Species" />
+    <TextView
+        android:id="@+id/predict_species_text"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="Species: ___"
+        />
     <Button
         android:id="@+id/add_plant_btn"
         android:layout_width="wrap_content"

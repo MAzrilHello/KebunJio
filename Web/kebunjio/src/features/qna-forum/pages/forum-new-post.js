@@ -44,7 +44,7 @@ function ForumNewPost() {
             <MenuSidebar/>
         </div>
         <div className="main-content">
-          <p>New post</p>
+          <p className="page-header">New post</p>
           <Form onSubmit={handleSubmit}>
             <Form.Group controlId="category">
               <Form.Label>Select category</Form.Label>
@@ -53,6 +53,8 @@ function ForumNewPost() {
                 value={formData.category}
                 onChange={handleInputChange}
                 required
+                className="text-area"
+
               >
                 <option value="">Select category</option>
                 <option value="herb">Herb</option>
@@ -74,6 +76,7 @@ function ForumNewPost() {
                 value={formData.title}
                 onChange={handleInputChange}
                 required
+                className="text-area"
               />
             </Form.Group>
 
@@ -86,6 +89,7 @@ function ForumNewPost() {
                 value={formData.question}
                 onChange={handleInputChange}
                 required
+                className="text-area"
               />
 
             </Form.Group>
@@ -96,14 +100,15 @@ function ForumNewPost() {
                 type="file"
                 name="image"
                 onChange={handleFileChange}
+                className="text-area"
               />
             </Form.Group>
 
-            <div>
+            <div style={{marginTop:"32px"}}>
               <Button variant="secondary" type="reset" onClick={resetPost}>
                 Cancel
               </Button>
-              <Button variant="primary" type="submit">
+              <Button style={{marginLeft:"8px"}} variant="primary" type="submit">
                 Post
               </Button>
             </div>

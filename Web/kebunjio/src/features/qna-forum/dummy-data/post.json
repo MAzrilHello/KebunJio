@@ -1,0 +1,123 @@
+[
+    {
+      "id": 1,
+      "username": "Kelly",
+      "time": "Mon Jan 27 2025",
+      "title": "What is wrong with my cabbage",
+      "tag": "herb",
+      "content": "Can anyone tell me what's wrong with my cabbage?",
+      "upvote": 50,
+      "comment": 12,
+      "hasLiked": true,
+      "hasImage": true
+    },
+    {
+      "id": 2,
+      "username": "Jane",
+      "time": "Tue Jan 28 2025",
+      "title": "What is wrong with my tomato",
+      "content": "Can anyone tell me what's wrong with my tomato?",
+      "tag": "others",
+      "upvote": 40,
+      "comment": 13,
+      "hasLiked": false,
+      "hasImage": false
+    },
+    {
+      "id": 3,
+      "username": "Seth",
+      "time": "Wed Jan 29 2025",
+      "title": "What is wrong with my spinach",
+      "content": "Can anyone tell me what's wrong with my spinach?",
+      "tag": "herb",
+      "upvote": 30,
+      "comment": 14,
+      "hasLiked": true,
+      "hasImage": true
+    },
+    {
+      "id": 4,
+      "username": "Kelly",
+      "time": "Thu Jan 30 2025",
+      "title": "Help with my lettuce",
+      "content": "My lettuce is turning brown. What should I do?",
+      "tag": "herb",
+      "upvote": 20,
+      "comment": 5,
+      "hasLiked": false,
+      "hasImage": false
+    },
+    {
+      "id": 5,
+      "username": "Kelly",
+      "time": "Fri Jan 31 2025",
+      "title": "Cucumber disease?",
+      "content": "My cucumber leaves have yellow spots. Any advice?",
+      "tag": "herb",
+      "upvote": 35,
+      "comment": 8,
+      "hasLiked": true,
+      "hasImage": true
+    },
+    {
+      "id": 6,
+      "username": "Taylor",
+      "time": "Sat Feb 1 2025",
+      "title": "My bell peppers won't grow",
+      "content": "My bell pepper plants are not producing fruit. Help!",
+      "tag": "others",
+      "upvote": 42,
+      "comment": 10,
+      "hasLiked": false,
+      "hasImage": false
+    },
+    {
+      "id": 7,
+      "username": "Morgan",
+      "time": "Sun Feb 2 2025",
+      "title": "Mold on my strawberries",
+      "content": "Why are my strawberries getting moldy so quickly?",
+      "tag": "others",
+      "upvote": 28,
+      "comment": 7,
+      "hasLiked": true,
+      "hasImage": true
+    },
+    {
+      "id": 8,
+      "username": "Charlie",
+      "time": "Mon Feb 3 2025",
+      "title": "My carrots are tiny",
+      "content": "I harvested my carrots, but they're so small. Any tips?",
+      "tag": "herb",
+      "upvote": 33,
+      "comment": 9,
+      "hasLiked": false,
+      "hasImage": false
+    },
+    {
+      "id": 9,
+      "username": "Jamie",
+      "time": "Tue Feb 4 2025",
+      "title": "Pest problems on my kale",
+      "content": "Tiny bugs are eating my kale. How do I get rid of them?",
+      "tag": "others",
+      "upvote": 55,
+      "comment": 15,
+      "hasLiked": true,
+      "hasImage": true
+    },
+    {
+      "id": 10,
+      "username": "Drew",
+      "time": "Wed Feb 5 2025",
+      "title": "Eggplant leaves turning yellow",
+      "content": "The leaves on my eggplant are turning yellow. What should I do?",
+      "tag": "herb",
+      "upvote": 37,
+      "comment": 11,
+      "hasLiked": false,
+      "hasImage": false
+    }
+  ]
+  

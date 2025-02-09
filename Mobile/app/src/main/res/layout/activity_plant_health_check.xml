@@ -2,70 +2,99 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/plantHealthCheckActivity"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#0A803D"
     tools:context=".features.planthealthcheck.PlantHealthCheckActivity">
+
+    <!-- TextView for Title -->
+    <TextView
+        android:id="@+id/textPlantHealthCheck"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="Plant Health Check"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:padding="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <!-- View Plants Button as Back Arrow -->
+
+    <!-- Camera Preview -->
+    <ImageButton
+        android:id="@+id/viewPlantsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:contentDescription="Back to ViewPlantDetailsActivity"
+        android:padding="10dp"
+        android:background="#0A803D"
+        android:src="@drawable/arrow_left"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textPlantHealthCheck" />
 
     <androidx.camera.view.PreviewView
         android:id="@+id/previewView"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
-        android:layout_marginTop="40dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/captureButton" />
-
-    <Button
-        android:id="@+id/captureButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Capture"
-        android:layout_marginTop="16dp"
+        android:layout_height="400dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/previewView"
-        app:layout_constraintBottom_toTopOf="@id/galleryButton"
+        app:layout_constraintTop_toBottomOf="@id/viewPlantsButton" >
+    </androidx.camera.view.PreviewView>
+
+    <ImageButton
+        android:id="@+id/captureFocus"
+        android:layout_width="152dp"
+        android:layout_height="130dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/capture"
+        app:layout_constraintStart_toStartOf="@id/previewView"
+        app:layout_constraintEnd_toEndOf="@id/previewView"
+        app:layout_constraintTop_toTopOf="@id/previewView"
+        app:layout_constraintBottom_toBottomOf="@id/previewView"
         />
 
+    <!-- Capture Button -->
+    <ImageButton
+        android:id="@+id/captureButton"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/image_btn"
+        android:contentDescription="Capture Image"
+        android:background="@null"
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@id/previewView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Gallery Button -->
     <Button
         android:id="@+id/galleryButton"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="30dp"
-        android:text="Gallery"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/captureButton"
-        app:layout_constraintBottom_toTopOf="@id/viewPlantsButton"
-        />
-
-    <Button
-        android:id="@+id/viewPlantsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="View Plants"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="30dp"
+        android:layout_marginTop="15dp"
+        android:background="#BEBEBE"
+        android:gravity="center"
+        android:text="Select from Gallery"
+        android:textColor="#000000"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/captureButton"
-        />
-
-    <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        app:layout_constraintHorizontal_bias="0.123"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/captureButton" />
 
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:layout_gravity="center"
         style="@android:style/Widget.ProgressBar.Small"
-        app:layout_constraintTop_toBottomOf="@id/viewPlantsButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import iss.nus.edu.sg.sa4106.KebunJio.DAO.CommentDAO;
 import iss.nus.edu.sg.sa4106.KebunJio.DAO.CommentLikeDAO;
@@ -26,10 +27,11 @@ import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/Forum")
+@CrossOrigin(origins = "*")
 public class ForumController {
 	@Autowired
 	private PostService postService;
@@ -49,8 +51,8 @@ public class ForumController {
 	@PostMapping("/Post/Create")
 	public ResponseEntity createNewPost(@RequestBody @Valid PostDAO postData,BindingResult bindingResult,HttpSession SessionObj){
 		// wait for user Create 
-//		String userId = (String) SessionObj.getAttribute("userId");
-		String userId = "679b022388afce6495e8dbca";
+		String userId = (String) SessionObj.getAttribute("userId");
+//		String userId = "679b022388afce6495e8dbca";
 		if(bindingResult.hasErrors()) {
 			return new ResponseEntity<>(bindingResult.getAllErrors(),HttpStatus.BAD_REQUEST);
 		}
@@ -102,6 +104,14 @@ public class ForumController {
 		String userId = "679b022388afce6495e8dbca";
 		List<Post> postList = postService.getPostsByUserId(userId);
 		return new ResponseEntity<>(postList,HttpStatus.OK);
+	}
+	
+	// URL: /Forum/Post/{id}/Upvote
+	public ResponseEntity upvotePost(@PathVariable String id,boolean hasUpvoted) {
+		if(postService.calculateUpvote(id, hasUpvoted)) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
 	
 	// URL: /Forum/Post/{id}/CreateComment

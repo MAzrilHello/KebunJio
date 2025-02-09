@@ -16,11 +16,11 @@ function trimContent(content) {
     }
 }
 
-const PostSneakPeak = ({post, onClick}) => {    
+const PostSneakPeak = ({post}) => {    
     return(
         <div className="post-sneak-peak-class">
             <Container>
-                <Row><PostHeader username={post.username} time={post.time}/></Row>
+                <Row><PostHeader post={post}/></Row>
                 <Row>
                     <Link to={`/forum/post/?id=${post.id}`} state={{ post: post }}>
                         <b>{post.title}</b>

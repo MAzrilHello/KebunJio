@@ -3,16 +3,14 @@ import Image from 'react-bootstrap/Image';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from "react-bootstrap/Col";
+import Dropdown from 'react-bootstrap/Dropdown';
 
 import '../styling/forum-page.css'
 import placeholderImage from '../../../media/placeholder.jpg';
+import { useNavigate } from "react-router-dom";
 
-const PostHeader = ({username, time}) =>{
-
-    const onMenuClick = (event) =>{
-        alert("Menu clicked!")
-    }
-
+const PostHeader = ({post}) =>{
+    const navigate = useNavigate()
     return(
         <Container className="post-header">
             <Row className="align-items-center">
@@ -25,14 +23,21 @@ const PostHeader = ({username, time}) =>{
                 </Col>
                 <Col>
                     <div className="post-header-info">
-                        <div className="post-header-username">{username}</div>
-                        <div className="post-header-time">{time}</div>
+                        <div className="post-header-username">{post.username}</div>
+                        <div className="post-header-time">{post.time}</div>
                     </div>
                 </Col>
-                <Col xs="auto" onClick={onMenuClick}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
-                        <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
-                    </svg>
+                <Col xs="auto">
+                {
+                    post.username==="Kelly"?(<Dropdown>
+                        <Dropdown.Toggle className="three-dot">
+                        </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={()=>{navigate(`/forum/${post.id}/edit`, {state:{post}})}}>Edit Post</Dropdown.Item>
+                                <Dropdown.Item onClick={()=>{alert("Delete post")}}>Delete Post</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>):(<div></div>)
+                }
                 </Col>
             </Row>
         </Container>

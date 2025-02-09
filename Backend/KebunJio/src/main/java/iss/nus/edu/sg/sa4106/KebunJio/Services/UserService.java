@@ -1,5 +1,6 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Services;
 
+import com.mongodb.DuplicateKeyException;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.User;
 import iss.nus.edu.sg.sa4106.KebunJio.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ public class UserService {
 
     public User registerUser(User user) {
         try {
+            user.setId(null);
 
             if (userRepository.findByUsername(user.getUsername()) != null ||
                     userRepository.findByEmail(user.getEmail()) != null) {
@@ -28,6 +30,7 @@ public class UserService {
             user.setPassword(encryptedPassword);
 
             return userRepository.save(user);
+
         } catch (Exception e) {
             throw new RuntimeException("Error during user registration: " + e.getMessage());
         }
@@ -48,7 +51,7 @@ public class UserService {
                 }
             }
 
-            throw new RuntimeException("Invalid credentials!");
+            return null;
 
         } catch (Exception e) {
             throw new RuntimeException("Error during user login: " + e.getMessage());

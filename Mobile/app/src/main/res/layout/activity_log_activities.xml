@@ -91,19 +91,19 @@
                 android:text="dd/mm/yyyy hh:mm"
                 android:textSize="20sp"
                 />
-            <Button
-                android:id="@+id/change_date_btn"
-                android:layout_height="match_parent"
-                android:layout_width="wrap_content"
-                android:layout_gravity="center"
-                android:text="Change Date" />
-            <Button
-                android:id="@+id/change_time_btn"
-                android:layout_height="match_parent"
-                android:layout_width="wrap_content"
-                android:layout_gravity="center"
-                android:text="Change Time" />
         </LinearLayout>
+        <Button
+            android:id="@+id/change_date_btn"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="right"
+            android:text="Change Date" />
+        <Button
+            android:id="@+id/change_time_btn"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="right"
+            android:text="Change Time" />
         <Button
             android:id="@+id/log_activities_btn"
             android:layout_height="wrap_content"

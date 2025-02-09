@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.fragment.app.Fragment
 import iss.nus.edu.sg.sa4106.kebunjio.data.Plant
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentPlantListBinding
-import iss.nus.edu.sg.sa4106.kebunjio.service.reminders.PlantApiService
 
 
 class PlantListFragment : Fragment() {

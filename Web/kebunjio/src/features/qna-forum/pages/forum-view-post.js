@@ -20,14 +20,18 @@ const Post = () =>{
         time: new Date("2025-01-30").toDateString(),
         content: "OK, cool",
         like: 12,
-        dislike: 3
+        dislike: 3,
+        hasLiked: false,
+        hasDisliked: true
     },
     {
         username: "Yasmine",
         time: new Date("2025-01-30").toDateString(),
         content: "OK, cool",
         like: 12,
-        dislike: 3
+        dislike: 3,
+        hasLiked: true,
+        hasDisliked: false
     }]
 
     const [replyInput, setReplyInput] = useState('')
@@ -36,14 +40,8 @@ const Post = () =>{
         setReplyInput(event.target.value)
     }
 
-    const handleUpvote = (event) => {
-        if (post) {
-            setPost({ ...post, upvote: (post.upvote || 0) + 1 });
-            /*TODO: Implement update to API */
-        }
-    }
-
     const handleSubmitReply = (event) => {
+        alert(replyInput)
         /*Implement API call here */
     }
 
@@ -69,13 +67,15 @@ const Post = () =>{
                 <div>
                     <Form>
                         <Form.Group controlId="exampleForm.ControlInput1">
-                            <Form.Control onChange={handleReplyInputChange} value={replyInput} type="textarea" placeholder="Write your reply here"/>
+                            <Form.Control className="text-area" onChange={handleReplyInputChange} value={replyInput} type="textarea" placeholder="Write your reply here"/>
                         </Form.Group>
-                        <Button onClick={handleClear}>Cancel</Button>
-                        <Button onClick={handleUpvote}>Reply</Button>
+                        <div style={{marginTop:"16px"}}>
+                            <Button style={{fontSize:"12px"}} variant="secondary" type="reset" onClick={handleClear}>Cancel</Button>
+                            <Button style={{fontSize:"12px", marginLeft:"8px"}} variant="primary" onClick={handleSubmitReply}>Reply</Button>
+                        </div>
                     </Form>
                 </div>
-                <div>
+                <div style={{marginTop:"16px"}}>
                 {replies.length !== 0 ? (
                     replies.map((reply, index) => (
                         <Reply key={index} reply={reply} />
