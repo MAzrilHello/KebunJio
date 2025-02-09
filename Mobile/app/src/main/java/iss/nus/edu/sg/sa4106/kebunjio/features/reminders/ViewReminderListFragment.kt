@@ -16,6 +16,7 @@ import iss.nus.edu.sg.sa4106.kebunjio.data.Reminder
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentViewReminderListBinding
 import iss.nus.edu.sg.sa4106.kebunjio.service.reminders.ReminderService
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -112,6 +113,7 @@ class ViewReminderListFragment : Fragment() {
     }
 
     private fun groupRemindersByDate(reminders: List<Reminder>): MutableMap<String, List<Reminder>> {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
         val today = LocalDateTime.now().toLocalDate()
         val tomorrow = today.plusDays(1)
         val weekEnd = today.plusDays(6)
@@ -122,7 +124,7 @@ class ViewReminderListFragment : Fragment() {
 
         for (reminder in reminders) {
             val reminderDate = try {
-                LocalDateTime.parse(reminder.reminderDateTime).toLocalDate()
+                LocalDateTime.parse(reminder.reminderDateTime.toString()).toLocalDate()
             } catch (e: Exception) {
                 Log.e(TAG, "Invalid date format for reminder: ${reminder.reminderDateTime}", e)
                 continue
@@ -145,7 +147,16 @@ class ViewReminderListFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         val filter = IntentFilter("fetch_reminders")
-        requireContext().registerReceiver(reminderReceiver, filter)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            requireContext().registerReceiver(
+                reminderReceiver,
+                filter,
+                Context.RECEIVER_NOT_EXPORTED
+            )
+        } else {
+            requireContext().registerReceiver(reminderReceiver, filter,
+                Context.RECEIVER_NOT_EXPORTED)
+        }
     }
 
     override fun onStop() {
