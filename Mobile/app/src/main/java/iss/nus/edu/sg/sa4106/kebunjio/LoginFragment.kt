@@ -19,7 +19,6 @@ import java.net.URL
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
-
 class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
@@ -36,13 +35,37 @@ class LoginFragment : Fragment() {
             view.findNavController().navigate(R.id.action_loginFragment_to_loginOrRegisterFragment)
         }
 
+        navigateToLoggedInFragment()
+
         binding.loginBtn.setOnClickListener{
-            attemptLogin()
+            navigateToLoggedInFragment()
+
+//            attemptLogin()
             // for now should just switch to Logged In Fragment
             // set username to 'username'
         }
 
         return binding.root
+    }
+
+    private fun navigateToLoggedInFragment() {
+        // ✅ Creating a dummy user with default session
+        val dummyUser = User(
+            id = "123",
+            username = "TestUser",
+            email = "testuser@example.com",
+            phoneNumber = "0000000000",
+            isAdmin = false
+        )
+
+        val dummySessionCookie = "dummy_cookie"
+
+        // ✅ Log navigation for debugging
+        Log.d("LoginFragment", "Bypassing login and navigating to LoggedInFragment")
+
+        // ✅ Navigate immediately
+        val action = LoginFragmentDirections.actionLoginFragmentToLoggedInFragment(dummyUser, dummySessionCookie)
+        view?.findNavController()?.navigate(action)
     }
 
 

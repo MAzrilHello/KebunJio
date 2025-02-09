@@ -9,6 +9,7 @@ data class EdiblePlantSpecies(
     val name: String,
     val scientificName: String,
     val description: String,
+    val ediblePlantGroup: String,
     val wateringTips: String,
     val sunlight: String,
     val soilType: String,
@@ -26,6 +27,7 @@ data class EdiblePlantSpecies(
             val name = ifNullString(responseObject.getString("name"))
             val scientificName = ifNullString(responseObject.getString("scientificName"))
             val description = ifNullString(responseObject.getString("description"))
+            val ediblePlantGroup = ifNullString(responseObject.getString("ediblePlantGroup"))
             val wateringTips = ifNullString(responseObject.getString("wateringTips"))
             val sunlight = ifNullString(responseObject.getString("sunlight"))
             val soilType = ifNullString(responseObject.getString("soilType"))
@@ -39,6 +41,7 @@ data class EdiblePlantSpecies(
                 name,
                 scientificName,
                 description,
+                ediblePlantGroup,
                 wateringTips,
                 sunlight,
                 soilType,

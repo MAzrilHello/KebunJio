@@ -29,57 +29,34 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Clear Maven Cache
-        run: rm -rf ~/.m2/repository
-
-      - name: Cache Maven Dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/*.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-
       - name: Build Backend
         working-directory: Backend/KebunJio
         run: mvn clean install -DskipTests=true
 
-  # Mobile Build and APK Generation
+  # Mobile Build
   mobile:
-    name: Build APK for Mobile
+    name: Build Mobile
     runs-on: ubuntu-latest
-  
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-  
+
       - name: Set up JDK 17 for Mobile
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-  
-      - name: Set up Android SDK for Mobile
-        uses: android-actions/setup-android@v3
-        with:
-          build-tools-version: '34.0.0'
-          platform-version: '34'
-  
+
       - name: Grant execute permissions for gradlew
         working-directory: Mobile
         run: chmod +x gradlew
-  
-      - name: Build APK
-        working-directory: Mobile
-        run: ./gradlew assembleDebug
-  
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-debug-apk
-          path: Mobile/app/build/outputs/apk/debug/app-debug.apk
 
-  # Frontend Build and Upload
+      - name: Build Mobile App
+        working-directory: Mobile
+        run: ./gradlew assembleDebug --stacktrace
+
+  # Frontend Build
   frontend:
     name: Build React Frontend
     runs-on: ubuntu-latest
@@ -102,9 +79,3 @@ jobs:
       - name: Build React Frontend
         working-directory: Web/kebunjio
         run: CI=false npm run build
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build
-          path: Web/kebunjio/build
