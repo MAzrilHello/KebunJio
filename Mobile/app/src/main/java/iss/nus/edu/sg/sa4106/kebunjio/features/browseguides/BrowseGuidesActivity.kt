@@ -16,7 +16,7 @@ import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityBrowseGuidesBinding
 class BrowseGuidesActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityBrowseGuidesBinding
-    private lateinit var adapter: GuideAdapter
+    private lateinit var guideAdapter: GuideAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,12 +33,9 @@ class BrowseGuidesActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         val dummyData = DummyData()
-        val speciesList = dummyData.SpeciesDummy.map {
-            Triple(it.name, it.ediblePlantGroup, "Guide info unavailable")
-        }
-
-        adapter = GuideAdapter(speciesList)
+        val speciesList = dummyData.SpeciesDummy
+        guideAdapter = GuideAdapter(speciesList)
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        binding.recyclerView.adapter = adapter
+        binding.recyclerView.adapter = guideAdapter
     }
 }
