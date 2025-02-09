@@ -48,14 +48,21 @@ const UserProfilePage = () => {
             }
     };
 
-    const handleAvatarChange = (event) => {
+    const handleAvatarChange = async (event) => {
         const file = event.target.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                setAvatar(e.target.result);
-            };
-            reader.readAsDataURL(file);
+            const formData = new FormData();
+            formData.append("avatar", file);
+
+            try {
+                const response = await axios.post("/userProfile/upload-avatar", formData, {
+                    headers: { "Content-Type": "multipart/form-data" }
+                });
+
+                setAvatar(response.data);
+            } catch (error) {
+                console.error("Upload failed", error);
+            }
         }
     };
 
@@ -67,23 +74,33 @@ const UserProfilePage = () => {
     */
 
     useEffect(() => {
-        //Kelly's code, can remove later
-        async function fetchData(){
-            const plantsRes = await fetch("/dummy-data/plant.json")
-            const plantsData = await plantsRes.json()
-            setPlants(plantsData)
-        }
-        fetchData()
+        async function fetchData() {
+            try {
+                const plantsRes = await axios.get("/dummy-data/plant.json");
+                setPlants(plantsRes.data);
 
-        /*Ruihan's code, do not delete
-        axios.get('/userProfile')
-            .then(response => {
-                setUserProfile(response.data);
-            })
-            .catch(err => {
-                setError("Error fetching user profile.");
-            });*/
+                const userRes = await axios.get("/userProfile");
+
+                console.log("User Data:", userRes.data);
+
+                setAvatar(userRes.data.avatarUrl || "/logo.jpg");
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        fetchData();
     }, []);
+
+
+    /*Ruihan's code, do not delete
+    axios.get('/userProfile')
+        .then(response => {
+            setUserProfile(response.data);
+        })
+        .catch(err => {
+            setError("Error fetching user profile.");
+        });*/
 
     /*Ruihan's code, do not delete
     if (error) return <div>{error}</div>;
@@ -261,7 +278,7 @@ const UserProfilePage = () => {
         </div>
 
 
-    );
+    )
 }
 
 export default UserProfilePage;

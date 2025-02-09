@@ -20,6 +20,8 @@ public class User {
 	private boolean isAdmin;
 	private String password;
 
+	private String avatarUrl;
+
 	public User() {}
 
 	public String getId() {
@@ -66,8 +68,9 @@ public class User {
 	public String getPassword(){return password;}
 
 	public void setPassword(String password){this.password=password;}
-	
-	
-	
+
+	public String getAvatarUrl() {return avatarUrl;}
+
+	public void setAvatarUrl(String avatarUrl) {this.avatarUrl = avatarUrl;}
 
 }

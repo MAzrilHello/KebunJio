@@ -60,14 +60,21 @@ public class UserService {
 
     }
 
-    public User UpdateUser(User user,String username, String email, String phoneNumber){
+    public User UpdateUser(User user,String username, String email, String phoneNumber, String avatarUrl){
         user.setUsername(username);
         user.setEmail(email);
         user.setPhoneNumber(phoneNumber);
+        if (avatarUrl != null) {
+            user.setAvatarUrl(avatarUrl);
+        }
         return userRepository.save(user);
     }
 
     public Optional<User> getUserById(String id) {
         return userRepository.findById(id);
+    }
+
+    public void saveUser(User user) {
+        userRepository.save(user);
     }
 }
