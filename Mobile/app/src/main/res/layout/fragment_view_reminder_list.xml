@@ -9,19 +9,20 @@
     tools:context=".features.reminders.ViewReminderListFragment">
 
     <!-- Title TextView -->
+
+    <!-- Week Display -->
     <TextView
         android:id="@+id/titleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tracker"
-        android:textStyle="bold"
-        android:textSize="30sp"
-        android:padding="10dp"
+        android:text="My Reminders"
         android:textColor="@android:color/white"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:padding="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Week Display -->
     <TextView
         android:id="@+id/weekTitle"
         android:layout_width="0dp"
@@ -43,7 +44,7 @@
         android:text="Schedule Reminder"
         android:textSize="18sp"
         android:padding="16dp"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         app:layout_constraintTop_toBottomOf="@id/weekTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
