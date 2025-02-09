@@ -28,7 +28,14 @@ class BrowseGuidesActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        initButtons()
         setupRecyclerView()
+    }
+
+    private fun initButtons() {
+        binding.viewPlantsButton.setOnClickListener {
+            finish()
+        }
     }
 
     private fun setupRecyclerView() {
