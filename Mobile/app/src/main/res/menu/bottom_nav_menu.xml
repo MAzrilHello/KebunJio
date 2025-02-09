@@ -4,6 +4,9 @@
         android:id="@+id/tracker_item"
         android:title="Tracker"/>
     <item
+        android:id="@+id/my_reminder_item"
+        android:title="My Reminders"/>
+    <item
         android:id="@+id/my_plants_item"
         android:title="My Plants"/>
     <item

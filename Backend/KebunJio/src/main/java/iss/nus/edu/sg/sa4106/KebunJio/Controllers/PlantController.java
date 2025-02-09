@@ -3,6 +3,7 @@ package iss.nus.edu.sg.sa4106.KebunJio.Controllers;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.Plant;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.User;
 import iss.nus.edu.sg.sa4106.KebunJio.Services.PlantService;
+import iss.nus.edu.sg.sa4106.KebunJio.OtherReusables.Reusables;
 import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
@@ -32,17 +33,30 @@ public class PlantController {
 	@PostMapping
 	public ResponseEntity<Plant> makeNewPlant(@RequestBody Plant plant, HttpSession sessionObj) {
 		// first validate that we have permission
+		System.out.println("Plant: getting currentUser");
 		User currentUser = (User) sessionObj.getAttribute("loggedInUser");
-		String userId = plant.getId();
-		if (currentUser == null) {
-			return new ResponseEntity<Plant>(HttpStatus.UNAUTHORIZED);
+		// Must restrict to owner only
+		System.out.println("Plant: checking permissions");
+		HttpStatus editStatus = Reusables.editStatusType(currentUser, plant.getUserId());
+		if (editStatus != HttpStatus.OK) {
+			return new ResponseEntity<Plant>(editStatus);
 		}
-		if (currentUser.getId().equals(userId)) {
-			
-		} else {
-			return new ResponseEntity<Plant>(HttpStatus.FORBIDDEN);
-		}
-		return new ResponseEntity<Plant>(plantService.save(plant),HttpStatus.CREATED);
+		System.out.println("Plant: create new plant");
+		try {
+			Plant newPlant = new Plant();
+			newPlant.setEdiblePlantSpeciesId(plant.getEdiblePlantSpeciesId());
+        	newPlant.setUserId(plant.getUserId()); // take user id from the plant object
+        	newPlant.setName(plant.getName());
+        	newPlant.setDisease(plant.getDisease());
+        	newPlant.setPlantedDate(plant.getPlantedDate());
+        	newPlant.setHarvestStartDate(plant.getHarvestStartDate());
+        	newPlant.setPlantHealth(plant.getPlantHealth());
+        	newPlant.setHarvested(plant.getHarvested());
+        	return new ResponseEntity<Plant>(plantService.save(newPlant),HttpStatus.CREATED);
+		} catch(Exception e) {
+			System.out.println(e);
+			return ResponseEntity.internalServerError().build();
+    	}
 	}
 	
 	// Non-owners can still view.
@@ -74,13 +88,21 @@ public class PlantController {
 	
 	// Must restrict to owner only
 	@PutMapping("/{plantId}")
-	public ResponseEntity<Plant> updatePlant(@PathVariable String plantId, @RequestBody Plant plant) {
+	public ResponseEntity<Plant> updatePlant(@PathVariable String plantId, @RequestBody Plant plant, HttpSession sessionObj) {
 		try {
 			Optional<Plant> existingPlant = plantService.getPlant(plantId);
             if (existingPlant.isPresent()) {
             	Plant foundPlant = existingPlant.get();
+            	// Must restrict to owner only
+            	// first validate that we have permission
+        		User currentUser = (User) sessionObj.getAttribute("loggedInUser");
+        		HttpStatus editStatus = Reusables.editStatusType(currentUser, foundPlant.getUserId());
+        		if (editStatus != HttpStatus.OK) {
+        			return new ResponseEntity<Plant>(editStatus);
+        		}
+        		// do not change the id
             	foundPlant.setEdiblePlantSpeciesId(plant.getEdiblePlantSpeciesId());
-            	foundPlant.setUserId(plant.getUserId());
+            	foundPlant.setUserId(plant.getUserId()); // take user id from the plant object
             	foundPlant.setName(plant.getName());
             	foundPlant.setDisease(plant.getDisease());
             	foundPlant.setPlantedDate(plant.getPlantedDate());
@@ -92,13 +114,27 @@ public class PlantController {
             	return ResponseEntity.notFound().build();
             }
 		} catch (RuntimeException e) {
-			return ResponseEntity.notFound().build();
+			System.out.println(e);
+			return ResponseEntity.internalServerError().build();
 		}
 	}
 	
 	
 	@DeleteMapping("/{plantId}")
 	public ResponseEntity<?> deletePlant(@PathVariable String plantId, HttpSession sessionObj) {
+		// first validate that we have permission
+		User currentUser = (User) sessionObj.getAttribute("loggedInUser");
+		// check if it even exists
+		Optional<Plant> existingPlant = plantService.getPlant(plantId);
+		if (!existingPlant.isPresent()) {
+			return ResponseEntity.notFound().build();
+		}
+		Plant plant = existingPlant.get();
+		HttpStatus editStatus = Reusables.editStatusType(currentUser, plant.getUserId());
+		if (editStatus != HttpStatus.OK) {
+			return new ResponseEntity<>(editStatus);
+		}
+		
 		try {
 			if (plantService.deletePlant(plantId)) {
 				return ResponseEntity.ok().build();
@@ -106,7 +142,8 @@ public class PlantController {
             	return ResponseEntity.notFound().build();
             }
 		} catch (RuntimeException e) {
-			return ResponseEntity.notFound().build();
+			System.out.println(e);
+			return ResponseEntity.internalServerError().build();
 		}
 	}
 }

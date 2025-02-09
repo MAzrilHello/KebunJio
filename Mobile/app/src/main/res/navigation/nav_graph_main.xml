@@ -37,9 +37,14 @@
         <action
             android:id="@+id/action_loggedInFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+
         <argument
             android:name="logged_user"
             app:argType="iss.nus.edu.sg.sa4106.kebunjio.data.User"
+            />
+        <argument
+            android:name="session_cookie"
+            app:argType="string"
             />
     </fragment>
 
