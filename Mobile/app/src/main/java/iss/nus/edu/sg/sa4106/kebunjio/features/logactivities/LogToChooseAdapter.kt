@@ -24,6 +24,7 @@ import iss.nus.edu.sg.sa4106.kebunjio.databinding.ViewActLogToChooseBinding
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ViewPlantToChooseBinding
 import iss.nus.edu.sg.sa4106.kebunjio.features.addplant.AddPlantActivity
 import iss.nus.edu.sg.sa4106.kebunjio.service.DownloadImageService
+import iss.nus.edu.sg.sa4106.kebunjio.service.PlantSpeciesLogService
 import java.io.File
 
 
@@ -34,7 +35,7 @@ class LogToChooseAdapter(private val context: Context,
                          protected var userId: String,
                          protected var userActLogList: ArrayList<ActivityLog>,
                          protected var plantIdToNameDict: HashMap<String, String>
-        ): ArrayAdapter<Any?>(context, R.layout.view_plant_to_choose) {
+        ): ArrayAdapter<Any?>(context, R.layout.view_act_log_to_choose) {
 
 
     init {
@@ -120,6 +121,25 @@ class LogToChooseAdapter(private val context: Context,
             intent.putExtra("currentActivityLog",currentActivityLog)
             intent.putExtra("update", true)
             haveUpdateLauncher.launch(intent)
+        }
+
+        deleteLogBtn.setOnClickListener{
+            Thread {
+                val deleteStatus = PlantSpeciesLogService.deleteLog(currentActivityLog.id,null,sessionCookie)
+                if (deleteStatus in 200..299) {
+                    loggedInFragment.activity?.runOnUiThread{
+                        loggedInFragment.makeToast("Deleted activity log successfully")
+                        //whichPlantText.visibility = View.GONE
+                        //activityTypeText.visibility = View.GONE
+                        //lastTimeText.visibility = View.GONE
+                        //viewLogBtn.visibility = View.GONE
+                        //editLogBtn.visibility = View.GONE
+                        //deleteLogBtn.visibility = View.GONE
+                        //_view.visibility = View.GONE
+                        loggedInFragment.tryPullAllUsersActivities()
+                    }
+                }
+            }.start()
         }
 
         //showSpeciesImg.setOnClickListener {

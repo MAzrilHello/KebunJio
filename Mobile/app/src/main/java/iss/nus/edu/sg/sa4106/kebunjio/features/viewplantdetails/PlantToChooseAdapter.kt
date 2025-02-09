@@ -115,11 +115,11 @@ class PlantToChooseAdapter(private val context: Context,
 
                     loggedInFragment.activity?.runOnUiThread{
                         loggedInFragment.makeToast("Deleted plant successfully")
-                        showPlantName.visibility = View.GONE
-                        viewPlantBtn.visibility = View.GONE
-                        editPlantBtn.visibility = View.GONE
-                        deletePlantBtn.visibility = View.GONE
-                        _view.visibility = View.GONE
+                        //showPlantName.visibility = View.GONE
+                        //viewPlantBtn.visibility = View.GONE
+                        //editPlantBtn.visibility = View.GONE
+                        //deletePlantBtn.visibility = View.GONE
+                        //_view.visibility = View.GONE
                         loggedInFragment.tryPullAllUserPlants()
                     }
                 }

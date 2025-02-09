@@ -65,7 +65,7 @@ class ChoosePlantToViewFragment : Fragment() {
         for (i in 0..loggedInFragment.speciesList.size-1) {
             this.speciesIdToNameDict[loggedInFragment.speciesList[i].id] = loggedInFragment.speciesList[i].name
         }
-        Log.d("ChoosePlantToViewFragment","speciesIdToNameDict size: ${speciesIdToNameDict.size}")
+        Log.d("ChoosePlantToViewFragment","speciesIdToNameDict size: ${loggedInFragment.speciesList.size} vs ${speciesIdToNameDict.size}")
         reloadPlantList()
     }
 
@@ -82,8 +82,17 @@ class ChoosePlantToViewFragment : Fragment() {
         addFAB.setOnClickListener {
             val intent = Intent(requireContext(),AddPlantActivity::class.java)
             intent.putExtra("userId",userId)
+            if (speciesIdToNameDict.size != loggedInFragment!!.speciesList.size) {
+                speciesIdToNameDict.clear()
+                for (i in 0..loggedInFragment!!.speciesList.size-1) {
+                    this.speciesIdToNameDict[loggedInFragment!!.speciesList[i].id] = loggedInFragment!!.speciesList[i].name
+                }
+                Log.d("ChoosePlantToViewFragment","speciesIdToNameDict pre-add refresh size: ${speciesIdToNameDict.size}")
+            } else {
+                Log.d("ChoosePlantToViewFragment","speciesIdToNameDict pre-add size: ${speciesIdToNameDict.size}")
+            }
             intent.putExtra("speciesIdToNameDict",speciesIdToNameDict)
-            Log.d("ChoosePlantToViewFragment","speciesIdToNameDict size: ${speciesIdToNameDict.size}")
+
             intent.putExtra("sessionCookie",sessionCookie)
             Log.d("ChoosePlantToViewActivity","putExtra userId: ${userId}")
             //launcher.launch(intent)

@@ -24,7 +24,7 @@ import iss.nus.edu.sg.sa4106.kebunjio.data.Plant
 import iss.nus.edu.sg.sa4106.kebunjio.data.Reminder
 import iss.nus.edu.sg.sa4106.kebunjio.data.User
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentLoggedInBinding
-import iss.nus.edu.sg.sa4106.kebunjio.features.browseguides.BrowseGuidesActivity
+import iss.nus.edu.sg.sa4106.kebunjio.features.browseguides.ChooseGuideToViewFragment
 import iss.nus.edu.sg.sa4106.kebunjio.features.logactivities.ChooseLogToViewFragment
 import iss.nus.edu.sg.sa4106.kebunjio.features.settings.SettingsFragment
 //import iss.nus.edu.sg.sa4106.kebunjio.features.tracker.TrackerActivity
@@ -39,6 +39,7 @@ class LoggedInFragment : Fragment() {
     private var logToViewFragment = ChooseLogToViewFragment()
     private var plantFragment = ChoosePlantToViewFragment()
     private var settingsFragment = SettingsFragment()
+    private var chooseGuideToViewFragment = ChooseGuideToViewFragment()
 
     public var loggedUser: User? = null
     public var sessionCookie: String = ""
@@ -174,6 +175,7 @@ class LoggedInFragment : Fragment() {
         //plantFragment.loadNewData(sessionCookie,userId,speciesIdToNameDict,usersPlantList,usersActivityLogList)
         plantFragment.loadNewData(this)
         logToViewFragment.loadNewData(this)
+        chooseGuideToViewFragment.loadNewData(this)
         bottomNavigationView.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 //R.id.tracker_item -> startActivity(Intent(requireContext(), TrackerActivity::class.java))
@@ -181,6 +183,7 @@ class LoggedInFragment : Fragment() {
                 R.id.my_plants_item -> setCurrentFragment(plantFragment)
                 R.id.reminder_item -> null
                 R.id.activity_log_item -> setCurrentFragment(logToViewFragment)
+                R.id.guide_item -> setCurrentFragment(chooseGuideToViewFragment)
                 //R.id.guide_item -> startActivity(Intent(requireContext(), BrowseGuidesActivity::class.java))
                 R.id.settings_item -> setCurrentFragment(settingsFragment)
             }
@@ -198,7 +201,7 @@ class LoggedInFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
-    private fun tryPullAllUsersActivities() {
+    public fun tryPullAllUsersActivities() {
         userActivityLogReady = false
         val intent = Intent(activity, PlantSpeciesLogService::class.java)
         intent.setAction("get_activity_logs")
