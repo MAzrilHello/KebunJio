@@ -16,18 +16,47 @@ public class ReminderService {
     @Autowired
     private ReminderRepository reminderRepo;
 
+    /**
+     * Retrieves reminders for a specific user and plant.
+     * @param userId The user ID.
+     * @param plantId The plant ID.
+     * @return A list of reminders for the specified user and plant.
+     */
+    public List<Reminder> getRemindersByUserAndPlant(String userId, String plantId) {
+        if (userId == null || userId.isEmpty()) {
+            throw new IllegalArgumentException("User ID must not be null or empty.");
+        }
+        if (plantId == null || plantId.isEmpty()) {
+            throw new IllegalArgumentException("Plant ID must not be null or empty.");
+        }
+
+        return reminderRepo.findByUserIdAndPlantId(userId, plantId);
+    }
+    
     public Reminder addReminder(Reminder reminder) {
-        // Ensure required fields are set with defaults if needed
-        reminder.setCreatedDateTime(LocalDateTime.now());
+        // Perform any necessary validation
+        if (reminder.getUserId() == null || reminder.getUserId().isEmpty()) {
+            throw new IllegalArgumentException("User ID cannot be null or empty.");
+        }
+        if (reminder.getPlantId() == null || reminder.getPlantId().isEmpty()) {
+            throw new IllegalArgumentException("Plant ID cannot be null or empty.");
+        }
+        if (reminder.getReminderType() == null || reminder.getReminderType().isEmpty()) {
+            throw new IllegalArgumentException("Reminder type cannot be null or empty.");
+        }
+        if (reminder.getReminderDateTime() == null) {
+            throw new IllegalArgumentException("Reminder date and time cannot be null.");
+        }
+
+        // Set default values (if necessary)
         if (reminder.getStatus() == null || reminder.getStatus().isEmpty()) {
             reminder.setStatus("Active");
         }
-        if (reminder.getIsRecurring() == null) {
-            reminder.setIsRecurring(false);
+        if (reminder.getCreatedDateTime() == null) {
+            reminder.setCreatedDateTime(LocalDateTime.now());
         }
-        if (reminder.getRecurrenceInterval() == null || reminder.getRecurrenceInterval().isEmpty()) {
-            reminder.setRecurrenceInterval("None");
-        }
+
+        // Save the reminder to the database
         return reminderRepo.save(reminder);
     }
 

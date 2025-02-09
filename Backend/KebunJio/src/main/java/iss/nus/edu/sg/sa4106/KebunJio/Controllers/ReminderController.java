@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/Reminders")
+@RequestMapping("/reminders")
 @CrossOrigin(origins = "*")
 public class ReminderController {
 
@@ -59,6 +59,39 @@ public class ReminderController {
     		System.out.println(e);
 			return ResponseEntity.internalServerError().build();
     	}
+      }
+  
+    /**
+     * GET endpoint to retrieve reminders for a specific user and plant.
+     * @param userId The user ID.
+     * @param plantId The plant ID.
+     * @return A list of reminders.
+     */
+    @GetMapping("/user/{userId}/plant/{plantId}")
+    public ResponseEntity<?> getRemindersByUserAndPlant(@PathVariable String userId, @PathVariable String plantId) {
+        try {
+            // Call service method
+            List<Reminder> reminders = reminderService.getRemindersByUserAndPlant(userId, plantId);
+            return ResponseEntity.ok(reminders);
+        } catch (IllegalArgumentException ex) {
+            // Handle invalid inputs
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (Exception ex) {
+            // Handle unexpected errors
+            return ResponseEntity.internalServerError().body("An error occurred while fetching reminders.");
+        }
+    }
+    
+    @PostMapping("/add")
+    public ResponseEntity<?> addReminder(@RequestBody Reminder reminder) {
+        try {
+            Reminder savedReminder = reminderService.addReminder(reminder);
+            return ResponseEntity.ok(savedReminder);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (Exception ex) {
+            return ResponseEntity.internalServerError().body("An error occurred while adding the reminder.");
+        }
     }
 
     // Non-owners can still view.

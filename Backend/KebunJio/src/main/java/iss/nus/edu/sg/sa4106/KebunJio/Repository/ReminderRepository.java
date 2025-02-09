@@ -12,6 +12,9 @@ import iss.nus.edu.sg.sa4106.KebunJio.Models.Reminder;
 
 public interface ReminderRepository extends MongoRepository<Reminder, String>{
 	
+	@Query("{'userId': ?0, 'plantId': ?1}")
+	List<Reminder> findByUserIdAndPlantId(String userId, String plantId);
+	
     @Query("{'id': ?0}")
     Optional<Reminder> findById(String id);
 
