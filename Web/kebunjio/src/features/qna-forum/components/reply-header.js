@@ -9,7 +9,16 @@ import { useNavigate } from "react-router-dom";
 import '../styling/forum-page.css'
 import placeholderImage from '../../../media/placeholder.jpg';
 
-const ReplyHeader = ({username, time, onEdit, onDelete}) =>{
+const ReplyHeader = ({username, time}) =>{
+
+    const [isEditing, setIsEditing] = useState(false)
+
+    const onClickEdit = () =>{
+        setIsEditing = true
+    }
+
+    const onClickDelete = () => {}
+
     return(
         <Container className="post-header">
             <Row className="align-items-center">
@@ -27,16 +36,10 @@ const ReplyHeader = ({username, time, onEdit, onDelete}) =>{
                     </div>
                 </Col>
                 <Col xs="auto">
-                {
-                    <Dropdown>
-                        <Dropdown.Toggle className="three-dot">
-                        </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                <Dropdown.Item onClick={onEdit}>Edit reply</Dropdown.Item>
-                                <Dropdown.Item onClick={onDelete}>Delete reply</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
-                }
+
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                        <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+                    </svg>
                 </Col>
             </Row>
         </Container>

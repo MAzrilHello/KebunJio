@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, Link } from 'react-router-dom';
 import EventCard from './components/EventCard';
+import EventDetail from './components/EventDetail';
+import GoogleAuthCallback from './components/GoogleAuthCallback';
 import { getAllEvents } from './services/eventService';
 
-export const EventList = () => {
+const EventList = () => {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const eventsPerPage = 4;
-    const [searchName, setSearchName] = useState('');
-    const [searchDate, setSearchDate] = useState('');
+    const eventsPerPage = 4; // 每页显示 4 个卡片
+    const [searchName, setSearchName] = useState(''); // 用于存储搜索的名字
+    const [searchDate, setSearchDate] = useState(''); // 用于存储搜索的时间
 
     useEffect(() => {
         fetchEvents();
@@ -29,6 +32,7 @@ export const EventList = () => {
         }
     };
 
+    // 根据 name 和 startDateTime 进行搜索
     const filteredEvents = events.filter((event) => {
         const matchesName = event.name.toLowerCase().includes(searchName.toLowerCase());
         const matchesDate = event.startDateTime
@@ -55,9 +59,12 @@ export const EventList = () => {
         );
     }
 
+    // 计算分页的起始和结束位置
     const indexOfLastEvent = currentPage * eventsPerPage;
     const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
     const currentEvents = filteredEvents.slice(indexOfFirstEvent, indexOfLastEvent);
+
+    // 计算总页数
     const totalPages = Math.ceil(filteredEvents.length / eventsPerPage);
 
     const handlePageChange = (pageNumber) => {
@@ -68,6 +75,7 @@ export const EventList = () => {
         <div className="container mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold text-gray-800">Upcoming Events</h1>
 
+            {/* 搜索框 */}
             <div className="flex space-x-4 mb-4">
                 <input
                     type="text"
@@ -93,7 +101,9 @@ export const EventList = () => {
                 ))}
             </div>
 
+            {/* Pagination Controls */}
             <div className="mt-8 flex justify-between items-center">
+                {/* Previous page button */}
                 <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
@@ -102,6 +112,7 @@ export const EventList = () => {
                     Previous
                 </button>
 
+                {/* Page number links */}
                 <div className="flex space-x-2">
                     {Array.from({ length: totalPages }, (_, index) => (
                         <button
@@ -114,6 +125,7 @@ export const EventList = () => {
                     ))}
                 </div>
 
+                {/* Next page button */}
                 <button
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
@@ -125,3 +137,15 @@ export const EventList = () => {
         </div>
     );
 };
+
+const EventPage = () => {
+    return (
+        <Routes>
+            <Route path="/" element={<EventList />} />
+            <Route path="/:id" element={<EventDetail />} />
+            <Route path="/oauth2/callback" element={<GoogleAuthCallback />} />
+        </Routes>
+    );
+};
+
+export default EventPage;

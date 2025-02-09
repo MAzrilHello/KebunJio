@@ -1,7 +1,6 @@
 {
   "name": "kebunjio-web",
   "version": "1.0.0",
-  "proxy": "http://localhost:8080",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -9,7 +8,6 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
-    "@react-oauth/google": "^0.12.1",
     "bootstrap": "^5.3.3",
     "kebunjio-web": "file:",
     "react": "^18.2.0",
@@ -28,8 +26,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@babel/preset-react": "^7.26.3"
   }
 }

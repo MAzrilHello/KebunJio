@@ -7,6 +7,7 @@ import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
 import placeholderPostImage from '../../../media/plant.jpg';
 
+
 const FullPost = ({post}) => {
     return(
         <div>
@@ -14,16 +15,16 @@ const FullPost = ({post}) => {
                 <Container>
                     <Row><PostHeader post={post}/></Row>
                     <Row>
-                        <b>{post.Title}</b>
+                        <b>{post.title}</b>
                         <div>
-                            <span className="tag-class">{post.PostCategory}</span>
+                            <span className="tag-class">{post.tag}</span>
                         </div>
                         {post.hasImage?(
                             <Image src={placeholderPostImage} className="post-image"></Image>
                         ):(
                             <div></div>
                         )}
-                        <p>{post.Content}</p>
+                        <p>{post.content}</p>
                     </Row>
                     <Row>
                         <Col>

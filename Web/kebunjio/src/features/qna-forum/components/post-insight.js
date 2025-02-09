@@ -4,8 +4,7 @@ import Row from 'react-bootstrap/Row';
 import Col from "react-bootstrap/Col";
 
 const PostInsight = ({upvote, comment, hasLiked}) => {
-
-    const [postLiked, setPostLiked] = useState(false)
+    const [postLiked, setPostLiked] = useState(hasLiked)
     const [currentUpvote, setCurrentUpvote] = useState(upvote)
 
     const handleUpvote = () => {

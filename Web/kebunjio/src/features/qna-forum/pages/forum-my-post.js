@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import Appbar from '../../../components/Appbar'
 import MenuSidebar from '../components/menu-sidebar'
 import '../styling/forum-page.css'
@@ -6,54 +6,65 @@ import PostSneakPeak from '../components/post-sneak-peek';
 import { useNavigate } from "react-router-dom";
 
 function ForumMyPage() {
-  const [posts, setPosts] = useState([])
-    
-    useEffect(() => {
-      async function fetchData() {
-          const postsRes = await fetch("/dummy-data/post.json");
-          const upvotesRes = await fetch("/dummy-data/upvote.json");
-          const usersRes = await fetch("/dummy-data/user.json");
-          const commentRes = await fetch("/dummy-data/reply.json");
-  
-          const posts = await postsRes.json()
-          const upvotes = await upvotesRes.json()
-          const users = await usersRes.json()
-          const comment = await commentRes.json()
-
-          const filteredPost = posts.filter(post => post.UserId==1)
-  
-          // Count upvotes per post
-          const upvoteCount = upvotes.reduce((acc, { postId }) => {
-              acc[postId] = (acc[postId] || 0) + 1;
-              return acc;
-          }, {})
-  
-          // Count replies per post
-          const commentCount = comment.reduce((acc, { postId }) => {
-              acc[postId] = (acc[postId] || 0) + 1;
-              return acc;
-          }, {})
-  
-          // Merge data
-          const mergedPosts = filteredPost.map(post => ({
-              ...post,
-              username: users.find(user => user.id === post.UserId)?.username || "Unknown",
-              upvote: upvoteCount[post.Id] || 0,
-              comment: commentCount[post.Id] || 0
-          }))
-          console.log(mergedPosts)
-  
-          setPosts(mergedPosts)
-      }
-  
-      fetchData()
-  }, []);
-
   let navigate = useNavigate();
 
   const routeChange = (post) =>{ 
-    navigate(`/forum/post/?id=${post.Id}`,{state:{post: post}});
+    navigate(`/forum/post/?id=${post.id}`, { state: { post } });
   }
+
+    /*TODO: implement call to API using the below useEffect */
+  /* const [posts, setPosts] = useState([]) 
+    useEffect(() => {
+        const fetchTopTenPost = async () => {
+            try{
+              const response = await fetch(api);
+              const data = await response.json();
+              setPosts(data.posts)
+            } catch (error) {
+              console.error("Error fetching top post", error)
+            }
+          }
+      })
+
+  */
+
+    //dummy data for now
+    const posts = [{
+      id: 1,
+      username: "Kelly",
+      time: new Date("2025-01-27").toDateString(),
+      title: "What is wrong with my cabbage",
+      tag: "herb",
+      content: "Can anyone tell me what's wrong with my cabbage?",
+      upvote: 50,
+      comment: 12,
+      hasLiked: true,
+      hasImage: true,
+    },
+    {
+      id: 2,
+      username: "Yasmine",
+      time: new Date("2025-01-28").toDateString(),
+      title: "What is wrong with my tomato",
+      content: "Can anyone tell me what's wrong with my tomato?",
+      tag: "herb",
+      upvote: 40,
+      comment: 13,
+      hasLiked: false,
+      hasImage: false,
+    },
+    {
+      id: 3,
+      username: "KY",
+      time: new Date("2025-01-29").toDateString(),
+      title: "What is wrong with my spinach",
+      content: "Can anyone tell me what's wrong with my spinach?",
+      tag: "herb",
+      upvote: 30,
+      comment: 14,
+      hasLiked: true,
+      hasImage: true,
+    }]
 
   return (
     <div>

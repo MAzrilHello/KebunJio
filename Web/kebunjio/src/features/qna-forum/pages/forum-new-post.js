@@ -16,7 +16,7 @@ function ForumNewPost() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value })
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleFileChange = (e) => {
@@ -24,37 +24,13 @@ function ForumNewPost() {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     //if all are filled
     if(formData.category!==''&&formData.title!==''&&formData.question!==''){
-      const requestData = {
-        Title: formData.title,
-        Content: formData.question,
-        PostCategory: formData.category,
-        PublishedDateTime: new Date(),
-        UserId: 1 //need to update later, temporary value
-      }
-      console.log(requestData)
-      alert("Created post!")
-      /*API Implementation
-      fetch('https://', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestData),
-        })
-        .then(response => response.json())  // Parse the response to JSON
-        .then(data => {
-            console.log('Success:', data)
-        })
-        .catch((error) => {
-            console.error('Error:', error)
-        })
-      
-      */
-  }
-}
+      console.log('Form submitted:', formData);
+      alert('Post created successfully!');
+    }
+  };
 
   const resetPost = (e) => {
     setFormData({ category: '', title: '', question: '', image: null })
@@ -143,4 +119,4 @@ function ForumNewPost() {
   );
 }
 
-export default ForumNewPost
+export default ForumNewPost;
