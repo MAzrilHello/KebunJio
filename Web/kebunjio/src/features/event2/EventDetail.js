@@ -16,11 +16,10 @@ const AdminEventDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [event, setEvent] = useState(null);
-  //chingnam's code, do not delete
-  //const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    /*
+    
     const fetchEventDetail = async () => {
       try {
         const data = await eventService.getEventById(id);
@@ -31,34 +30,25 @@ const AdminEventDetail = () => {
       } finally {
         setLoading(false);
       }
-    };*/
+    };
 
-    //chingnam's code, do not delete
-    //fetchEventDetail();
+  fetchEventDetail();
 
-    //kelly's code, can delete after connect to backend
-    async function fetchData(){
-      const fetchedEvent = location.state?.event
-      console.log(fetchedEvent)
-      setEvent(fetchedEvent)
-    }
-    fetchData()
   }, [id, location.state, navigate]);
 
   const handleBack = () => {
     navigate('/admin/events');
   }
 
-  //chingnam's code, do not delete
   /*
   const handleAddToCalendar = () => {
     console.log("Add to Google Calendar clicked");
   };*/
 
-  /*
+  
   if (loading) {
-    return <div>Loading...</div>;
-  }*/
+    return <div><Appbar/>Loading...</div>;
+  
 
   return (
     <div>
@@ -71,8 +61,8 @@ const AdminEventDetail = () => {
               {/* 左侧图片 */}
               <div className="event-detail-image">
                 <img src={placeholderImage}/>
-                {//Chingnam's code, do not delete
-                /*event?.picture ? (
+                {
+                event?.picture ? (
                   <img
                     src={`http://localhost:8080/api/events/images/${event.picture}`}
                     alt={event.name}
@@ -80,7 +70,7 @@ const AdminEventDetail = () => {
                   />
                 ) : (
                   <div className="no-image">No image available</div>
-                )*/}
+                )}
               </div>
 
               {/* 右侧文字内容 */}

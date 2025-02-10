@@ -25,7 +25,7 @@ const LoginPage = () => {
                     const user = response.data;
                     setAuthUser(user)
                     setIsLoggedIn(true)
-                    if(user.isAdmin===true){
+                    if(user.admin===true){
                         setIsAdmin(true)
                     }
                     else{

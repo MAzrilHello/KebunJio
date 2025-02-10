@@ -45,6 +45,7 @@ export const EventList = () => {
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-screen">
+                <Appbar/>
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600" />
             </div>
         );
@@ -53,6 +54,8 @@ export const EventList = () => {
     if (error) {
         return (
             <div className="container mx-auto px-4 py-8 text-center">
+                <Appbar/>
+
                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
                     {error}
                 </div>
