@@ -199,6 +199,7 @@ const AddToGoogleCalendar = ({ event }) => {
       // 如果包含，弹出提示框
       setShowAlreadyAddedMessage(true);
       setLoading(false); // 结束加载状态
+      window.open("https://calendar.google.com/calendar/u/0/r?pli=1", "_blank");
       return; // 结束函数，不进行后续操作
     }
 
