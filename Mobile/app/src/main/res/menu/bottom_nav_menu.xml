@@ -2,17 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/my_plants_item"
+        android:icon="@drawable/icons8_plant_48"
         android:title="My Plants"/>
     <item
         android:id="@+id/reminder_item"
+        android:icon="@drawable/icons8_calendar_50"
         android:title="My Reminders"/>
     <item
         android:id="@+id/activity_log_item"
+        android:icon="@drawable/icons8_alarm_50"
         android:title="Activity Logs"/>
     <item
         android:id="@+id/guide_item"
+        android:icon="@drawable/icons8_book_50"
         android:title="Guide"/>
     <item
         android:id="@+id/settings_item"
+        android:icon="@drawable/icons8_settings_50"
         android:title="Settings"/>
 </menu>
