@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
+import Appbar from '../../components/Appbar';
 import EventCard from './components/EventCard';
 import EventDetail from './components/EventDetail';
 import GoogleAuthCallback from './components/GoogleAuthCallback';
@@ -140,11 +141,14 @@ const EventList = () => {
 
 const EventPage = () => {
     return (
-        <Routes>
-            <Route path="/" element={<EventList />} />
-            <Route path="/:id" element={<EventDetail />} />
-            <Route path="/oauth2/callback" element={<GoogleAuthCallback />} />
-        </Routes>
+        <div>
+            <Appbar/>
+            <Routes>
+                <Route path="/" element={<EventList />} />
+                <Route path="/:id" element={<EventDetail />} />
+                <Route path="/oauth2/callback" element={<GoogleAuthCallback />} />
+            </Routes>
+        </div>
     );
 };
 
