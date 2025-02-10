@@ -142,4 +142,9 @@ class ChoosePlantToViewFragment : Fragment() {
             Log.d("ChoosePlantToViewFragment","Adapter not initialised, skipping reload")
         }
     }
+
+    public fun invalidateCookies() {
+        this.sessionCookie = ""
+        plantListAdapter?.invalidateCookies()
+    }
 }

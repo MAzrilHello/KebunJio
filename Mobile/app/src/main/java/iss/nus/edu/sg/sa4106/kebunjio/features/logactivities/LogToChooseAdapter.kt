@@ -154,6 +154,10 @@ class LogToChooseAdapter(private val context: Context,
         return _view
     }
 
+    public fun invalidateCookies() {
+        this.sessionCookie = ""
+    }
+
     //protected fun requestImageDL(imgURL: String, position: Int) {
     //    val intent = Intent(getContext(), DownloadImageService::class.java)
     //    intent.setAction("download_file_id")
