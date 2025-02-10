@@ -15,7 +15,7 @@ const LoginPage = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        axios.post('http://localhost:8080/api/Users/login', {
+        axios.post('http://localhost:8080/api/users/login', {
             emailOrUsername,
             password
         })
