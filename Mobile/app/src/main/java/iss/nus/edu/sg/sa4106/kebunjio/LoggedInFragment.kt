@@ -145,6 +145,7 @@ class LoggedInFragment : Fragment() {
 
         loggedUser = LoggedInFragmentArgs.fromBundle(requireArguments()).loggedUser
         sessionCookie = LoggedInFragmentArgs.fromBundle(requireArguments()).sessionCookie
+        settingsFragment.loadNewData(this)
         Log.d("LoggdInFragment","User Id: ${loggedUser!!.id}")
         Log.d("LoggdInFragment","Username: ${loggedUser!!.username}")
 
@@ -252,5 +253,13 @@ class LoggedInFragment : Fragment() {
             text, length
         )
         msg.show()
+    }
+
+
+    public fun invalidateCookies() {
+        this.sessionCookie = ""
+        settingsFragment.invalidateCookies()
+        logToViewFragment.invalidateCookies()
+        plantFragment.invalidateCookies()
     }
 }

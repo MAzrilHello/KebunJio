@@ -140,5 +140,8 @@ class PlantToChooseAdapter(private val context: Context,
         return _view
     }
 
+    public fun invalidateCookies() {
+        this.sessionCookie = ""
+    }
 
 }

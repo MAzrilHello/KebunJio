@@ -117,4 +117,9 @@ class ChooseLogToViewFragment : Fragment() {
                                     plantIdToNameDict)
         actLogList.adapter = actLogListAdapter
     }
+
+    public fun invalidateCookies() {
+        this.sessionCookie = ""
+        actLogListAdapter?.invalidateCookies()
+    }
 }
