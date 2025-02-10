@@ -2,69 +2,56 @@ package iss.nus.edu.sg.sa4106.KebunJio.Models;
 
 import java.time.LocalDateTime;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-@Document(collection="Comment")
 public class Comment {
-	@Id
-	private String id;
 	
-	private String postId;
-	private String userId;
-	private String commentContent;
-	private int likeCount;
-	private int dislikeCount;
+	private int postId;
+	private String title;
+	private String content;
+	private int userId;
+	private String questionStatus;
 	private LocalDateTime publishedDateTime;
+	private boolean answerSolved;
 	
 	public Comment() {}
 
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getPostId() {
+	public int getPostId() {
 		return postId;
 	}
 
-	public void setPostId(String postId) {
+	public void setPostId(int postId) {
 		this.postId = postId;
 	}
 
-	public String getUserId() {
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public int getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(int userId) {
 		this.userId = userId;
 	}
 
-	public String getCommentContent() {
-		return commentContent;
+	public String getQuestionStatus() {
+		return questionStatus;
 	}
 
-	public void setCommentContent(String commentContent) {
-		this.commentContent = commentContent;
-	}
-
-	public int getLikeCount() {
-		return likeCount;
-	}
-
-	public void setLikeCount(int likeCount) {
-		this.likeCount = likeCount;
-	}
-
-	public int getDislikeCount() {
-		return dislikeCount;
-	}
-
-	public void setDislikeCount(int dislikeCount) {
-		this.dislikeCount = dislikeCount;
+	public void setQuestionStatus(String questionStatus) {
+		this.questionStatus = questionStatus;
 	}
 
 	public LocalDateTime getPublishedDateTime() {
@@ -75,7 +62,13 @@ public class Comment {
 		this.publishedDateTime = publishedDateTime;
 	}
 
+	public boolean isAnswerSolved() {
+		return answerSolved;
+	}
 
+	public void setAnswerSolved(boolean answerSolved) {
+		this.answerSolved = answerSolved;
+	}
 	
 	
 
