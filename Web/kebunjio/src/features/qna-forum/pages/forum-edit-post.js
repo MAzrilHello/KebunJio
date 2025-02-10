@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import Appbar from '../../../components/Appbar'
-import MenuSidebar from '../components/menu-sidebar'
-import '../styling/forum-page.css'
+import Appbar from '../../../components/Appbar';
+import MenuSidebar from '../components/menu-sidebar';
+import '../styling/forum-page.css';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useLocation } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 
 function ForumEditPost() {
-
+  const { authUser } = useAuth();
   const location = useLocation();
-  const post = location.state?.post; 
+  const post = location.state?.post;
 
   const [formData, setFormData] = useState({
     category: "",
     title: "",
     question: "",
+    avatarUrl: authUser?.avatarUrl || "/default-avatar.png",
   });
 
   useEffect(() => {
@@ -23,9 +25,10 @@ function ForumEditPost() {
         category: post.PostCategory || "",
         title: post.Title || "",
         question: post.Content || "",
+        avatarUrl: post.avatarUrl || authUser?.avatarUrl || "/default-avatar.png",
       });
     }
-  }, [post]);
+  }, [post, authUser]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -37,122 +40,108 @@ function ForumEditPost() {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    //if all are filled
-    if(formData.category!==''&&formData.title!==''&&formData.question!==''){
+    e.preventDefault();
+    if (formData.category !== '' && formData.title !== '' && formData.question !== '') {
       const requestData = {
         Id: post.Id,
         Title: formData.title,
         Content: formData.question,
         PostCategory: formData.category,
         PublishedDateTime: new Date(),
-        UserId: post.UserId
-      }
-      console.log(requestData)
-      alert("Updated post!")
-      /*API Implementation
-      fetch('https://', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestData),
-        })
-        .then(response => response.json())  // Parse the response to JSON
-        .then(data => {
-            console.log('Success:', data)
-        })
-        .catch((error) => {
-            console.error('Error:', error)
-        })
-      
-      */
+        UserId: post.UserId,
+        avatarUrl: formData.avatarUrl,
+      };
+      console.log(requestData);
+      alert("Updated post!");
     }
   };
 
-  const resetPost = (e) => {
-    setFormData({ category: '', title: '', question: '', image: null })
-  }
+  const resetPost = () => {
+    setFormData({ category: '', title: '', question: '', image: null });
+  };
 
   return (
-    <div>
-      <Appbar/>
-      <div className="page-container">
-        <div className="menu-sidebar">
-            <MenuSidebar/>
-        </div>
-        <div className="main-content">
-          <p className="page-header">Edit post</p>
-          <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="category">
-              <Form.Label>Select category</Form.Label>
-              <Form.Select
-                name="category"
-                value={formData.category}
-                onChange={handleInputChange}
-                required
-                className="text-area"
-              >
-                <option value="">Select category</option>
-                <option value="herb">Herb</option>
-                <option value="leafy-vegetable">Leafy vegetables</option>
-                <option value="fruit-vegetable">Fruit vegetables</option>
-                <option value="fruit">Fruit</option>
-                <option value="tuber-roots">Tuber and Roots</option>
-                <option value="vines-climbers">Vines and Climbers</option>
-                <option value="others">Others</option>
-              </Form.Select>
-            </Form.Group>
-
-            <Form.Group controlId="title">
-              <Form.Label>Title</Form.Label>
-              <Form.Control
-                as="textarea"
-                placeholder="Insert title here"
-                name="title"
-                value={formData.title}
-                onChange={handleInputChange}
-                required
-                className="text-area"
-              />
-            </Form.Group>
-
-            <Form.Group controlId="question">
-              <Form.Label>Question</Form.Label>
-              <Form.Control
-                as="textarea"
-                placeholder="Type your question here"
-                name="question"
-                value={formData.question}
-                onChange={handleInputChange}
-                required
-                className="text-area"
-              />
-
-            </Form.Group>
-
-            <Form.Group controlId="image">
-              <Form.Label>Upload image</Form.Label>
-              <Form.Control
-                type="file"
-                name="image"
-                onChange={handleFileChange}
-                className="text-area"
-              />
-            </Form.Group>
-
-            <div style={{marginTop:"32px"}}>
-              <Button variant="secondary" type="reset" onClick={resetPost}>
-                Cancel
-              </Button>
-              <Button style={{marginLeft:"8px"}} variant="primary" type="submit">
-                Post
-              </Button>
+      <div>
+        <Appbar avatarUrl={formData.avatarUrl} />
+        <div className="page-container">
+          <div className="menu-sidebar">
+            <MenuSidebar />
+          </div>
+          <div className="main-content">
+            <p className="page-header">Edit post</p>
+            <div className="edit-post-avatar-container">
+              <img src={formData.avatarUrl} alt="User Avatar" className="edit-post-avatar" />
+              <span>{authUser?.username || "Unknown User"}</span>
             </div>
-          </Form>
+            <Form onSubmit={handleSubmit}>
+              <Form.Group controlId="category">
+                <Form.Label>Select category</Form.Label>
+                <Form.Select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleInputChange}
+                    required
+                    className="text-area"
+                >
+                  <option value="">Select category</option>
+                  <option value="herb">Herb</option>
+                  <option value="leafy-vegetable">Leafy vegetables</option>
+                  <option value="fruit-vegetable">Fruit vegetables</option>
+                  <option value="fruit">Fruit</option>
+                  <option value="tuber-roots">Tuber and Roots</option>
+                  <option value="vines-climbers">Vines and Climbers</option>
+                  <option value="others">Others</option>
+                </Form.Select>
+              </Form.Group>
+
+              <Form.Group controlId="title">
+                <Form.Label>Title</Form.Label>
+                <Form.Control
+                    as="textarea"
+                    placeholder="Insert title here"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleInputChange}
+                    required
+                    className="text-area"
+                />
+              </Form.Group>
+
+              <Form.Group controlId="question">
+                <Form.Label>Question</Form.Label>
+                <Form.Control
+                    as="textarea"
+                    placeholder="Type your question here"
+                    name="question"
+                    value={formData.question}
+                    onChange={handleInputChange}
+                    required
+                    className="text-area"
+                />
+              </Form.Group>
+
+              <Form.Group controlId="image">
+                <Form.Label>Upload image</Form.Label>
+                <Form.Control
+                    type="file"
+                    name="image"
+                    onChange={handleFileChange}
+                    className="text-area"
+                />
+              </Form.Group>
+
+              <div style={{ marginTop: "32px" }}>
+                <Button variant="secondary" type="reset" onClick={resetPost}>
+                  Cancel
+                </Button>
+                <Button style={{ marginLeft: "8px" }} variant="primary" type="submit">
+                  Post
+                </Button>
+              </div>
+            </Form>
+          </div>
         </div>
       </div>
-    </div>
   );
 }
 

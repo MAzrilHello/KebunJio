@@ -119,6 +119,11 @@ public class UserProfileController {
     	sessionObj.setAttribute("loggedInUser", updateUser);
     	return new ResponseEntity<>(HttpStatus.OK);
     }
+	@PostMapping("/logout")
+	public ResponseEntity<String> logout(HttpSession session) {
+		session.invalidate();
+		return ResponseEntity.ok("User logged out successfully");
+	}
 //    public String updateProfile(
 //            @RequestParam String username,
 //            @RequestParam String email,

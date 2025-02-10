@@ -10,63 +10,62 @@ import MenuSidebar from "../components/menu-sidebar";
 import "../styling/forum-page.css";
 
 const Post = () => {
-    const location = useLocation()
+    const location = useLocation();
     const [post, setPost] = useState(null);
     const [comments, setComments] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                //fetch post
-                const fetchedPost = location.state.post
-                setPost(fetchedPost)
+                // 从 `location.state` 获取帖子信息
+                const fetchedPost = location.state.post;
 
-                const usersRes = await fetch("/dummy-data/user.json")
-                const commentsRes = await fetch("/dummy-data/reply.json")
-                const replyLikeRes = await fetch("/dummy-data/reply_like.json")
-                const replyDislikeRes = await fetch("/dummy-data/reply_dislike.json")
-    
-                const usersData = await usersRes.json()
-                const commentsData = await commentsRes.json()
-                const replyLikes = await replyLikeRes.json()
-                const replyDislikes = await replyDislikeRes.json()
+                const usersRes = await fetch("/dummy-data/user.json");
+                const commentsRes = await fetch("/dummy-data/reply.json");
+                const replyLikeRes = await fetch("/dummy-data/reply_like.json");
+                const replyDislikeRes = await fetch("/dummy-data/reply_dislike.json");
 
+                const usersData = await usersRes.json();
+                const commentsData = await commentsRes.json();
+                const replyLikes = await replyLikeRes.json();
+                const replyDislikes = await replyDislikeRes.json();
 
-                //filtered comment
-                const filteredComments = commentsData.filter((comment) => comment.postId === fetchedPost.Id) || [];
+                const postUser = usersData.find(user => user.id === fetchedPost.UserId);
+                fetchedPost.avatarUrl = postUser?.avatarUrl || "/default-avatar.png";
 
-                // Count likes per reply
+                setPost(fetchedPost);
+
+                const filteredComments = commentsData.filter(comment => comment.postId === fetchedPost.Id) || [];
+
                 const likeCount = replyLikes.reduce((like, { replyId }) => {
-                    like[replyId] = (like[replyId] || 0) + 1
+                    like[replyId] = (like[replyId] || 0) + 1;
                     return like;
-                }, {})
-    
-                // Count dislikes per reply
+                }, {});
+
                 const dislikeCount = replyDislikes.reduce((dislike, { replyId }) => {
-                    dislike[replyId] = (dislike[replyId] || 0) + 1
+                    dislike[replyId] = (dislike[replyId] || 0) + 1;
                     return dislike;
-                }, {})
-    
-                const mergedComments = (filteredComments || []).map((comment) => ({
-                    ...comment,
-                    username: usersData.find(user => user.id === comment.userId)?.username || "Unknown",
-                    like: likeCount[comment.replyId] || 0,
-                    dislike: dislikeCount[comment.replyId] || 0,
-                }));
-    
-                setComments(mergedComments)
-    
+                }, {});
+
+                const mergedComments = (filteredComments || []).map((comment) => {
+                    const commentUser = usersData.find(user => user.id === comment.userId);
+                    return {
+                        ...comment,
+                        username: commentUser?.username || "Unknown",
+                        avatarUrl: commentUser?.avatarUrl || "/default-avatar.png",
+                        like: likeCount[comment.replyId] || 0,
+                        dislike: dislikeCount[comment.replyId] || 0,
+                    };
+                });
+
+                setComments(mergedComments);
+
             } catch (error) {
-                console.error("Error fetching data", error)
+                console.error("Error fetching data", error);
             }
         };
         fetchData();
     }, []);
-
-    /* Check if post is received
-    useEffect(() => {
-        console.log("Fetched Post: ", post);
-    }, [post]);*/
 
     const [replyInput, setReplyInput] = useState("");
 
@@ -77,34 +76,14 @@ const Post = () => {
     const handleSubmitReply = () => {
         const requestData = {
             reply: replyInput
-        }
-        console.log(JSON.stringify(requestData))
-        setReplyInput("")
-        alert("Reply sent!")
-
-        //
-        /**
-         * 
-        API implementation
-        fetch('https://', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestData),
-        })
-        .then(response => response.json())  // Parse the response to JSON
-        .then(data => {
-            console.log('Success:', data)
-        })
-        .catch((error) => {
-            console.error('Error:', error)
-        })
-        */
+        };
+        console.log(JSON.stringify(requestData));
+        setReplyInput("");
+        alert("Reply sent!");
     };
 
     const handleClear = () => {
-        setReplyInput("")
+        setReplyInput("");
     };
 
     return (

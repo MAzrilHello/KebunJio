@@ -5,46 +5,43 @@ import Row from 'react-bootstrap/Row';
 import Col from "react-bootstrap/Col";
 import Dropdown from 'react-bootstrap/Dropdown';
 
-import '../styling/forum-page.css'
+import '../styling/forum-page.css';
 import placeholderImage from '../../../media/placeholder.jpg';
 import { useNavigate } from "react-router-dom";
-
 import { useAuth } from "../../../context/AuthContext";
 
-const PostHeader = ({post}) =>{
-    const navigate = useNavigate()
+const PostHeader = ({ post }) => {
+    const navigate = useNavigate();
+    const { authUser, isAdmin } = useAuth();
     
-    const {authUser,isAdmin} = useAuth()
+    const avatarUrl = post.avatarUrl ? post.avatarUrl : placeholderImage;
 
     const deletePost = () => {
-        alert("Delete post")
-        const requestData = {
-            Id: post.Id
-        }
-        /*API Implementation
-            fetch('https://', {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestData),
-            })
-            .then(response => response.json())  // Parse the response to JSON
-            .then(data => {
-                console.log('Success:', data)
-            })
-            .catch((error) => {
-                console.error('Error:', error)
-            })
-        
+        alert("Delete post");
+        const requestData = { Id: post.Id };
+
+        /* API Implementation
+        fetch('https://your-api-endpoint/forum/post/delete', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestData),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
         */
-    }
-    return(
+    };
+
+    return (
         <Container className="post-header">
             <Row className="align-items-center">
                 <Col xs="auto">
                     <Image
-                        src={placeholderImage}
+                        src={avatarUrl}
                         roundedCircle
                         className="post-header-avatar"
                     />
@@ -56,30 +53,30 @@ const PostHeader = ({post}) =>{
                     </div>
                 </Col>
                 <Col xs="auto">
-                
-                {
-                    post.username===authUser.Username?(<Dropdown>
-                        <Dropdown.Toggle className="three-dot">
-                        </Dropdown.Toggle>
+                    {post.username === authUser.Username && (
+                        <Dropdown>
+                            <Dropdown.Toggle className="three-dot"></Dropdown.Toggle>
                             <Dropdown.Menu>
-                                <Dropdown.Item onClick={()=>{navigate(`/forum/${post.Id}/edit`, {state:{post}})}}>Edit Post</Dropdown.Item>
-                                <Dropdown.Item onClick={()=>{alert("Delete post")}}>Delete Post</Dropdown.Item>
+                                <Dropdown.Item onClick={() => navigate(`/forum/${post.Id}/edit`, { state: { post } })}>
+                                    Edit Post
+                                </Dropdown.Item>
+                                <Dropdown.Item onClick={deletePost}>Delete Post</Dropdown.Item>
                             </Dropdown.Menu>
-                        </Dropdown>):(<div></div>)
-                }
-                {
-                    isAdmin?(<Dropdown>
-                        <Dropdown.Toggle className="three-dot">
-                        </Dropdown.Toggle>
+                        </Dropdown>
+                    )}
+
+                    {isAdmin && (
+                        <Dropdown>
+                            <Dropdown.Toggle className="three-dot"></Dropdown.Toggle>
                             <Dropdown.Menu>
-                                <Dropdown.Item onClick={()=>{alert("Delete post")}}>Delete Post</Dropdown.Item>
+                                <Dropdown.Item onClick={deletePost}>Delete Post</Dropdown.Item>
                             </Dropdown.Menu>
-                        </Dropdown>):(<div></div>)
-                }
+                        </Dropdown>
+                    )}
                 </Col>
             </Row>
         </Container>
-    )
-}
+    );
+};
 
-export default PostHeader
+export default PostHeader;

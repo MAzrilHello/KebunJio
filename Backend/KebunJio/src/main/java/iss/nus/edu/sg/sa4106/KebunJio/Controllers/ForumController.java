@@ -1,5 +1,6 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Controllers;
 
+import iss.nus.edu.sg.sa4106.KebunJio.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,8 @@ import iss.nus.edu.sg.sa4106.KebunJio.Services.PostService;
 import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
@@ -38,14 +41,27 @@ public class ForumController {
 	
 	@Autowired
 	private CommentService commentService;
+	private UserService userService;
 	
 	//URL: /Forum
 	@GetMapping
-	public ResponseEntity getAllPosts() {
+	public ResponseEntity<List<PostWithCommentDAO>> getAllPosts() {
 		List<Post> postList = postService.getAllPosts();
-		return new ResponseEntity<>(postList,HttpStatus.OK);
+
+		List<PostWithCommentDAO> postsWithAvatars = postList.stream().map(post -> {
+			Optional<User> userOptional = userService.getUserById(post.getUserId());
+
+			String avatarUrl = userOptional.map(User::getAvatarUrl).orElse("/default-avatar.png"); // 处理 Optional
+
+			List<Comment> comments = commentService.getCommentsByPostId(post.getId());
+
+			return new PostWithCommentDAO(post, comments, avatarUrl);
+		}).collect(Collectors.toList());
+
+		return new ResponseEntity<>(postsWithAvatars, HttpStatus.OK);
 	}
-	
+
+
 	// URL:/Forum/Post/Create
 	// User info store in Session
 	@PostMapping("/Post/Create")
@@ -68,18 +84,21 @@ public class ForumController {
 	
 	// URL: /Forum/Post/{id}
 	@GetMapping("/Post/{id}")
-	public ResponseEntity getPostById(@PathVariable String id) {
+	public ResponseEntity<PostWithCommentDAO> getPostById(@PathVariable String id) {
 		Post post = postService.getPostByPostId(id);
 		List<Comment> commentList = commentService.getCommentsByPostId(id);
-		
-		if(post!=null) {
-			PostWithCommentDAO postWithComments = new PostWithCommentDAO(post,commentList);
-			return new ResponseEntity<>(postWithComments,HttpStatus.OK);
-		}else {
+
+		if (post != null) {
+			Optional<User> userOptional = userService.getUserById(post.getUserId());
+			String avatarUrl = userOptional.map(User::getAvatarUrl).orElse("/default-avatar.png"); // 处理 Optional
+
+			return new ResponseEntity<>(new PostWithCommentDAO(post, commentList, avatarUrl), HttpStatus.OK);
+		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
+
 	// URL: /Forum/Post/{id}
 	@PutMapping("/Post/{id}")
 	public ResponseEntity updatePostById(@PathVariable String id,@RequestBody PostDAO newPost,HttpSession sessionObj) {
