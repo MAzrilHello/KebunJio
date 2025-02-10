@@ -225,7 +225,6 @@ class LoggedInFragment : Fragment() {
     public fun tryPullAllUserPlants() {
         userActivityLogReady = false
         userPlantListReady = false
-        userReminderReady = false
         val intent = Intent(activity, PlantSpeciesLogService::class.java)
         intent.setAction("get_plants")
         intent.putExtra("id",loggedUser!!.id)
@@ -246,16 +245,6 @@ class LoggedInFragment : Fragment() {
         speciesReady = false
         val intent = Intent(activity, PlantSpeciesLogService::class.java)
         intent.setAction("get_species")
-        activity?.startService(intent)
-    }
-
-
-    private fun tryPullAllReminders() {
-        userReminderReady = false
-        val intent = Intent(activity, PlantSpeciesLogService::class.java)
-        intent.setAction("get_reminders")
-        intent.putExtra("id",loggedUser!!.id)
-        intent.putExtra("byUser",true)
         activity?.startService(intent)
     }
 
