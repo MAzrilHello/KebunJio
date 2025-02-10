@@ -81,12 +81,16 @@ class LoggedInFragment : Fragment() {
                 userPlantListReady = true
                 Log.d("LoggedInFragmentReceiver","user plant list size: ${usersPlantList.size}")
                 tryPullAllUsersActivities()
+                tryPullAllReminders()
             } else if (action == "get_activity_log_byuser") {
                 usersActivityLogList = intent.getSerializableExtra("logList") as ArrayList<ActivityLog>
                 userActivityLogReady = true
                 Log.d("LoggedInFragmentReceiver","user activity log list size: ${usersActivityLogList.size}")
+            } else if (action == "get_reminders_byuser") {
+                usersReminderList = intent.getSerializableExtra("reminderList") as ArrayList<Reminder>
+                userReminderReady = true
             }
-            if (speciesReady && userPlantListReady && userActivityLogReady) {
+            if (speciesReady && userPlantListReady && userActivityLogReady && userReminderReady) {
                 postAllArraysDownloaded()
             }
         }
@@ -112,6 +116,8 @@ class LoggedInFragment : Fragment() {
         filter.addAction("get_species_all")
         //filter.addAction("get_species_byname")
         //filter.addAction("get_species_byid")
+
+        filter.addAction("get_reminders_byuser")
         registerReceiver(requireContext(), receiver, filter, ContextCompat.RECEIVER_EXPORTED)
     }
 
@@ -216,6 +222,7 @@ class LoggedInFragment : Fragment() {
     public fun tryPullAllUserPlants() {
         userActivityLogReady = false
         userPlantListReady = false
+        userReminderReady = false
         val intent = Intent(activity, PlantSpeciesLogService::class.java)
         intent.setAction("get_plants")
         intent.putExtra("id",loggedUser!!.id)
@@ -229,6 +236,16 @@ class LoggedInFragment : Fragment() {
         speciesReady = false
         val intent = Intent(activity, PlantSpeciesLogService::class.java)
         intent.setAction("get_species")
+        activity?.startService(intent)
+    }
+
+
+    private fun tryPullAllReminders() {
+        userReminderReady = false
+        val intent = Intent(activity, PlantSpeciesLogService::class.java)
+        intent.setAction("get_reminders")
+        intent.putExtra("id",loggedUser!!.id)
+        intent.putExtra("byUser",true)
         activity?.startService(intent)
     }
 
