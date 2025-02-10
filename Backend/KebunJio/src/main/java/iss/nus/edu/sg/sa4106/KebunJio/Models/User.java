@@ -1,20 +1,34 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Models;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "Users")
 public class User {
-	private int userId;
+	@Id
+
+	private String id;
+
+	@Indexed(unique = true)
 	private String username;
+
+	@Indexed(unique = true)
 	private String email;
+
 	private String phoneNumber;
 	private boolean isAdmin;
-	
+	private String password;
+
 	public User() {}
 
-	public int getUserId() {
-		return userId;
+	public String getId() {
+		return id;
 	}
 
-	public void setUserId(int userId) {
-		this.userId = userId;
+	public void setId(String id) {
+		this.id = id;
+
 	}
 
 	public String getUsername() {
@@ -48,6 +62,10 @@ public class User {
 	public void setAdmin(boolean isAdmin) {
 		this.isAdmin = isAdmin;
 	}
+
+	public String getPassword(){return password;}
+
+	public void setPassword(String password){this.password=password;}
 	
 	
 	

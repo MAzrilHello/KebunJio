@@ -1,0 +1,83 @@
+.dashboard {
+  padding: 24px 48px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: white;
+}
+
+.stat-card {
+  text-align: left;
+  background: #80ffb3;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  height: 150px;
+}
+
+.stat-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+  font-size: 24px;
+  color: #4CAF50;
+  width: 1em;
+  height: 1em;
+}
+
+.stat-number {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 8px 0;
+}
+
+.stat-change {
+  font-size: 14px;
+}
+
+.stat-change.up {
+  color: #4CAF50;
+}
+
+.stat-change.down {
+  color: #f44336;
+}
+
+h1 {
+  text-align: left;
+  margin-bottom: 24px;
+  color: #1D1B20;
+  font-size: 32px;
+}
+
+h2 {
+  margin: 8px 0;
+  font-size: 16px;
+  color: #666;
+}
+
+/* 图表卡片样式 */
+.ant-card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.ant-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.ant-card-body {
+  padding: 20px;
+}
+
+/* Element Plus 覆盖样式 */
+.el-card {
+  border: none;
+  margin-bottom: 16px;
+}
+
+.el-card__body {
+  padding: 20px;
+} 

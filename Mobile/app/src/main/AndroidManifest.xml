@@ -2,19 +2,44 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/app_icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:networkSecurityConfig="@xml/security_config"
+        android:roundIcon="@drawable/app_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.KebunJio"
         tools:targetApi="31">
 
+        <service
+            android:name=".service.mlModel.MlModelDiagnoseService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".service.mlModel.MlModelService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".service.DownloadImageService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".service.PlantSpeciesLogService"
+            android:enabled="true"
+            android:exported="true" />
 
         <activity
             android:name=".features.logactivities.LogActivitiesActivity"
@@ -26,7 +51,7 @@
             android:name=".features.viewplantdetails.ViewPlantDetailsActivity"
             android:exported="false" />
         <activity
-            android:name=".features.browseguides.BrowseGuidesActivity"
+            android:name=".features.browseguides.GuideActivity"
             android:exported="false" />
 
         <service
@@ -36,10 +61,9 @@
 
         <activity
             android:name=".features.addplant.AddPlantActivity"
-            android:exported="false" />
-        <activity android:name=".features.reminders.ReminderActivity">
-        </activity>
-
+            android:exported="false"
+            android:noHistory="true" />
+        <activity android:name=".features.reminders.ReminderActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

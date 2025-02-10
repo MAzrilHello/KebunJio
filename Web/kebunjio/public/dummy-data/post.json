@@ -1,0 +1,82 @@
+[
+  {
+    "Id": 1,
+    "UserId": 1,
+    "PublishedDateTime": "Mon Jan 27 2025",
+    "Title": "What is wrong with my cabbage",
+    "PostCategory": "herb",
+    "Content": "Can anyone tell me what's wrong with my cabbage?"
+  },
+  {
+    "Id": 2,
+    "UserId": 2,
+    "PublishedDateTime": "Tue Jan 28 2025",
+    "Title": "What is wrong with my tomato",
+    "PostCategory": "others",
+    "Content": "Can anyone tell me what's wrong with my tomato?"
+  },
+  {
+    "Id": 3,
+    "UserId": 3,
+    "PublishedDateTime": "Wed Jan 29 2025",
+    "Title": "What is wrong with my spinach",
+    "PostCategory": "herb",
+    "Content": "Can anyone tell me what's wrong with my spinach?"
+  },
+  {
+    "Id": 4,
+    "UserId": 1,
+    "PublishedDateTime": "Thu Jan 30 2025",
+    "Title": "Help with my lettuce",
+    "PostCategory": "herb",
+    "Content": "My lettuce is turning brown. What should I do?"
+  },
+  {
+    "Id": 5,
+    "UserId": 1,
+    "PublishedDateTime": "Fri Jan 31 2025",
+    "Title": "Cucumber disease?",
+    "PostCategory": "herb",
+    "Content": "My cucumber leaves have yellow spots. Any advice?"
+  },
+  {
+    "Id": 6,
+    "UserId": 2,
+    "PublishedDateTime": "Sat Feb 1 2025",
+    "Title": "My bell peppers won't grow",
+    "PostCategory": "others",
+    "Content": "My bell pepper plants are not producing fruit. Help!"
+  },
+  {
+    "Id": 7,
+    "UserId": 3,
+    "PublishedDateTime": "Sun Feb 2 2025",
+    "Title": "Mold on my strawberries",
+    "PostCategory": "others",
+    "Content": "Why are my strawberries getting moldy so quickly?"
+  },
+  {
+    "Id": 8,
+    "UserId": 1,
+    "PublishedDateTime": "Mon Feb 3 2025",
+    "Title": "My carrots are tiny",
+    "PostCategory": "herb",
+    "Content": "I harvested my carrots, but they're so small. Any tips?"
+  },
+  {
+    "Id": 9,
+    "UserId": 2,
+    "PublishedDateTime": "Tue Feb 4 2025",
+    "Title": "Pest problems on my kale",
+    "PostCategory": "others",
+    "Content": "Tiny bugs are eating my kale. How do I get rid of them?"
+  },
+  {
+    "Id": 10,
+    "UserId": 3,
+    "PublishedDateTime": "Wed Feb 5 2025",
+    "Title": "Eggplant leaves turning yellow",
+    "PostCategory": "herb",
+    "Content": "The leaves on my eggplant are turning yellow. What should I do?"
+  }
+]

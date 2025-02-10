@@ -1,0 +1,79 @@
+.page-header{
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333; 
+    margin-bottom: 10px;
+}
+
+.user-profile{
+    margin: 20px 100px auto;
+}
+
+.user-profile-card{
+    display: flex;
+    background-color: #002E14;
+    padding: 30px;
+    color: white;
+    gap: 10px;
+    min-height: 200px;
+}
+
+.user-profile-card input{
+    margin-left:10px;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.user-summary{
+    margin: 20px 100px auto;
+    font-size: 1.1rem;
+}
+
+.summary-group{
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 50px;
+}
+
+.summary-card{
+    background-color: #A3E7B6;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding:20px;
+    border-radius: 10px;
+}
+
+.summary-card svg{
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+}
+
+.icon-holder {
+    background-color: rgb(204, 243, 215);
+    border-radius: 50%; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+    margin-right: 20px;
+}
+
+.summary-title{
+    font-size:1rem;
+    margin-top:10px;
+    margin-bottom: 0;
+}
+
+.summary-number{
+    font-size:2rem;
+    font-weight: 500;
+}
+
+.user-history{
+    margin: 20px 100px auto;
+}
