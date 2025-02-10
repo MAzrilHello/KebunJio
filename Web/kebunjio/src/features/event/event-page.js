@@ -6,7 +6,7 @@ import Appbar from '../../components/Appbar';
 export const EventList = () => {
     const [events, setEvents] = useState([]);
           
-    //const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const eventsPerPage = 4;
@@ -14,19 +14,10 @@ export const EventList = () => {
     const [searchDate, setSearchDate] = useState('');
 
     useEffect(() => {
-        //zhongyun's code
-        //fetchEvents();
-
-        //kelly's code, can remove after connect with backend
-        async function fetchData(){
-            const eventsRes = await fetch("/dummy-data/event.json")
-            const eventsData = await eventsRes.json()
-            setEvents(eventsData)
-          }
-          fetchData()
+        fetchEvents();
     }, []);
 
-    /*
+    
     const fetchEvents = async () => {
         try {
             setLoading(true);
@@ -40,7 +31,7 @@ export const EventList = () => {
             setLoading(false);
         }
     };
-    */
+    
 
     const filteredEvents = events.filter((event) => {
         const matchesName = event.name.toLowerCase().includes(searchName.toLowerCase());
@@ -50,7 +41,7 @@ export const EventList = () => {
         return matchesName && matchesDate;
     });
 
-    /*
+    
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-screen">
@@ -68,7 +59,7 @@ export const EventList = () => {
             </div>
         );
     }
-    */
+    
 
     const indexOfLastEvent = currentPage * eventsPerPage;
     const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
