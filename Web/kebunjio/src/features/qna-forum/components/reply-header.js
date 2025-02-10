@@ -4,20 +4,13 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from "react-bootstrap/Col";
 import Dropdown from 'react-bootstrap/Dropdown';
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 
 import '../styling/forum-page.css'
 import placeholderImage from '../../../media/placeholder.jpg';
 
-const ReplyHeader = ({username, time}) =>{
-
-    const [isEditing, setIsEditing] = useState(false)
-
-    const onClickEdit = () =>{
-        setIsEditing = true
-    }
-
-    const onClickDelete = () => {}
+const ReplyHeader = ({username, time, onEdit, onDelete}) =>{
+    const {authUser,isAdmin} = useAuth()
 
     return(
         <Container className="post-header">
@@ -36,10 +29,29 @@ const ReplyHeader = ({username, time}) =>{
                     </div>
                 </Col>
                 <Col xs="auto">
-
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
-                        <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
-                    </svg>
+                {
+                    username===authUser.Username?(
+                        <Dropdown>
+                        <Dropdown.Toggle className="three-dot">
+                        </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={onEdit}>Edit reply</Dropdown.Item>
+                                <Dropdown.Item onClick={onDelete}>Delete reply</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    ):(<div></div>)
+                }
+                                {
+                    isAdmin?(
+                        <Dropdown>
+                        <Dropdown.Toggle className="three-dot">
+                        </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={onDelete}>Delete reply</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    ):(<div></div>)
+                }
                 </Col>
             </Row>
         </Container>

@@ -3,15 +3,17 @@ package iss.nus.edu.sg.sa4106.KebunJio.Models;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+@Document(collection = "Plant")
 public class Plant {
 	
 	@Id
     private String id;
-    private EdiblePlantSpecies ediblePlantSpecies;
-    private User user;
+    private String ediblePlantSpeciesId;
+    private String userId;
     private String name;
     private String disease;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -32,20 +34,20 @@ public class Plant {
 		this.id = id;
 	}
 
-	public EdiblePlantSpecies getEdiblePlantSpecies() {
-		return ediblePlantSpecies;
+	public String getEdiblePlantSpeciesId() {
+		return ediblePlantSpeciesId;
 	}
 
-	public void setEdiblePlantSpecies(EdiblePlantSpecies ediblePlantSpecies) {
-		this.ediblePlantSpecies = ediblePlantSpecies;
+	public void setEdiblePlantSpeciesId(String ediblePlantSpeciesId) {
+		this.ediblePlantSpeciesId = ediblePlantSpeciesId;
 	}
 
-	public User getUser() {
-		return user;
+	public String getUserId() {
+		return userId;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public String getName() {

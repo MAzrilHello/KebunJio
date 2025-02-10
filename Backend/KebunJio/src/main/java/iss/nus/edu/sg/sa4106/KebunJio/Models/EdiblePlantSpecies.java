@@ -1,7 +1,9 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Models;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "EdiblePlantSpecies")
 public class EdiblePlantSpecies {
 	@Id
     private String id;

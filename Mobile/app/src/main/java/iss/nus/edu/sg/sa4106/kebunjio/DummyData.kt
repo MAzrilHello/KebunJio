@@ -107,8 +107,8 @@ class DummyData {
             "a",
             "Bang Kwang",
             "Pachyrhizus erosus",
-            "Group 1",
             "Bang Kwang is a large, climbing vine that is harvested for its starchy tuber.",
+            "Leafy",
             "Bang Kwang watering tips",
             "Bang Kwang sunlight",
             "Bang Kwang soil type",
@@ -123,8 +123,8 @@ class DummyData {
             "b",
             "Xiao Bai Cai",
             "Brassica rapa Pak Choi Group",
-            "Group 2",
             "Xiao Bai Cai is a popular leafy vegetable used in Chinese cooking, and is typically stir-fired, blanched, or steamed.",
+            "Herbs",
             "Xiao Bai Cai watering tips",
             "Xiao Bai Cai sunlight",
             "Xiao Bai Cai soil type",
@@ -139,8 +139,8 @@ class DummyData {
             "c",
             "Winter Melon",
             "Benincasa hispida",
-            "Group 3",
             "Winter Melons are one of the most impressive crops an edible gardener can grow, with singular fruit growing as heavy as 30kg!",
+            "Tuber and Roots",
             "Winter Melon watering tips",
             "Winter Melon sunlight",
             "Winter Melon soil type",
@@ -164,7 +164,7 @@ class DummyData {
 
     public fun urlList(): MutableList<String> {
         val theList = mutableListOf<String>()
-        for (i in 0..SpeciesDummy.size-1) {
+        for (i in 0..<SpeciesDummy.size) {
             theList.add(SpeciesDummy[i].imageURL)
         }
         return theList
@@ -172,7 +172,7 @@ class DummyData {
 
     public fun idList(): MutableList<String> {
         var theList = mutableListOf<String>()
-        for (i in 0..SpeciesDummy.size-1) {
+        for (i in 0..<SpeciesDummy.size) {
             theList.add(SpeciesDummy[i].id)
         }
         return theList

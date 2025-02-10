@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 
-@Document(collection = "events")
+@Document(collection = "EventAdmin")
 public class EventAdmin {
     @Id
     private String id;

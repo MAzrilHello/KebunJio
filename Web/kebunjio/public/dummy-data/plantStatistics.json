@@ -1,0 +1,22 @@
+{
+    "date": "2025-02-08",
+    "totalUsers": 1500,
+    "totalPlantsPlanted": 4200,
+    "totalPlantsHarvested": 3200,
+    "totalDiseasesReported": 280,
+    "popularPlantTypes": {
+      "Tomato": 30,
+      "Lettuce": 25,
+      "Basil": 20,
+      "Strawberry": 15,
+      "Pepper": 10
+    },
+    "reportedDiseases": {
+      "Blight": 40,
+      "Powdery Mildew": 25,
+      "Root Rot": 20,
+      "Rust": 10,
+      "Mosaic Virus": 5
+    }
+  }
+  

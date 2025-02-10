@@ -28,11 +28,14 @@ public class EdiblePlantSpeciesService {
     	return ediblePlantSpeciesRepo.findAll();
     }
 	
-	public EdiblePlantSpecies getEdiblePlantSpeciesByEdiblePlantSpeciesId(String EdiblePlantSpeciesId) {
-		Optional<EdiblePlantSpecies> ediblePlantSpecies = ediblePlantSpeciesRepo.findById(EdiblePlantSpeciesId);
+	public EdiblePlantSpecies getEdiblePlantSpecies(String ediblePlantSpeciesId) {
+		System.out.println("id is: "+ediblePlantSpeciesId);
+		Optional<EdiblePlantSpecies> ediblePlantSpecies = ediblePlantSpeciesRepo.findById(ediblePlantSpeciesId);
 		if(ediblePlantSpecies.isPresent()) {
+			System.out.println("is present");
 			return ediblePlantSpecies.get();
 		}else {
+			System.out.println("not present");
 			return null;
 		}
 	}

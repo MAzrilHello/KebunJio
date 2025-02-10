@@ -42,23 +42,30 @@ public class EdiblePlantSpeciesController {
         }
 	}
   
-	@GetMapping("/{id}/")
-	public ResponseEntity getEdiblePlantSpeciesById(@PathVariable String id) {
-		List<EdiblePlantSpecies> ediblePlantSpeciesList = (List<EdiblePlantSpecies>) ediblePlantSpeciesService.getEdiblePlantSpeciesByEdiblePlantSpeciesId(id);
-		return new ResponseEntity<>(ediblePlantSpeciesList,HttpStatus.OK);
+	  @GetMapping("/byname/{name}")
+	  public ResponseEntity<EdiblePlantSpecies> getEdiblePlantSpeciesByName(@PathVariable String name) {
+	      // Retrieve the plant by name using the service
+	      EdiblePlantSpecies plant = ediblePlantSpeciesService.getEdiblePlantSpeciesByName(name);
+	
+	      // If the plant is not found, return a 404 response
+	      if (plant == null) {
+	          return ResponseEntity.notFound().build();
+	      }
+	
+	      // Return the name of the plant as the response
+	      return ResponseEntity.ok(plant);
+	  }
+  
+	@GetMapping("/{id}")
+	public ResponseEntity<EdiblePlantSpecies> getEdiblePlantSpeciesById(@PathVariable String id) {
+		System.out.println("id is: "+id);
+		EdiblePlantSpecies ediblePlantSpecies = ediblePlantSpeciesService.getEdiblePlantSpecies(id);
+		if (ediblePlantSpecies == null) {
+			return ResponseEntity.notFound().build();
+		} else {
+			return ResponseEntity.ok(ediblePlantSpecies);
+		}
+		
 	}
 	
-    @GetMapping("/{name}")
-    public ResponseEntity<String> getEdiblePlantSpeciesByName(@PathVariable String name) {
-        // Retrieve the plant by name using the service
-        EdiblePlantSpecies plant = ediblePlantSpeciesService.getEdiblePlantSpeciesByName(name);
-
-        // If the plant is not found, return a 404 response
-        if (plant == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        // Return the name of the plant as the response
-        return ResponseEntity.ok(plant.getName());
-    }
 }

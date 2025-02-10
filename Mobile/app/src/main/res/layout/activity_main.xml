@@ -6,5 +6,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+        <androidx.fragment.app.FragmentContainerView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/fragment_container_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            android:name=
+                "androidx.navigation.fragment.NavHostFragment"
+            app:navGraph="@navigation/nav_graph_main"
+            app:defaultNavHost="true"
+            tools:context=".MainActivity" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

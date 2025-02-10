@@ -16,7 +16,7 @@ public class UserProfilePlantHistoryService {
     private PlantHistoryRepository plantHistoryRepository;
 
 
-    public List<Plant> getPlantsByUser(User user){
-        return plantHistoryRepository.findByUser(user);
+    public List<Plant> getPlantsByUserId(String userId){
+        return plantHistoryRepository.findByUserId(userId);
     }
 }

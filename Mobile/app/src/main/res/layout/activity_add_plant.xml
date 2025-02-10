@@ -241,6 +241,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Add Plant" />
+        <Button
+            android:id="@+id/back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Back" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

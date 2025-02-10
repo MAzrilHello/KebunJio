@@ -2,22 +2,56 @@ import React, {useState} from "react";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from "react-bootstrap/Col";
+import { useAuth } from "../../../context/AuthContext";
 
 const ReplyInsight = ({cur_like, cur_dislike, has_liked, has_disliked}) => {
     const [like, setLikeNum] = useState(cur_like);
     const [hasLiked, setLiked] = useState(has_liked);
     const [dislike, setDislikeNum] = useState(cur_dislike);
     const [hasDisliked, setDisliked] = useState(has_disliked);
+    const {isAdmin} = useAuth()
 
     const handleLike = () => {
         //TODO: update to API
-        if(hasLiked){
-            setLiked(false)
-            setLikeNum(like-1)
-        }
-        else{
-            setLiked(true)
-            setLikeNum(like+1)
+        if(!isAdmin){
+            if(hasLiked){
+                setLiked(false)
+                setLikeNum(like-1)
+                /**
+             fetch('https://', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())  // Parse the response to JSON
+            .then(data => {
+                console.log('Success:', data)
+            })
+            .catch((error) => {
+                console.error('Error:', error)
+            })
+                 */
+            }
+            else{
+                setLiked(true)
+                setLikeNum(like+1)
+                                /**
+                 fetch('https://', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => response.json())  // Parse the response to JSON
+                .then(data => {
+                    console.log('Success:', data)
+                })
+                .catch((error) => {
+                    console.error('Error:', error)
+                })
+                    */
+            }
         }
     };
 
@@ -26,10 +60,40 @@ const ReplyInsight = ({cur_like, cur_dislike, has_liked, has_disliked}) => {
         if(hasDisliked){
             setDisliked(false)
             setDislikeNum(dislike-1)
+                            /**
+             fetch('https://', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())  // Parse the response to JSON
+            .then(data => {
+                console.log('Success:', data)
+            })
+            .catch((error) => {
+                console.error('Error:', error)
+            })
+                 */
         }
         else{
             setDisliked(true)
             setDislikeNum(dislike+1)
+                            /**
+             fetch('https://', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())  // Parse the response to JSON
+            .then(data => {
+                console.log('Success:', data)
+            })
+            .catch((error) => {
+                console.error('Error:', error)
+            })
+                 */
         }
     };
 

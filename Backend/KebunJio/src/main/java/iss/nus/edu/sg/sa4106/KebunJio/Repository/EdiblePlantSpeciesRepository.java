@@ -10,7 +10,7 @@ import java.util.Optional;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.EdiblePlantSpecies;
 
 public interface EdiblePlantSpeciesRepository extends MongoRepository<EdiblePlantSpecies,String> {
-	@Query("{'id': ?0}")
+	//@Query("{'id': ?0}")
 	Optional<EdiblePlantSpecies> findById(String id);
 	
 	EdiblePlantSpecies findByName(String name);

@@ -14,7 +14,11 @@
 <div class="profile-container">
     <h2>Welcome, <span th:text="${user.username}"></span></h2>
 
+<<<<<<< HEAD
+    <form action="/profile/update" method="post">
+=======
     <form action="/userProfile/update" method="post">
+>>>>>>> 517225cfa5beb57810642fcd09b63cab8c9f8fef
         <label>Username:</label>
         <input type="text" name="username" th:value="${user.username}" required>
 
@@ -38,7 +42,14 @@
         <p>Total plants planted</p>
         <h3 th:text="${totalPlanted}"></h3>
     </div>
+<<<<<<< HEAD
+    <div class="stat-box">
+        <p>Total plants harvested</p>
+        <h3 th:text="${totalHarvested}"></h3>
+    </div>
+=======
 
+>>>>>>> 517225cfa5beb57810642fcd09b63cab8c9f8fef
     <div class="stat-box">
         <p>Types of plants</p>
         <h3 th:text="${uniquePlantTypes}"></h3>

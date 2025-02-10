@@ -21,7 +21,7 @@ public class EventService {
     }
     // Change the Id to String
     public Event findByEventId(String eventId) {
-        return eventRepository.findByEventId(eventId)
+        return eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
     }
 
@@ -29,8 +29,14 @@ public class EventService {
         return eventRepository.save(event);
     }
 
-    public void deleteByEventId(String eventId) {
-        eventRepository.deleteByEventId(eventId);
+    public boolean deleteByEventId(String eventId) {
+    	Event theEvent = findByEventId(eventId);
+    	if (theEvent != null) {
+    		eventRepository.delete(theEvent);
+    		return true;
+    	}
+    	return false;
+        //eventRepository.deleteByEventId(eventId);
     }
 
     public boolean createEvent(Event event, String authorizationCode) {

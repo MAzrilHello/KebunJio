@@ -9,9 +9,12 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import iss.nus.edu.sg.sa4106.KebunJio.DAO.PostDAO;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.Post;
+import iss.nus.edu.sg.sa4106.KebunJio.Models.PostES;
+import iss.nus.edu.sg.sa4106.KebunJio.Repository.PostESRepository;
 import iss.nus.edu.sg.sa4106.KebunJio.Repository.PostRepository;
 
 /* ToDiscuss:
@@ -22,6 +25,9 @@ public class PostService {
 	@Autowired
 	private PostRepository postRepository;
 	
+	@Autowired
+	private PostESRepository postESRepository;
+	
 	//Function1: CreatePost
 	public boolean createPost(PostDAO newPostData,String userId) {
 		boolean result = false;
@@ -30,17 +36,15 @@ public class PostService {
 		// Set the new Post
 		newPost.setTitle(newPostData.title);
 		newPost.setContent(newPostData.content);
-		newPost.setQuestionStatus("Open");
-		newPost.setAnswerSolved(false);
+		newPost.setPostCategory(newPostData.postCategory);
 		newPost.setPublishedDateTime(LocalDateTime.now());
 		newPost.setUserId(userId);
-		newPost.setUpvote(0);
-
-		
 		try {
 			postRepository.save(newPost);
+			syncES(newPost);
 			result = true;
 		}catch(Exception e) {
+			e.printStackTrace();
 			throw new RuntimeException("Created Post Error");
 		}
 		
@@ -73,6 +77,7 @@ public class PostService {
 			newPost.setContent(updatePost.content);
 			try {
 				postRepository.save(newPost);
+				syncES(newPost);
 				result = true;
 			}catch(Exception e) {
 				throw new RuntimeException("Update Post Error");
@@ -90,41 +95,37 @@ public class PostService {
 	}
 	
 	//Function6: DeletePostByPostId
+	@Transactional
 	public boolean deletePostByPostId(String id) {
 		boolean result = false;
 		if(postRepository.existsById(id)) {
 			postRepository.deleteById(id);
+			postESRepository.deleteById(id);
 			result = true;
 		}
 		return result;
 	}
 	
-	// Function7: calculateUpvote
-	public boolean calculateUpvote(String postId,boolean hasUpvoted) {
-		boolean result = false;
-		Optional<Post> postOpt = postRepository.findById(postId);
-		if(postOpt.isPresent()) {
-			Post post = postOpt.get();
-			if(!hasUpvoted) {
-				post.setUpvote(post.getUpvote()+1);
-			}else {
-				if(post.getUpvote()-1<0) {
-					throw new RuntimeException("Upvote can not less than 0");
-				}else {
-					post.setUpvote(post.getUpvote()-1);
-				}
-			}
-			try {
-				postRepository.save(post);
-				result = true;
-			}catch(Exception e){
-				throw new RuntimeException("Update Error");
-			}
-		}
+	
+	// DataSync to ES
+	public Post syncES(Post post) {
 		
-		return result;
+        PostES postES = new PostES();
+        postES.setId(post.getId());
+        postES.setTitle(post.getTitle());
+        postES.setContent(post.getContent());
+        postES.setPublishedDateTime(post.getPublishedDateTime());
+        postES.setUserId(post.getUserId());
+        postES.setPostCategory(post.getPostCategory());
+        postESRepository.save(postES);
+
+        return post;
 	}
 	
+	//Search ES
+	public List<PostES> searchES(String query){
+		return postESRepository.findByTitleContainingOrContentContaining(query, query);
+	}
 	//Function for Junit and GithubActions
 	public int add(int a,int b) {
 		return a+b;
