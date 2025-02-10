@@ -82,7 +82,8 @@ class LoggedInFragment : Fragment() {
                 usersPlantListReminderList = ArrayList(usersPlantList) // Copy list instead of overwriting
 
                 userPlantListReminderReady = true
-                pullAllUserPlantsToAddReminder()
+                tryPullAllUsersActivities()
+                //pullAllUserPlantsToAddReminder()
             } else if (action == "get_activity_log_byuser") {
                 usersActivityLogList = intent.getSerializableExtra("logList") as ArrayList<ActivityLog>
                 userActivityLogReady = true
@@ -186,7 +187,7 @@ class LoggedInFragment : Fragment() {
         logToViewFragment.loadNewData(this)
         chooseGuideToViewFragment.loadNewData(this)
         choosePlantForReminderFragment.loadNewData(this)
-        choosePlantForReminderFragment.loadNewData(this)
+        //choosePlantForReminderFragment.loadNewData(this)
 
         bottomNavigationView.setOnNavigationItemSelectedListener {
             when (it.itemId) {
@@ -233,6 +234,11 @@ class LoggedInFragment : Fragment() {
         activity?.startService(intent)
     }
 
+    // @Azril:
+    // this won't do anything
+    // the service only responds to 'get_plants', not 'get_plants_byuser'
+    // if you want all from the user you must set  "byUser" to 'true'
+    // as it is functionally the same as tryPullAllUserPlants you should not run this
     public fun pullAllUserPlantsToAddReminder() {
         userPlantListReminderReady = false
         val intent = Intent(activity, PlantSpeciesLogService::class.java)

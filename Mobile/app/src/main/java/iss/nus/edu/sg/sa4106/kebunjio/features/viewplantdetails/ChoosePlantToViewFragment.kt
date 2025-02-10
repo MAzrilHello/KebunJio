@@ -70,7 +70,7 @@ class ChoosePlantToViewFragment : Fragment() {
         this.usersPlantList = loggedInFragment.usersPlantList
         this.usersActivityLogList = loggedInFragment.usersActivityLogList
         this.haveUpdateLauncher = loggedInFragment.haveUpdateLauncher
-        this.usersReminderList = loggedInFragment.usersReminderList
+        //this.usersReminderList = loggedInFragment.usersPlantListReminderList
 
         this.speciesIdToNameDict.clear()
         for (i in 0..loggedInFragment.speciesList.size-1) {
