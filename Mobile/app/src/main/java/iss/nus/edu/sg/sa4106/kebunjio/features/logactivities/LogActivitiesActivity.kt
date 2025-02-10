@@ -1,5 +1,9 @@
 package iss.nus.edu.sg.sa4106.kebunjio.features.logactivities
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
@@ -7,21 +11,25 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import iss.nus.edu.sg.sa4106.kebunjio.DummyData
+import iss.nus.edu.sg.sa4106.kebunjio.HandleNulls
 import iss.nus.edu.sg.sa4106.kebunjio.R
 import iss.nus.edu.sg.sa4106.kebunjio.TimeClassHandler
 import iss.nus.edu.sg.sa4106.kebunjio.data.ActivityLog
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityLogActivitiesBinding
+import iss.nus.edu.sg.sa4106.kebunjio.service.PlantSpeciesLogService
 
 class LogActivitiesActivity : AppCompatActivity() {
 
-    private var currentUserId: String? = ""
-
     private var updateLogId: String? = null
+    private var updateUserId: String? = null
+    private var sessionCookie: String = ""
 
     // for ui
     private var _binding: ActivityLogActivitiesBinding? = null
@@ -37,9 +45,37 @@ class LogActivitiesActivity : AppCompatActivity() {
     lateinit var activityDescText: EditText
     lateinit var plantSpinner: Spinner
     private var plantSpinnerIdxToId = mutableListOf<String>()
-    private var dummyData: DummyData = DummyData()
 
-    lateinit var logActTypes: MutableList<String>
+    private var logActTypes: MutableList<String> = mutableListOf("","Water","Fertilize","Harvest","Withered")
+
+
+    // for communicating with spring boot api
+    protected var receiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action
+            val responseCode = intent.getIntExtra("responseCode",-2)
+            if (responseCode in 200..299) {
+                Log.d("LogActivitiesActivity","${action} successful: ${responseCode}")
+            } else if (responseCode == -1) {
+                Log.d("LogActivitiesActivity","${action}: response error: ${intent.getStringExtra("exception")}")
+                makeToast("Error in adding/ updating: ${responseCode}")
+                return
+            } else {
+                Log.d("LogActivitiesActivity","${action}: response with no error: ${responseCode}")
+                makeToast("Error in adding/ updating: ${responseCode}")
+                return
+            }
+            if (action == "create_activity_log") {
+                makeToast("Successfully logged activity")
+                goBack(true)
+            } else if (action == "update_activity_log") {
+                makeToast("Successfully updated log")
+                goBack(true)
+
+            }
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,16 +94,14 @@ class LogActivitiesActivity : AppCompatActivity() {
         logActivitiesBtn = binding.logActivitiesBtn
         plantSpinner = binding.plantSpinner
 
-        logActTypes = mutableListOf<String>()
-        logActTypes.add("Water")
-        logActTypes.add("Fertilize")
-        logActTypes.add("Harvest")
-        logActTypes.add("Withered")
-
         val logActAdapter = ArrayAdapter(this,
                                     android.R.layout.simple_spinner_item,
                                     logActTypes)
         activityTypeSpinner.adapter = logActAdapter
+
+        binding.backBtn.setOnClickListener {
+            goBack(false)
+        }
 
         logActivitiesBtn.setOnClickListener {
             logNewActivity()
@@ -78,61 +112,69 @@ class LogActivitiesActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        // get the current user id
-        currentUserId = intent.getStringExtra("userId")
-        Log.d("LogActivitiesActivity","userId: ${currentUserId}")
-        if (currentUserId != null) {
-            setUserPlants(currentUserId!!)
-        }
+
+        initReceiver()
+
+        // get data from intent
+        updateUserId = intent.getStringExtra("userId")
+        sessionCookie = HandleNulls.ifNullString(intent.getStringExtra("sessionCookie"))
+        val plantIdToNameDict = (intent.getSerializableExtra("plantIdToNameDict") as HashMap<String, String>)!!
+        setupPlantSpinner(plantIdToNameDict)
         if (intent.getBooleanExtra("update",false)) {
-            Log.d("LogActivitiesActivity","We are in update mode")
-            binding.titlePart.text = "Update Activity Log"
+            binding.titlePart.text = "Update Log"
             binding.logActivitiesBtn.text = "Update Log"
-            val logId = intent.getStringExtra("logId")
-            Log.d("LogActivitiesActivity","logId: ${logId}")
-            if (logId != null) {
-                val chosenActLog = dummyData.getActivityLogById(logId)
-                if (chosenActLog != null) {
-                    setData(chosenActLog)
-                }
-            }
-
-
+            val currentActivityLog = intent.getSerializableExtra("currentActivityLog") as ActivityLog
+            setData(currentActivityLog)
         }
     }
 
 
-    private fun setUserPlants(id: String) {
+    private fun setupPlantSpinner(plantIdToNameDict: HashMap<String, String>) {
         plantSpinnerIdxToId.clear()
         plantSpinnerIdxToId.add("")
-        val userPlants = dummyData.getUserPlants(id)
-        val userPlantNames: MutableList<String> = mutableListOf<String>("NO PLANT")
-        for (i in 0..userPlants.size-1) {
-            userPlantNames.add(userPlants[i].name)
-            plantSpinnerIdxToId.add(userPlants[i].id)
+        val spinnerOptions = mutableListOf<String>("")
+        for ( key in plantIdToNameDict.keys) {
+            plantSpinnerIdxToId.add(key)
+            spinnerOptions.add(plantIdToNameDict[key]!!)
         }
-        val plantAdapter = ArrayAdapter(this,
+        val spinAdapter: ArrayAdapter<String> = ArrayAdapter<String>(this,
             android.R.layout.simple_spinner_item,
-            userPlantNames)
-        plantAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        plantSpinner.adapter = plantAdapter
+            spinnerOptions)
+        spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        plantSpinner.adapter = spinAdapter
+    }
+
+
+    protected fun initReceiver() {
+        val filter = IntentFilter()
+        filter.addAction("create_activity_log")
+        filter.addAction("update_activity_log")
+        ContextCompat.registerReceiver(this, receiver, filter, ContextCompat.RECEIVER_EXPORTED)
+        Log.d("LogActivitiesActivity","initReceiver completed")
     }
 
 
     public fun setData(actLog: ActivityLog) {
         updateLogId = actLog.id
-        // Never set the user in setData
-        //currentUserId = actLog.userId
         Log.d("LogActivitiesActivity","plantId: ${actLog.plantId}")
-        if (actLog.plantId!=null) {
+        var idx = plantSpinnerIdxToId.indexOf(actLog.plantId)
+        if (idx != -1) {
             plantSpinner.setSelection(plantSpinnerIdxToId.indexOf(actLog.plantId))
         } else {
             plantSpinner.setSelection(0)
         }
         Log.d("LogActivitiesActivity","Activity Type: ${actLog.activityType}")
-        activityTypeSpinner.setSelection(logActTypes.indexOf(actLog.activityType))
+        idx = logActTypes.indexOf(actLog.activityType)
+        if (idx != -1) {
+            activityTypeSpinner.setSelection(idx)
+        } else {
+            activityTypeSpinner.setSelection(0)
+        }
         activityDescText.setText(actLog.activityDescription)
         timeStampText.text = actLog.timestamp
+        if (timeStampText.text.toString() == "null") {
+            timeStampText.text = ""
+        }
     }
 
 
@@ -142,19 +184,43 @@ class LogActivitiesActivity : AppCompatActivity() {
             logId = updateLogId!!
         }
         var userId = ""
-        if (currentUserId!=null) {
-            userId = currentUserId!! // must assign a proper id later
+        if (updateUserId!=null) {
+            userId = updateUserId!! // must assign a proper id later
         }
-        var plantId: String? = null // must assign a proper id later
-        if (plantSpinner.selectedItemPosition > 0) {
-            plantId = plantSpinnerIdxToId[plantSpinner.selectedItemPosition]
-        }
+        val plantId: String = plantSpinnerIdxToId[plantSpinner.selectedItemPosition]
         val activityType = activityTypeSpinner.selectedItem.toString()
         val activityDesc = activityDescText.text.toString()
-        val timeStamp = timeStampText.text.toString()
-
-        var actLog = ActivityLog(logId,userId,plantId,activityType,activityDesc,timeStamp)
+        val timestamp = timeStampText.text.toString()
+        // check that all values are good
+        if (activityType == "" || timestamp == "") {
+            makeToast("Please ensure name and planted date are filled")
+            return
+        }
+        var actLog = ActivityLog(logId,userId,plantId,activityType,activityDesc,timestamp)
         // TODO: log the new activity
+        val intent = Intent(this, PlantSpeciesLogService::class.java)
+        intent.setAction("change_activity_log")
+        intent.putExtra("activityLog",actLog)
+        intent.putExtra("isUpdate",logId != "")
+        intent.putExtra("sessionCookie",sessionCookie)
+        this.startService(intent)
+    }
+
+
+    private fun makeToast(text: String,length: Int = Toast.LENGTH_LONG) {
+        val msg = Toast.makeText(
+            this,
+            text, length
+        )
+        msg.show()
+    }
+
+
+    private fun goBack(haveUpdate: Boolean) {
+        val response = Intent()
+        setResult(RESULT_OK, response)
+        response.putExtra("haveUpdate",haveUpdate)
+        finish()
     }
 
 }

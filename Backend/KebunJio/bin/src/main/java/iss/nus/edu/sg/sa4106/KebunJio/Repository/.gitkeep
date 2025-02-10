@@ -1,0 +1,29 @@
+package com.example.repository;
+
+import com.example.model.User;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+public interface UserRepository extends MongoRepository<User, String> {
+    long count();
+}
+
+package com.example.repository;
+
+import com.example.model.Plant;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+public interface PlantRepository extends MongoRepository<Plant, String> {
+    long count();
+    long countByPlantedDateIsNotNull();
+    long countByHarvestedDateIsNotNull();
+    long countByDiseaseReportedIsTrue();
+}
+
+package com.example.repository;
+
+import com.example.model.Event;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+public interface EventRepository extends MongoRepository<Event, String> {
+}
+

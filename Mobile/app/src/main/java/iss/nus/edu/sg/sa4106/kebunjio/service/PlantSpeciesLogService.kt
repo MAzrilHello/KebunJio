@@ -89,7 +89,7 @@ class PlantSpeciesLogService : Service() {
                 forIntent?.putExtra("responseCode",responseCode)
                 forIntent?.putExtra("plant",returnPlant)
                 if (finalCookie == "") {
-                    Log.d("PlantSpeciesLogService","${action} will not update the previous cookie")
+                    Log.d("PlantSpeciesLogService","${action} will not update the previous cookie. Passing ${sessionCookie}.")
                     forIntent?.putExtra("sessionCookie",sessionCookie)
                 } else {
                     forIntent?.putExtra("sessionCookie",finalCookie)
@@ -102,117 +102,176 @@ class PlantSpeciesLogService : Service() {
         }
 
 
-        fun deletePlant(id: String, forIntent: Intent?): Int {
+        fun deletePlant(id: String, forIntent: Intent?, sessionCookie: String): Int {
             val fullUrl = "${startUrl}/Plants/${id}"
 
             val url = URL(fullUrl)
             val connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "DELETE"
             forIntent?.setAction("delete_plant")
+            var responseCode = -1
+            var finalCookie = sessionCookie
+            Log.d("PlantSpeciesLogService","delete_plant Cookie: ${finalCookie}")
 
-            connection.doInput = true
-            connection.doOutput = true
-            connection.useCaches = false
+            try {
+                connection.connectTimeout = timeoutTime
+                connection.readTimeout = timeoutTime
+                connection.doInput = true
+                connection.doOutput = true
+                connection.useCaches = false
+                CookieHandling.setSessionCookie(connection,sessionCookie)
 
-            val outputStream = DataOutputStream(connection.outputStream)
+                val outputStream = DataOutputStream(connection.outputStream)
 
-            outputStream.flush()
-            outputStream.close()
+                outputStream.flush()
+                outputStream.close()
 
-            val responseCode = connection.responseCode
-            //val responseMessage = connection.inputStream.bufferedReader().use { it.readText() }
+                responseCode = connection.responseCode
+                //val responseMessage = connection.inputStream.bufferedReader().use { it.readText() }
 
-            forIntent?.putExtra("responseCode",responseCode)
+            } catch (e: Exception) {
+                forIntent?.putExtra("exception",e.toString())
+                Log.d("PlantSpeciesLogService","delete_plant error: ${e.toString()}")
+            } finally {
+                connection.disconnect()
+                forIntent?.putExtra("responseCode",responseCode)
+                if (finalCookie == "") {
+                    Log.d("PlantSpeciesLogService","delete_plant will not update the previous cookie. Passing ${sessionCookie}.")
+                    forIntent?.putExtra("sessionCookie",sessionCookie)
+                } else {
+                    forIntent?.putExtra("sessionCookie",finalCookie)
+                }
+            }
 
-            connection.disconnect()
+
 
             return responseCode
         }
 
 
-        fun deleteLog(id: String, forIntent: Intent?): Int {
+        fun deleteLog(id: String, forIntent: Intent?, sessionCookie: String): Int {
             val fullUrl = "${startUrl}/ActivityLog/${id}"
 
             val url = URL(fullUrl)
             val connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "DELETE"
-            forIntent?.setAction("delete_activity_log")
+            val action = "delete_activity_log"
+            forIntent?.setAction(action)
+            var responseCode = -1
+            var finalCookie = sessionCookie
 
-            connection.doInput = true
-            connection.doOutput = true
-            connection.useCaches = false
+            try {
+                connection.connectTimeout = timeoutTime
+                connection.readTimeout = timeoutTime
+                connection.doInput = true
+                connection.doOutput = true
+                connection.useCaches = false
+                CookieHandling.setSessionCookie(connection,sessionCookie)
 
-            val outputStream = DataOutputStream(connection.outputStream)
+                val outputStream = DataOutputStream(connection.outputStream)
 
-            outputStream.flush()
-            outputStream.close()
+                outputStream.flush()
+                outputStream.close()
 
-            val responseCode = connection.responseCode
-            //val responseMessage = connection.inputStream.bufferedReader().use { it.readText() }
+                responseCode = connection.responseCode
+                Log.d("PlantSpeciesLogService","${action} responseCode: ${responseCode}")
+                //val responseMessage = connection.inputStream.bufferedReader().use { it.readText() }
 
-            forIntent?.putExtra("responseCode",responseCode)
 
-            connection.disconnect()
+            } catch (e: Exception) {
+                forIntent?.putExtra("exception",e.toString())
+                Log.d("PlantSpeciesLogService","${action} error: ${e.toString()}")
+            } finally {
+                forIntent?.putExtra("responseCode",responseCode)
+                if (finalCookie == "") {
+                    Log.d("PlantSpeciesLogService","${action} will not update the previous cookie. Passing ${sessionCookie}.")
+                    forIntent?.putExtra("sessionCookie",sessionCookie)
+                } else {
+                    forIntent?.putExtra("sessionCookie",finalCookie)
+                }
+                connection.disconnect()
+            }
 
             return responseCode
         }
 
 
-        fun createOrUpdateLog(theLog: ActivityLog,isUpdate: Boolean, forIntent: Intent?): ActivityLog? {
+        fun createOrUpdateLog(theLog: ActivityLog,isUpdate: Boolean, forIntent: Intent?, sessionCookie: String): ActivityLog? {
             // url for adding and updating situation
             val fullUrl: String = if (isUpdate) {"${startUrl}/ActivityLog/${theLog.id}"} else {"${startUrl}/ActivityLog"}
-
+            val action: String
             if (isUpdate) {
-                forIntent?.setAction("update_activity_log")
+                action = "update_activity_log"
+                forIntent?.setAction(action)
             } else {
-                forIntent?.setAction("create_activity_log")
+                action = "create_activity_log"
+                forIntent?.setAction(action)
             }
 
             val url = URL(fullUrl)
             val connection = url.openConnection() as HttpURLConnection
+            Log.d("PlantSpeciesLogService","${action} URL: ${fullUrl}")
             connection.requestMethod = if (isUpdate) {"PUT"} else {"POST"}
-
-            connection.doInput = true
-            connection.doOutput = true
-            connection.useCaches = false
-
-            connection.setRequestProperty("Content-Type", "application/json")
-            connection.setRequestProperty("Accept", "application/json")
-
-            val logJson = JSONObject().apply {
-                put("id", theLog.id)
-                put("userId", theLog.userId)
-                put("plantId", theLog.plantId)
-                put("activityType", theLog.activityType)
-                put("activityDescription", theLog.activityDescription)
-                put("timestamp", theLog.timestamp)
-            }
-
-            val outputStream = DataOutputStream(connection.outputStream)
-            outputStream.writeBytes(logJson.toString())
-            outputStream.flush()
-            outputStream.close()
-
-            val responseCode = connection.responseCode
-            forIntent?.putExtra("responseCode",responseCode)
-            val responseMessage = connection.inputStream.bufferedReader().use { it.readText() }
-
             var returnLog: ActivityLog? = null
+            var responseCode = -1
+            var finalCookie = sessionCookie
+            Log.d("PlantSpeciesLogService","${action} Cookie: ${finalCookie}")
 
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                val responseObject = JSONObject(responseMessage)
-                returnLog = ActivityLog(
-                    id = responseObject.getString("id"),
-                    userId = responseObject.getString("userId"),
-                    plantId = responseObject.getString("plantId"),
-                    activityType = responseObject.getString("activityType"),
-                    activityDescription = responseObject.getString("activityDescription"),
-                    timestamp = responseObject.getString("timestamp")
-                )
+            try {
+                connection.doInput = true
+                connection.doOutput = true
+                connection.useCaches = false
+                CookieHandling.setSessionCookie(connection,sessionCookie)
+
+                connection.setRequestProperty("Content-Type", "application/json")
+                connection.setRequestProperty("Accept", "application/json")
+
+                val logJson = JSONObject().apply {
+                    put("id", theLog.id)
+                    put("userId", theLog.userId)
+                    put("plantId", theLog.plantId)
+                    put("activityType", theLog.activityType)
+                    put("activityDescription", theLog.activityDescription)
+                    put("timestamp", theLog.timestamp)
+                }
+
+                val outputStream = DataOutputStream(connection.outputStream)
+                outputStream.writeBytes(logJson.toString())
+                outputStream.flush()
+                outputStream.close()
+
+                responseCode = connection.responseCode
+
+                val responseMessage = connection.inputStream.bufferedReader().use { it.readText() }
+
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    val responseObject = JSONObject(responseMessage)
+                    returnLog = ActivityLog(
+                        id = responseObject.getString("id"),
+                        userId = responseObject.getString("userId"),
+                        plantId = responseObject.getString("plantId"),
+                        activityType = responseObject.getString("activityType"),
+                        activityDescription = responseObject.getString("activityDescription"),
+                        timestamp = responseObject.getString("timestamp")
+                    )
+                    finalCookie = CookieHandling.extractSessionCookie(connection)
+                }
+            } catch (e: Exception) {
+                forIntent?.putExtra("exception",e.toString())
+                Log.d("PlantSpeciesLogService","${action} error: ${e.toString()}")
+            } finally {
+                connection.disconnect()
+                forIntent?.putExtra("activityLog",returnLog)
+                forIntent?.putExtra("responseCode",responseCode)
+                if (finalCookie == "") {
+                    Log.d("PlantSpeciesLogService","${action} will not update the previous cookie. Passing ${sessionCookie}.")
+                    forIntent?.putExtra("sessionCookie",sessionCookie)
+                } else {
+                    forIntent?.putExtra("sessionCookie",finalCookie)
+                }
             }
 
-            connection.disconnect()
-            forIntent?.putExtra("activityLog",returnLog)
+
             return returnLog
         }
 
@@ -329,7 +388,7 @@ class PlantSpeciesLogService : Service() {
                 responseCode = connection.responseCode
                 Log.d("PlantSpeciesLogService","get_species responseCode: ${responseCode}")
                 val responseMessage = connection.inputStream.bufferedReader().use { it.readText() }
-                Log.d("PlantSpeciesLogService","get_species responseMessage: ${responseMessage}")
+                //Log.d("PlantSpeciesLogService","get_species responseMessage: ${responseMessage}")
 
                 if (responseCode in  200..299) {
                     if (isList) {
@@ -420,6 +479,7 @@ class PlantSpeciesLogService : Service() {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         val returnIntent = Intent()
+        Log.d("PlantSpeciesLogService","start intent action name: ${intent.action}")
         if (intent.action.equals("get_species")) {
             // get edible plant species
             val id: String? = intent.getStringExtra("id")
@@ -453,8 +513,10 @@ class PlantSpeciesLogService : Service() {
             val idTry: String? = intent.getStringExtra("id")
             val id: String
             id = if (idTry == null) {""} else {idTry}
+            val sessionCookie: String = HandleNulls.ifNullString(intent.getStringExtra("sessionCookie"))
             Thread{
-                deletePlant(id,returnIntent)
+                val sessionCookie: String = HandleNulls.ifNullString(intent.getStringExtra("sessionCookie"))
+                deletePlant(id,returnIntent,sessionCookie)
                 sendBroadcast(returnIntent)
             }.start()
         } else if (intent.action.equals("get_activity_logs")) {
@@ -470,16 +532,18 @@ class PlantSpeciesLogService : Service() {
         } else if (intent.action.equals("change_activity_log")) {
             val theLog = intent.getSerializableExtra("activityLog") as? ActivityLog
             val isUpdate: Boolean = intent.getBooleanExtra("isUpdate",false)
+            val sessionCookie: String = HandleNulls.ifNullString(intent.getStringExtra("sessionCookie"))
             Thread{
-                createOrUpdateLog(theLog!!,isUpdate,returnIntent)
+                createOrUpdateLog(theLog!!,isUpdate,returnIntent,sessionCookie)
                 sendBroadcast(returnIntent)
-            }
+            }.start()
         } else if (intent.action.equals("delete_activity_log")) {
             val idTry: String? = intent.getStringExtra("id")
             val id: String
             id = if (idTry == null) {""} else {idTry}
+            val sessionCookie: String = HandleNulls.ifNullString(intent.getStringExtra("sessionCookie"))
             Thread{
-                deleteLog(id,returnIntent)
+                deleteLog(id,returnIntent,sessionCookie)
                 sendBroadcast(returnIntent)
             }.start()
         }
