@@ -12,4 +12,4 @@ data class Reminder(
     val recurrenceInterval: String,
     val status: String, // Status of the reminder (e.g., "Active", "Completed")
     val createdDateTime: LocalDateTime
-)
+) : java.io.Serializable

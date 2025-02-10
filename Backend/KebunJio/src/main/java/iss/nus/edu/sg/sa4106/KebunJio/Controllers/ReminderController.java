@@ -3,6 +3,7 @@ package iss.nus.edu.sg.sa4106.KebunJio.Controllers;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,12 +28,30 @@ public class ReminderController {
     @Autowired
     private ReminderService reminderService;
 
-    /**
-     * GET endpoint to retrieve reminders for a specific user and plant.
-     * @param userId The user ID.
-     * @param plantId The plant ID.
-     * @return A list of reminders.
-     */
+    @GetMapping("/plant/{plantId}")
+    public ResponseEntity<?> getRemindersByPlant(@PathVariable String plantId) {
+        try {
+            System.out.println("Fetching reminders for plantId: " + plantId);
+
+            // Call service method
+            List<Reminder> reminders = reminderService.getRemindersByPlant(plantId);
+
+            // If no reminders found, return 404
+            if (reminders.isEmpty()) {
+                System.out.println("No reminders found for plantId: " + plantId);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No reminders found for this plant.");
+            }
+
+            System.out.println("Fetched reminders: " + reminders);
+            return ResponseEntity.ok(reminders);
+        } catch (Exception ex) {
+            System.err.println("Unexpected error while fetching reminders for plantId: " + plantId);
+            ex.printStackTrace();
+            return ResponseEntity.internalServerError().body("An error occurred while fetching reminders.");
+        }
+    }
+
+
     @GetMapping("/user/{userId}/plant/{plantId}")
     public ResponseEntity<?> getRemindersByUserAndPlant(@PathVariable String userId, @PathVariable String plantId) {
         try {
@@ -74,7 +93,16 @@ public class ReminderController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Reminder>> getRemindersByUserId(@PathVariable String userId) {
-        return ResponseEntity.ok(reminderService.getRemindersByUserId(userId));
+        System.out.println("Fetching reminders for userId: " + userId);
+        try {
+            List<Reminder> reminders = reminderService.getRemindersByUserId(userId);
+            System.out.println("Fetched reminders: " + reminders);
+            return ResponseEntity.ok(reminders);
+        } catch (Exception e) {
+            System.err.println("Error fetching reminders for userId: " + userId);
+            e.printStackTrace(); 
+            return ResponseEntity.status(500).body(null);
+        }
     }
 
     @GetMapping("/status/{status}")

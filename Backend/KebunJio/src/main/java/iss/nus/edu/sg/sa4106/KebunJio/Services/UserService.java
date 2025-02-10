@@ -35,30 +35,52 @@ public class UserService {
             throw new RuntimeException("Error during user registration: " + e.getMessage());
         }
     }
-
+    
     public User loginUser(String emailOrUsername, String password) {
         try {
+            // Fetch the user by email or username
             User user = userRepository.findByEmail(emailOrUsername);
             if (user == null) {
                 user = userRepository.findByUsername(emailOrUsername);
             }
 
             if (user != null) {
+                // Decrypt the stored password
                 String decryptedPassword = AES_password.decrypt(user.getPassword());
 
+                // Compare the decrypted password with the input password
                 if (decryptedPassword.equals(password)) {
-                    return user;
+                    return user; // Return the user if login is successful
                 }
             }
 
-            return null;
-
+            return null; // Return null if login fails
         } catch (Exception e) {
             throw new RuntimeException("Error during user login: " + e.getMessage());
         }
-
-
     }
+
+//    public User loginUser(String emailOrUsername, String password) {
+//        try {
+//            User user = userRepository.findByEmail(emailOrUsername);
+//            if (user == null) {
+//                user = userRepository.findByUsername(emailOrUsername);
+//            }
+//
+//            if (user != null) {
+//                String decryptedPassword = AES_password.decrypt(user.getPassword());
+//
+//                if (decryptedPassword.equals(password)) {
+//                    return user;
+//                }
+//            }
+//
+//            return null;
+//
+//        } catch (Exception e) {
+//            throw new RuntimeException("Error during user login: " + e.getMessage());
+//        }
+//    }
 
     public User UpdateUser(User user,String username, String email, String phoneNumber){
         user.setUsername(username);

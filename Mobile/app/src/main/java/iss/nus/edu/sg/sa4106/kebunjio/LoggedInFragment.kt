@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.text.TextUtils.replace
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.registerReceiver
 import androidx.fragment.app.Fragment
@@ -28,6 +30,7 @@ import iss.nus.edu.sg.sa4106.kebunjio.features.logactivities.ChooseLogToViewFrag
 import iss.nus.edu.sg.sa4106.kebunjio.features.reminders.ViewReminderListFragment
 import iss.nus.edu.sg.sa4106.kebunjio.features.settings.SettingsFragment
 import iss.nus.edu.sg.sa4106.kebunjio.features.viewplantdetails.ChoosePlantToViewFragment
+import iss.nus.edu.sg.sa4106.kebunjio.features.viewplantdetails.ViewPlantDetailsActivity
 import iss.nus.edu.sg.sa4106.kebunjio.service.PlantSpeciesLogService
 
 
@@ -130,21 +133,26 @@ class LoggedInFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentLoggedInBinding.inflate(inflater, container,false)
+        _binding = FragmentLoggedInBinding.inflate(inflater, container, false)
 
         bottomNavigationView = binding.bottomNavigationView
 
-        loggedUser = LoggedInFragmentArgs.fromBundle(requireArguments()).loggedUser
-        sessionCookie = LoggedInFragmentArgs.fromBundle(requireArguments()).sessionCookie
-        Log.d("LoggdInFragment","loggedUser: ${loggedUser!!.id}")
+        try {
+            loggedUser = LoggedInFragmentArgs.fromBundle(requireArguments()).loggedUser
+            sessionCookie = LoggedInFragmentArgs.fromBundle(requireArguments()).sessionCookie
+            Log.d("LoggedInFragment", "loggedUser: ${loggedUser?.id}")
+        } catch (e: Exception) {
+            Log.e("LoggedInFragment", "Failed to extract arguments: ${e.message}")
+        }
 
         initReceiver()
         initHaveUpdateLauncher()
+
+        // Fetch user-specific data
         tryPullAllSpecies()
         tryPullAllUserPlants()
-        // do not need to pull all user activities, plants will pull immediately after
-        //tryPullAllUsersActivities()
-        Log.d("LoggedInFragment","LoggedInFragment onCreateView")
+
+        Log.d("LoggedInFragment", "LoggedInFragment onCreateView")
         return binding.root
     }
 
@@ -167,7 +175,7 @@ class LoggedInFragment : Fragment() {
         bottomNavigationView.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.tracker_item -> setCurrentFragment(logToViewFragment)
-                R.id.my_reminder_item -> setCurrentFragment(reminderViewList)
+                R.id.my_reminder_item -> setCurrentFragment(plantFragment)
                 R.id.my_plants_item -> setCurrentFragment(plantFragment)
                 R.id.guide_item -> startActivity(Intent(requireContext(), BrowseGuidesActivity::class.java))
                 R.id.settings_item -> setCurrentFragment(settingsFragment)
@@ -202,6 +210,7 @@ class LoggedInFragment : Fragment() {
         intent.putExtra("byUser",true)
         activity?.startService(intent)
     }
+
 
 
     private fun tryPullAllSpecies() {

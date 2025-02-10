@@ -10,11 +10,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import iss.nus.edu.sg.sa4106.kebunjio.adapter.ReminderGroupAdapter
 import iss.nus.edu.sg.sa4106.kebunjio.data.Reminder
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentViewReminderListBinding
+import iss.nus.edu.sg.sa4106.kebunjio.service.ReminderApiService
 import iss.nus.edu.sg.sa4106.kebunjio.service.reminders.ReminderService
+import kotlinx.coroutines.launch
+import org.json.JSONArray
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -77,7 +82,15 @@ class ViewReminderListFragment : Fragment() {
         _binding = FragmentViewReminderListBinding.inflate(inflater, container, false)
 
         setupRecyclerView()
-        fetchRemindersFromBackend()
+
+        val plantId = arguments?.getString("plantId")
+
+        if (plantId.isNullOrEmpty()) {
+            Log.e(TAG, "Error: plantId is missing!")
+        } else {
+            Log.d("ViewReminderListFragment", "Received plantId: $plantId")
+            fetchRemindersFromBackend(plantId)
+        }
 
         initButtons()
         return binding.root
@@ -98,23 +111,66 @@ class ViewReminderListFragment : Fragment() {
         }
     }
 
-    private fun fetchRemindersFromBackend() {
-        if (userId.isNullOrEmpty()) {
-            Log.e(TAG, "Error: userId is null, cannot fetch reminders.")
-            return
-        }
+    private fun fetchRemindersFromBackend(plantId: String) {
+        lifecycleScope.launch {
+            Log.d(TAG, "Fetching reminders for plantId: $plantId")
 
-        val intent = Intent(activity, ReminderService::class.java).apply {
-            action = "fetch_reminders"
-            putExtra("userId", userId)
+            val response = ReminderApiService.getRemindersByPlant(plantId) // Make API call
+
+            if (response.isNullOrEmpty()) {
+                Log.e(TAG, "No reminders found for plantId: $plantId")
+                binding.recyclerView.visibility = View.GONE
+                binding.emptyStateText.visibility = View.VISIBLE
+            } else {
+                Log.d(TAG, "Fetched reminders from API: $response") // Log full response
+
+                // Parse reminders
+                val reminders = parseReminderList(response)
+                groupedReminders = groupRemindersByDate(reminders) // Group reminders
+                reminderAdapter.updateData(groupedReminders) // Update RecyclerView
+
+                binding.recyclerView.visibility = View.VISIBLE
+                binding.emptyStateText.visibility = View.GONE
+            }
         }
-        activity?.startService(intent)
-        Log.d(TAG, "Fetching reminders for user ID: $userId")
+    }
+
+    private fun parseReminderList(response: String): List<Reminder> {
+        val reminderList = mutableListOf<Reminder>()
+        val jsonArray = JSONArray(response)
+        val formatter = DateTimeFormatter.ISO_DATE_TIME
+
+        for (i in 0 until jsonArray.length()) {
+            val jsonObject = jsonArray.getJSONObject(i)
+            Log.d(TAG, "Parsing reminder: $jsonObject")
+
+            try {
+                val reminder = Reminder(
+                    id = jsonObject.getString("_id"),
+                    userId = jsonObject.getString("userId"),
+                    plantId = jsonObject.getString("plantId"),
+                    reminderType = jsonObject.getString("reminderType"),
+                    reminderDateTime = LocalDateTime.parse(jsonObject.getString("reminderDateTime"), formatter),
+                    isRecurring = jsonObject.getBoolean("isRecurring"),
+                    recurrenceInterval = jsonObject.getString("recurrenceInterval"),
+                    status = jsonObject.getString("status"),
+                    createdDateTime = if (jsonObject.has("createdDateTime") && !jsonObject.isNull("createdDateTime")) {
+                        LocalDateTime.parse(jsonObject.getString("createdDateTime"), formatter)
+                    } else {
+                        LocalDateTime.now() // Default value if missing
+                    }
+                )
+                reminderList.add(reminder)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error parsing reminder: ${e.message}")
+            }
+        }
+        return reminderList
     }
 
     private fun groupRemindersByDate(reminders: List<Reminder>): MutableMap<String, List<Reminder>> {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-        val today = LocalDateTime.now().toLocalDate()
+        val today = LocalDate.now()
         val tomorrow = today.plusDays(1)
         val weekEnd = today.plusDays(6)
 
@@ -124,16 +180,27 @@ class ViewReminderListFragment : Fragment() {
 
         for (reminder in reminders) {
             val reminderDate = try {
-                LocalDateTime.parse(reminder.reminderDateTime.toString()).toLocalDate()
+                reminder.reminderDateTime.toLocalDate()
             } catch (e: Exception) {
                 Log.e(TAG, "Invalid date format for reminder: ${reminder.reminderDateTime}", e)
                 continue
             }
 
+            Log.d(TAG, "Reminder Date: $reminderDate")  // ✅ Log parsed dates
+
             when {
-                reminderDate == today -> todayReminders.add(reminder)
-                reminderDate == tomorrow -> tomorrowReminders.add(reminder)
-                reminderDate in today..weekEnd -> remainingWeekReminders.add(reminder)
+                reminderDate == today -> {
+                    Log.d(TAG, "Assigned to Today: $reminder")
+                    todayReminders.add(reminder)
+                }
+                reminderDate == tomorrow -> {
+                    Log.d(TAG, "Assigned to Tomorrow: $reminder")
+                    tomorrowReminders.add(reminder)
+                }
+                reminderDate in today..weekEnd -> {
+                    Log.d(TAG, "Assigned to This Week: $reminder")
+                    remainingWeekReminders.add(reminder)
+                }
             }
         }
 
