@@ -40,7 +40,3 @@ Thumbs.db
 # Gradle Wrapper
 gradle-wrapper.jar
 gradle-wrapper.properties
-
-src/main/resources/credentials.json
-
-tokens/

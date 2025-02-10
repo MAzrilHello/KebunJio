@@ -2,52 +2,41 @@ package iss.nus.edu.sg.sa4106.KebunJio.Models;
 
 import java.time.LocalDateTime;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-@Document(collection = "reminders")
 public class Reminder {
-	@Id
-	private String id;  
-    private String userId;
-    private String plantId; 
+    private int reminderId;
+    private User user;
+    private Plant plant;
     private String reminderType;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime reminderDateTime;
     private Boolean isRecurring;
     private String recurrenceInterval;
     private String status;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime createdDateTime; 
-
+    private LocalDateTime createdDateTime;
     
     public Reminder() {}
 
-
-	public String getId() {
-		return id;
+	public int getReminderId() {
+		return reminderId;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setReminderId(int reminderId) {
+		this.reminderId = reminderId;
 	}
 
-	public String getUserId() {
-		return userId;
+	public User getUser() {
+		return user;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
-	public String getPlantId() {
-		return plantId;
+	public Plant getPlant() {
+		return plant;
 	}
 
-	public void setPlantId(String plantId) {
-		this.plantId = plantId;
+	public void setPlant(Plant plant) {
+		this.plant = plant;
 	}
 
 	public String getReminderType() {
@@ -96,6 +85,8 @@ public class Reminder {
 
 	public void setCreatedDateTime(LocalDateTime createdDateTime) {
 		this.createdDateTime = createdDateTime;
-	} 
+	}
+    
+    
 
 }

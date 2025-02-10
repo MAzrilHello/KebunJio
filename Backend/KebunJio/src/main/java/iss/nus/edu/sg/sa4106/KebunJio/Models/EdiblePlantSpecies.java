@@ -1,12 +1,7 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Models;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-@Document(collection = "EdiblePlantSpecies")
 public class EdiblePlantSpecies {
-	@Id
-    private String id;
+    private int ediblePlantSpeciesId;
     private String name;
     private String scientificName;
     private String description;
@@ -22,12 +17,12 @@ public class EdiblePlantSpecies {
     
     public EdiblePlantSpecies() {}
 
-	public String getId() {
-		return id;
+	public int getEdiblePlantSpeciesId() {
+		return ediblePlantSpeciesId;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setEdiblePlantSpeciesId(int ediblePlantSpeciesId) {
+		this.ediblePlantSpeciesId = ediblePlantSpeciesId;
 	}
 
 	public String getName() {
