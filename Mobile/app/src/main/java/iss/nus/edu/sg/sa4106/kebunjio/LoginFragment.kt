@@ -38,9 +38,9 @@ class LoginFragment : Fragment() {
         navigateToLoggedInFragment()
 
         binding.loginBtn.setOnClickListener{
-            navigateToLoggedInFragment()
+            //navigateToLoggedInFragment()
 
-//            attemptLogin()
+            attemptLogin()
             // for now should just switch to Logged In Fragment
             // set username to 'username'
         }
@@ -136,8 +136,10 @@ class LoginFragment : Fragment() {
                     }
                 }
             } catch (e: Exception) {
-                makeToast("Error in login: ${e.toString()}")
-                Log.d("LoginFragment","Error in login: ${e.toString()}")
+                activity?.runOnUiThread {
+                    makeToast("Error in login: ${e.toString()}")
+                    Log.d("LoginFragment","Error in login: ${e.toString()}")
+                }
             } finally {
                 connection.disconnect()
             }
