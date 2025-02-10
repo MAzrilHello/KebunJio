@@ -25,10 +25,13 @@ const Events = () => {
   const fetchEvents = async (page = currentPage) => {
     try {
       setLoading(true);
-      const response = await eventService.getAllEvents(page, pageSize);
-      setEvents(response.content);
-      setTotalElements(response.totalElements);
-      setCurrentPage(response.number);
+      const response = await eventService.getAllEvents();
+      console.log("Fetched data")
+      console.log(response)
+      setEvents(response);
+      setFilteredEvents(response);
+      //setTotalElements(response.totalElements);
+      //setCurrentPage(response.number);
     } catch (error) {
       message.error('Failed to fetch events');
     } finally {

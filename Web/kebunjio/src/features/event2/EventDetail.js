@@ -47,8 +47,13 @@ const AdminEventDetail = () => {
 
   
   if (loading) {
-    return <div><Appbar/>Loading...</div>;
-  
+    return (
+      <div>
+        <Appbar />
+        Loading...
+      </div>
+    );
+  }
 
   return (
     <div>
