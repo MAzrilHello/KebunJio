@@ -1,5 +1,6 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Controllers;
 
+import iss.nus.edu.sg.sa4106.KebunJio.DAO.LoginDAO;
 import iss.nus.edu.sg.sa4106.KebunJio.DAO.RegisterDAO;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.User;
 import iss.nus.edu.sg.sa4106.KebunJio.Services.UserService;
@@ -28,36 +29,30 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String emailOrUsername,
-                                    @RequestParam String password,
-                                    HttpSession sessionObj) {
-        try {
-            // Hardcoded logic for testing
-            if ("username1".equals(emailOrUsername) && "password123".equals(password)) {
-                // Simulate fetching user from MongoDB
-                User user = new User();
-                user.setId("679ecd82057c505d560bdbcb");
-                user.setUsername("username1");
-                user.setEmail("username1@gmail.com");
-                user.setPhoneNumber("+6592720645");
-                user.setAdmin(false);
+    public ResponseEntity<User> login(@RequestBody LoginDAO loginDAO,
+    		                      HttpSession sessionObj,
+    		                      Model model){
+    	try {
+    		if(loginDAO.emailOrUsername.equals("Admin") && loginDAO.password.equals("admin")) {
+    			// get the adminUser Info
+    			User adminUser = userService.loginUser(loginDAO.emailOrUsername, loginDAO.password);
+    			sessionObj.setAttribute("loggedInUser",adminUser);
+    			return new ResponseEntity<User>(adminUser,HttpStatus.OK);
+    		}else {
+    			User user = userService.loginUser(loginDAO.emailOrUsername, loginDAO.password);
+    			if(user == null) {
+    				// not find the user
+    				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    			}else {
+    				sessionObj.setAttribute("loggedInUser", user);
+    				sessionObj.setAttribute("userId", user.getId());
+    				return new ResponseEntity<User>(user,HttpStatus.OK);
+    			}
+    		}
+    	}catch(Exception e) {
+    		throw new RuntimeException("Login failed");
+    	}
 
-                // Store the user in session
-                sessionObj.setAttribute("loggedInUser", user);
-                sessionObj.setAttribute("userId", user.getId());
-
-                // Remove password before returning response
-                user.setPassword(null);
-
-                return new ResponseEntity<>(user, HttpStatus.OK);
-            } else {
-                // Invalid credentials
-                return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>("Login failed due to an internal error", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 
 //    public String login(@RequestParam String emailOrUsername,

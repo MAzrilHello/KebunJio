@@ -6,22 +6,31 @@ import './Appbar.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useAuth } from '../context/AuthContext';
 import Image from 'react-bootstrap/Image';
+import AppbarLogo from "../media/logo_appbar.png"
+import axios from 'axios';
 
 function Appbar() {
   const {isAdmin, setAuthUser, setIsLoggedIn} = useAuth()
   const navigate = useNavigate()
 
-  const logout = () =>{
-    setAuthUser(null)
-    setIsLoggedIn(false)
-    navigate(`/login`)
-  }
+  const logout = () => {
+    axios.post('http://localhost:8080/api/users/logout', {}, { withCredentials: true }) 
+        .then(() => {
+            setAuthUser(null);
+            setIsLoggedIn(false);
+            navigate('/login'); 
+        })
+        .catch(err => {
+            console.error("Logout failed:", err);
+        });
+};
+
   return (
     <div>
       {
         isAdmin?(<Navbar expand="lg" className="custom-navbar">
           <Container>
-          <Image src="./logo_appbar.png" style={{width:"50px"}}/>
+          <Image src={AppbarLogo} style={{width:"50px"}}/>
             <Navbar.Brand as={Link} to="/">KebunJio</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
@@ -37,7 +46,7 @@ function Appbar() {
         </Navbar>):(
               <Navbar expand="lg" className="custom-navbar">
               <Container>
-                <Image src="./logo_appbar.png" style={{width:"50px"}}/>
+                <Image src={AppbarLogo} style={{width:"50px"}}/>
                 <Navbar.Brand as={Link} to="/">KebunJio</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
