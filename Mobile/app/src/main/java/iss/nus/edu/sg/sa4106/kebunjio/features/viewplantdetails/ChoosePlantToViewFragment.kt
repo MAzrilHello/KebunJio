@@ -18,6 +18,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 // for testing
 import iss.nus.edu.sg.sa4106.kebunjio.LoggedInFragment
 import iss.nus.edu.sg.sa4106.kebunjio.data.ActivityLog
+import iss.nus.edu.sg.sa4106.kebunjio.data.EdiblePlantSpecies
 import iss.nus.edu.sg.sa4106.kebunjio.data.Plant
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentChoosePlantToViewBinding
 import iss.nus.edu.sg.sa4106.kebunjio.features.addplant.AddPlantActivity
@@ -63,7 +64,7 @@ class ChoosePlantToViewFragment : Fragment() {
 
         this.speciesIdToNameDict.clear()
         for (i in 0..loggedInFragment.speciesList.size-1) {
-            this.speciesIdToNameDict[loggedInFragment.speciesList[i].id] = loggedInFragment.speciesList[i].name
+            this.speciesIdToNameDict[loggedInFragment.speciesList[i].id] = loggedInFragment.speciesList[i].getBothSpeciesName()
         }
         Log.d("ChoosePlantToViewFragment","speciesIdToNameDict size: ${loggedInFragment.speciesList.size} vs ${speciesIdToNameDict.size}")
         reloadPlantList()
@@ -85,7 +86,7 @@ class ChoosePlantToViewFragment : Fragment() {
             if (speciesIdToNameDict.size != loggedInFragment!!.speciesList.size) {
                 speciesIdToNameDict.clear()
                 for (i in 0..loggedInFragment!!.speciesList.size-1) {
-                    this.speciesIdToNameDict[loggedInFragment!!.speciesList[i].id] = loggedInFragment!!.speciesList[i].name
+                    this.speciesIdToNameDict[loggedInFragment!!.speciesList[i].id] = loggedInFragment!!.speciesList[i].getBothSpeciesName()
                 }
                 Log.d("ChoosePlantToViewFragment","speciesIdToNameDict pre-add refresh size: ${speciesIdToNameDict.size}")
             } else {

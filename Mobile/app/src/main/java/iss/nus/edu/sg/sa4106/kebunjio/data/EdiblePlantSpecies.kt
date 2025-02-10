@@ -20,6 +20,11 @@ data class EdiblePlantSpecies(
     val specialNeeds: String,
     val imageURL: String
 ): Serializable {
+
+    public fun getBothSpeciesName(): String {
+        return "${name} (${scientificName})"
+    }
+
     companion object {
 
         fun getFromResponseObject(responseObject: JSONObject): EdiblePlantSpecies {

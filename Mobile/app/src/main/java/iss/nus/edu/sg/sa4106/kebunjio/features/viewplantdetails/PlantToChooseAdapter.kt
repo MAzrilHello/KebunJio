@@ -93,9 +93,18 @@ class PlantToChooseAdapter(private val context: Context,
 
 
         viewPlantBtn.setOnClickListener{
-            //val intent = Intent(getContext(), ViewPlantDetailsActivity::class.java)
-            //intent.putExtra("plantId", usersPlantList[position].id)
-            //getContext().startActivity(intent)
+            val intent = Intent(getContext(), ViewPlantDetailsActivity::class.java)
+            intent.putExtra("haveData", true)
+            intent.putExtra("currentPlant", currentPlant)
+            intent.putExtra("speciesIdToNameDict",speciesIdToNameDict)
+            val thisActLog: ArrayList<ActivityLog> = arrayListOf()
+            for (i in 0..this.usersActivityLogList.size-1) {
+                if (this.usersActivityLogList[i].plantId == currentPlant.id) {
+                    thisActLog.add(this.usersActivityLogList[i])
+                }
+            }
+            intent.putExtra("thisActivityLog",thisActLog)
+            getContext().startActivity(intent)
         }
 
         editPlantBtn.setOnClickListener{

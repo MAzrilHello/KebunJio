@@ -1,8 +1,6 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Controllers;
 
 import iss.nus.edu.sg.sa4106.KebunJio.DAO.RegisterDAO;
-import iss.nus.edu.sg.sa4106.KebunJio.DAO.UpdateAccountDAO;
-import iss.nus.edu.sg.sa4106.KebunJio.Models.ActivityLog;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.User;
 import iss.nus.edu.sg.sa4106.KebunJio.Services.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -12,7 +10,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -141,7 +138,7 @@ public class UserController {
     }
     
     @PutMapping("/current")
-    public ResponseEntity<User> editProfile(@RequestBody UpdateAccountDAO updateInfo, HttpSession sessionObj) {
+    public ResponseEntity<User> editProfile(@RequestBody User updateInfo, HttpSession sessionObj) {
     	System.out.println("ActivityLog: getting currentUser");
 		User currentUser = (User) sessionObj.getAttribute("loggedInUser");
 		if (currentUser == null) {
@@ -153,9 +150,9 @@ public class UserController {
 				return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
 			}
 			User updatedUser = userService.UpdateUser(findUser.get(),
-														updateInfo.username,
-														updateInfo.email,
-														updateInfo.contactPhone);
+														updateInfo.getUsername(),
+														updateInfo.getEmail(),
+														updateInfo.getPhoneNumber());
 			sessionObj.setAttribute("loggedInUser", updatedUser);
 			return new ResponseEntity<User>(updatedUser,
 											HttpStatus.OK);

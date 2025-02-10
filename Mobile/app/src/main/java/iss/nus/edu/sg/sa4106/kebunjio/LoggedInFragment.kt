@@ -181,10 +181,8 @@ class LoggedInFragment : Fragment() {
         bottomNavigationView.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 //R.id.tracker_item -> startActivity(Intent(requireContext(), TrackerActivity::class.java))
-                R.id.tracker_item -> setCurrentFragment(logToViewFragment)
-                R.id.my_reminder_item -> setCurrentFragment(reminderViewList)
                 R.id.my_plants_item -> setCurrentFragment(plantFragment)
-                R.id.reminder_item -> null
+                R.id.reminder_item -> setCurrentFragment(reminderViewList)
                 R.id.activity_log_item -> setCurrentFragment(logToViewFragment)
                 R.id.guide_item -> setCurrentFragment(chooseGuideToViewFragment)
                 //R.id.guide_item -> startActivity(Intent(requireContext(), BrowseGuidesActivity::class.java))
