@@ -16,6 +16,7 @@
         android:text="Plant Health Check"
         android:textSize="30sp"
         android:textStyle="bold"
+        android:textColor="@android:color/white"
         android:padding="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -40,12 +41,13 @@
         android:id="@+id/previewView"
         android:layout_width="match_parent"
         android:layout_height="400dp"
-        android:layout_marginTop="10dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/viewPlantsButton" >
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/viewPlantsButton">
     </androidx.camera.view.PreviewView>
 
     <ImageButton
@@ -74,17 +76,18 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Gallery Button -->
+
     <Button
         android:id="@+id/galleryButton"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_height="50dp"
+        android:layout_width="300dp"
+        android:layout_marginTop="20dp"
         android:background="#BEBEBE"
         android:gravity="center"
         android:text="Select from Gallery"
-        android:textColor="#000000"
+        android:textColor="@android:color/black"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.123"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/captureButton" />
 

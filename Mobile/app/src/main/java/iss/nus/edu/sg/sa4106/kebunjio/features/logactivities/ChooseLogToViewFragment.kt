@@ -9,34 +9,58 @@ import android.view.ViewGroup
 import android.widget.ListView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityChooseLogToViewBinding
+import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentChooseLogToViewBinding
 
 // for testing
 import iss.nus.edu.sg.sa4106.kebunjio.DummyData
+import iss.nus.edu.sg.sa4106.kebunjio.LoggedInFragment
 import iss.nus.edu.sg.sa4106.kebunjio.data.ActivityLog
 import iss.nus.edu.sg.sa4106.kebunjio.features.addplant.AddPlantActivity
 
 class ChooseLogToViewFragment : Fragment() {
 
-    private var _binding: ActivityChooseLogToViewBinding? = null
+    private var _binding: FragmentChooseLogToViewBinding? = null
     private val binding get() = _binding!!
     //private val dummy = DummyData()
-    private var userId = "a"
+
+    private var sessionCookie: String = ""
+    private var userId = ""
     private var usersActivityLogList: ArrayList<ActivityLog> = ArrayList()
     private var plantIdToNameDict: HashMap<String, String> = hashMapOf()
+    private lateinit var haveUpdateLauncher: ActivityResultLauncher<Intent>
+    private var loggedInFragment: LoggedInFragment? = null
 
     lateinit var logToViewText: TextView
     lateinit var actLogList: ListView
+    private var actLogListAdapter: LogToChooseAdapter? = null
     lateinit var addFAB: FloatingActionButton
 
+    public fun loadNewData(loggedInFragment: LoggedInFragment) {
+        this.loggedInFragment = loggedInFragment
+        this.sessionCookie = loggedInFragment.sessionCookie
+        this.userId = loggedInFragment.loggedUser!!.id
 
-    fun loadNewData(userId: String, plantIdToNameDict: HashMap<String, String>, usersActivityLogList: ArrayList<ActivityLog>){
-        this.userId = userId
-        this.plantIdToNameDict = plantIdToNameDict
-        this.usersActivityLogList = usersActivityLogList
+        this.usersActivityLogList = loggedInFragment.usersActivityLogList
+        this.haveUpdateLauncher = loggedInFragment.haveUpdateLauncher
+
+        this.plantIdToNameDict.clear()
+        for (i in 0..loggedInFragment.usersPlantList.size-1) {
+            this.plantIdToNameDict[loggedInFragment.usersPlantList[i].id] = loggedInFragment.usersPlantList[i].name
+        }
+        Log.d("ChooseLogToViewFragment","plantIdToNameDict Size: ${this.plantIdToNameDict.size}")
+        reloadActivityLogList()
+    }
+
+
+    private fun reloadActivityLogList() {
+        if (actLogListAdapter != null) {
+            Log.d("ChooseLogToViewFragment","Resizing begins ${userId}, ${usersActivityLogList.size}, ${this.plantIdToNameDict.size}")
+            actLogListAdapter!!.resetData(this.userId,this.usersActivityLogList,this.plantIdToNameDict)
+        }
     }
 
 
@@ -44,7 +68,7 @@ class ChooseLogToViewFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = ActivityChooseLogToViewBinding.inflate(layoutInflater)
+        _binding = FragmentChooseLogToViewBinding.inflate(layoutInflater)
         return binding.root
     }
 
@@ -69,18 +93,6 @@ class ChooseLogToViewFragment : Fragment() {
 
         //val userActLogList = dummy.getUserLogs(userId)
         //val plantList = dummy.PlantDummy
-        val plantIdToName: HashMap<String, String> = hashMapOf<String, String>()
-
-        //for (i in 0..userActLogList.size-1) {
-        //    Log.d("ChooseLogToViewActivity","plantId for logId ${userActLogList[i].id}: ${userActLogList[i].plantId}")
-        //    var plantId = userActLogList[i].plantId
-        //    if (plantId == null) {
-        //    } else if (plantIdToName.contains(plantId)) {
-        //    } else {
-        //        val plantName = dummy.getPlantById(plantId)!!.name
-        //        plantIdToName[plantId] = plantName
-        //    }
-        //}
 
         if (usersActivityLogList.size==0) {
             logToViewText.text = "No activity log"
@@ -88,12 +100,26 @@ class ChooseLogToViewFragment : Fragment() {
             logToViewText.text = "Choose activity log"
         }
 
-        //addFAB.setOnClickListener {
-        //    val intent = Intent(requireContext(),LogActivitiesActivity::class.java)
-        //    intent.putExtra("userId",userId)
-        //    this.startActivity(intent)
-        //}
+        addFAB.setOnClickListener {
+            val intent = Intent(requireContext(),LogActivitiesActivity::class.java)
+            intent.putExtra("userId",userId)
+            intent.putExtra("plantIdToNameDict",plantIdToNameDict)
+            intent.putExtra("sessionCookie",sessionCookie)
+            haveUpdateLauncher.launch(intent)
+        }
 
-        //actLogList.adapter = LogToChooseAdapter(requireContext(),usersActivityLogList,plantIdToName)
+        actLogListAdapter = LogToChooseAdapter(requireContext(),
+                                    loggedInFragment!!,
+                                    haveUpdateLauncher,
+                                    sessionCookie,
+                                    userId,
+                                    usersActivityLogList,
+                                    plantIdToNameDict)
+        actLogList.adapter = actLogListAdapter
+    }
+
+    public fun invalidateCookies() {
+        this.sessionCookie = ""
+        actLogListAdapter?.invalidateCookies()
     }
 }

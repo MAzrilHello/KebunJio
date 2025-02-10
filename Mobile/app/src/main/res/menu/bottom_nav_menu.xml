@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/tracker_item"
-        android:title="Tracker"/>
-    <item
-        android:id="@+id/my_reminder_item"
-        android:title="My Reminders"/>
-    <item
         android:id="@+id/my_plants_item"
         android:title="My Plants"/>
+    <item
+        android:id="@+id/reminder_item"
+        android:title="My Reminders"/>
+    <item
+        android:id="@+id/activity_log_item"
+        android:title="Activity Logs"/>
     <item
         android:id="@+id/guide_item"
         android:title="Guide"/>

@@ -20,6 +20,11 @@ data class EdiblePlantSpecies(
     val specialNeeds: String,
     val imageURL: String
 ): Serializable {
+
+    public fun getBothSpeciesName(): String {
+        return "${name} (${scientificName})"
+    }
+
     companion object {
 
         fun getFromResponseObject(responseObject: JSONObject): EdiblePlantSpecies {
@@ -27,7 +32,10 @@ data class EdiblePlantSpecies(
             val name = ifNullString(responseObject.getString("name"))
             val scientificName = ifNullString(responseObject.getString("scientificName"))
             val description = ifNullString(responseObject.getString("description"))
-            val ediblePlantGroup = ifNullString(responseObject.getString("ediblePlantGroup"))
+            var ediblePlantGroup: String = ""
+            if (responseObject.has("ediblePlantGroup")) {
+                ediblePlantGroup = ifNullString(responseObject.getString("ediblePlantGroup"))
+            }
             val wateringTips = ifNullString(responseObject.getString("wateringTips"))
             val sunlight = ifNullString(responseObject.getString("sunlight"))
             val soilType = ifNullString(responseObject.getString("soilType"))

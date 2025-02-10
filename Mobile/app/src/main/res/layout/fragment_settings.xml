@@ -14,12 +14,59 @@
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="30sp"
+            android:textStyle="bold"
             android:text="Settings" />
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/username_text"
+            android:layout_gravity="center"
+            android:textSize="25sp"
+            android:text="Username" />
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="Email: "
+                android:textSize="20sp"
+                />
+            <TextView
+                android:id="@+id/email_text"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="user@email.com"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="Phone Number: "
+                android:textSize="20sp"
+                />
+            <TextView
+                android:id="@+id/phoneno_text"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="8111 2222"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
         <Button
             android:id="@+id/edit_profile_btn"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_gravity="center"
+            android:visibility="gone"
             android:text="Edit Profile" />
         <Button
             android:id="@+id/logout_btn"

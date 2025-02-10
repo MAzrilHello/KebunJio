@@ -16,6 +16,7 @@
         android:text="Reminder"
         android:textStyle="bold"
         android:textSize="30sp"
+        android:textColor="@android:color/white"
         android:padding="10dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,6 +28,8 @@
         android:layout_height="wrap_content"
         android:text="Plant Name"
         android:textSize="20sp"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
         android:gravity="center"
         app:layout_constraintTop_toBottomOf="@id/titleTextView"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,13 +55,15 @@
         android:layout_height="wrap_content"
         android:text="Reminder for"
         android:textSize="18sp"
-        android:gravity="end"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintTop_toBottomOf="@id/viewPlantDetailsButton"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:gravity="start"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/viewPlantDetailsButton"
+        app:layout_constraintStart_toEndOf="@id/viewPlantDetailsButton"
         app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintHorizontal_bias="0"
         />
 
     <Spinner
@@ -67,6 +72,7 @@
         android:layout_height="wrap_content"
         android:gravity="start"
         android:layout_marginStart="8dp"
+        android:textColor="@android:color/white"
         app:layout_constraintTop_toTopOf="@id/selectTypeLabel"
         app:layout_constraintStart_toEndOf="@id/selectTypeLabel"
         app:layout_constraintEnd_toEndOf="parent"
@@ -76,32 +82,33 @@
         android:id="@+id/reminderTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
         android:text="Notification time"
         android:textSize="18sp"
-        android:gravity="end"
-        app:layout_constraintTop_toBottomOf="@id/selectTypeLabel"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:gravity="start"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintTop_toBottomOf="@id/selectTypeLabel"
+        app:layout_constraintStart_toStartOf="@id/selectTypeLabel"
+        app:layout_constraintEnd_toEndOf="@id/selectTypeLabel"
         />
 
     <TextView
         android:id="@+id/timeButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="00:00"
-        android:textSize="18sp"
-        android:gravity="start"
+        android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:background="?attr/selectableItemBackground"
-        android:layout_marginStart="8dp"
-        app:layout_constraintTop_toTopOf="@id/reminderTime"
-        app:layout_constraintStart_toEndOf="@id/reminderTime"
+        android:gravity="start"
+        android:text="00:00"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintStart_toEndOf="@id/reminderTime"
+        app:layout_constraintTop_toTopOf="@id/reminderTime" />
 
     <TextView
         android:id="@+id/selectFrequencyLabel"
@@ -109,6 +116,8 @@
         android:layout_height="wrap_content"
         android:text="Select Frequency"
         android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
         android:gravity="center"
         android:layout_marginTop="24dp"
         app:layout_constraintTop_toBottomOf="@id/timeButton"
@@ -131,6 +140,7 @@
             android:id="@+id/frequencyNumberPicker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
             />
 
         <!-- Interval Spinner (Days/Weeks/Months) -->
@@ -139,13 +149,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:textColor="@android:color/white"
             />
     </LinearLayout>
 
     <Button
         android:id="@+id/confirmButton"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:layout_width="300dp"
         android:text="Confirm"
         android:layout_marginTop="20dp"
         app:layout_constraintTop_toBottomOf="@id/reminderFrequency"

@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".features.browseguides.GuideActivity">
+
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:id="@+id/show_plant_img"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop" />
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="Name: "
+                android:textSize="20sp"
+                />
+            <TextView
+                android:id="@+id/name_text"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="___"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="Scientific Name: "
+                android:textSize="20sp"
+                />
+            <TextView
+                android:id="@+id/sci_name_text"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="___"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/description_text"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="Description"
+            android:textSize="20sp"
+            />
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="Watering Tips: "
+                android:textSize="20sp"
+                />
+            <TextView
+                android:id="@+id/water_tips_text"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="___"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="Sunlight: "
+                android:textSize="20sp"
+                />
+            <TextView
+                android:id="@+id/sunlight_text"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="___"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="Soil Type: "
+                android:textSize="20sp"
+                />
+            <TextView
+                android:id="@+id/soil_type_text"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="___"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="Harvest Time: "
+                android:textSize="20sp"
+                />
+            <TextView
+                android:id="@+id/harvest_time_text"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="___"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="Common Pests: "
+                android:textSize="20sp"
+                />
+
+            <TextView
+                android:id="@+id/common_pests_text"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="___"
+                android:textSize="20sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="Growing Space: "
+                android:textSize="20sp"
+                />
+            <TextView
+                android:id="@+id/grow_space_text"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="___"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="Fertilizer Tips: "
+                android:textSize="20sp"
+                />
+            <TextView
+                android:id="@+id/fertilizer_tips_text"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="___"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="Special Needs: "
+                android:textSize="20sp"
+                />
+            <TextView
+                android:id="@+id/special_needs_text"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="___"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+        <Button
+            android:id="@+id/back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Back" />
+    </LinearLayout>
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

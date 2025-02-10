@@ -1,0 +1,125 @@
+package com.example.controller;
+
+import com.example.dto.PlantCountResponse;
+import com.example.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api")
+public class UserController {
+    @Autowired
+    private UserService userService;
+
+    @GetMapping("/total_user")
+    public ResponseEntity<PlantCountResponse> getTotalUser() {
+        long userCount = userService.countAllUsers();
+        return ResponseEntity.ok(new PlantCountResponse(userCount));
+    }
+}
+
+package com.example.controller;
+
+import com.example.dto.PlantCountResponse;
+import com.example.service.PlantService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api")
+public class PlantController {
+    @Autowired
+    private PlantService plantService;
+
+    @GetMapping("/total_plant")
+    public ResponseEntity<PlantCountResponse> getTotalPlant() {
+        long plantCount = plantService.countAllPlants();
+        return ResponseEntity.ok(new PlantCountResponse(plantCount));
+    }
+
+    @GetMapping("/total_plants_planted")
+    public ResponseEntity<PlantCountResponse> getTotalPlantsPlanted() {
+        long plantCount = plantService.countPlantsByPlanted();
+        return ResponseEntity.ok(new PlantCountResponse(plantCount));
+    }
+
+    @GetMapping("/total_plants_harvested")
+    public ResponseEntity<PlantCountResponse> getTotalPlantsHarvested() {
+        long plantCount = plantService.countPlantsByHarvested();
+        return ResponseEntity.ok(new PlantCountResponse(plantCount));
+    }
+
+    @GetMapping("/total_reported_disease")
+    public ResponseEntity<PlantCountResponse> getTotalReportedDisease() {
+        long plantCount = plantService.countPlantsByDisease();
+        return ResponseEntity.ok(new PlantCountResponse(plantCount));
+    }
+}
+
+package com.example.controller;
+
+import com.example.dto.EventRequest;
+import com.example.dto.EventResponse;
+import com.example.model.Event;
+import com.example.service.EventService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping("/api")
+public class EventController {
+    @Autowired
+    private EventService eventService;
+
+    @GetMapping("/events")
+    public ResponseEntity<List<EventResponse>> getAllEvents() {
+        List<Event> events = eventService.getAllEvents();
+        List<EventResponse> eventResponses = events.stream().map(event -> new EventResponse(event)).collect(Collectors.toList());
+        return ResponseEntity.ok(eventResponses);
+    }
+
+    @GetMapping("/events/{eventId}")
+    public ResponseEntity<EventResponse> getEventById(@PathVariable String eventId) {
+        Event event = eventService.getEventById(eventId);
+        return ResponseEntity.ok(new EventResponse(event));
+    }
+
+    @PostMapping("/events")
+    public ResponseEntity<EventResponse> createEvent(@RequestBody EventRequest eventRequest) {
+        Event event = new Event();
+        event.setTitle(eventRequest.getTitle());
+        event.setDescription(eventRequest.getDescription());
+        event.setStartTime(eventRequest.getStartTime());
+        event.setEndTime(eventRequest.getEndTime());
+        Event createdEvent = eventService.createEvent(event);
+        return ResponseEntity.ok(new EventResponse(createdEvent));
+    }
+
+    @PutMapping("/events/{eventId}")
+    public ResponseEntity<EventResponse> updateEvent(@PathVariable String eventId, @RequestBody EventRequest eventRequest) {
+        Event event = eventService.getEventById(eventId);
+        event.setTitle(eventRequest.getTitle());
+        event.setDescription(eventRequest.getDescription());
+        event.setStartTime(eventRequest.getStartTime());
+        event.setEndTime(eventRequest.getEndTime());
+        Event updatedEvent = eventService.updateEvent(eventId, event);
+        return ResponseEntity.ok(new EventResponse(updatedEvent));
+    }
+
+    @DeleteMapping("/events/{eventId}")
+    public ResponseEntity<Void> deleteEvent(@PathVariable String eventId) {
+        eventService.deleteEvent(eventId);
+        return ResponseEntity.noContent().build();
+    }
+}
+

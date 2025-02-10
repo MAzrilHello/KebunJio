@@ -21,12 +21,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import iss.nus.edu.sg.sa4106.kebunjio.data.ActivityLog
 import iss.nus.edu.sg.sa4106.kebunjio.data.EdiblePlantSpecies
 import iss.nus.edu.sg.sa4106.kebunjio.data.Plant
+import iss.nus.edu.sg.sa4106.kebunjio.data.Reminder
 import iss.nus.edu.sg.sa4106.kebunjio.data.User
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentLoggedInBinding
-import iss.nus.edu.sg.sa4106.kebunjio.features.browseguides.BrowseGuidesActivity
+import iss.nus.edu.sg.sa4106.kebunjio.features.browseguides.ChooseGuideToViewFragment
 import iss.nus.edu.sg.sa4106.kebunjio.features.logactivities.ChooseLogToViewFragment
+import iss.nus.edu.sg.sa4106.kebunjio.features.reminders.ViewReminderListFragment
 import iss.nus.edu.sg.sa4106.kebunjio.features.settings.SettingsFragment
-import iss.nus.edu.sg.sa4106.kebunjio.features.tracker.TrackerActivity
+//import iss.nus.edu.sg.sa4106.kebunjio.features.tracker.TrackerActivity
 import iss.nus.edu.sg.sa4106.kebunjio.features.viewplantdetails.ChoosePlantToViewFragment
 import iss.nus.edu.sg.sa4106.kebunjio.service.PlantSpeciesLogService
 
@@ -38,16 +40,21 @@ class LoggedInFragment : Fragment() {
     private var logToViewFragment = ChooseLogToViewFragment()
     private var plantFragment = ChoosePlantToViewFragment()
     private var settingsFragment = SettingsFragment()
+    private var chooseGuideToViewFragment = ChooseGuideToViewFragment()
+    private var reminderViewList = ViewReminderListFragment()
 
     public var loggedUser: User? = null
     public var sessionCookie: String = ""
     public var speciesList: ArrayList<EdiblePlantSpecies> = ArrayList()
     public var usersPlantList: ArrayList<Plant> = ArrayList()
     public var usersActivityLogList: ArrayList<ActivityLog> = ArrayList()
+    public var usersReminderList: ArrayList<Reminder> = ArrayList()
 
     private var speciesReady: Boolean = false
     private var userPlantListReady: Boolean = false
     private var userActivityLogReady: Boolean = false
+    private var userReminderReady: Boolean = false
+    private var loadOnceYet: Boolean = false
     private lateinit var bottomNavigationView: BottomNavigationView
 
     // this receiver is for downloading data only
@@ -115,7 +122,11 @@ class LoggedInFragment : Fragment() {
                 val haveUpdate = result.data?.getBooleanExtra("haveUpdate",false)
                 if (haveUpdate==true) {
                     // update the cookie
-                    sessionCookie = HandleNulls.ifNullString(result.data?.getStringExtra("sessionCookie"))
+                    val finalCookie = HandleNulls.ifNullString(result.data?.getStringExtra("sessionCookie"))
+                    if (finalCookie != "") {
+                        Log.d("LoggedInFragmentLauncher","Passing Cookie ${finalCookie}")
+                        sessionCookie = finalCookie
+                    }
                     Log.d("LoggedInFragment","Triggering re-download")
                     tryPullAllUserPlants()
                 }
@@ -134,7 +145,9 @@ class LoggedInFragment : Fragment() {
 
         loggedUser = LoggedInFragmentArgs.fromBundle(requireArguments()).loggedUser
         sessionCookie = LoggedInFragmentArgs.fromBundle(requireArguments()).sessionCookie
-        Log.d("LoggdInFragment","loggedUser: ${loggedUser!!.id}")
+        settingsFragment.loadNewData(this)
+        Log.d("LoggdInFragment","User Id: ${loggedUser!!.id}")
+        Log.d("LoggdInFragment","Username: ${loggedUser!!.username}")
 
         initReceiver()
         initHaveUpdateLauncher()
@@ -158,21 +171,31 @@ class LoggedInFragment : Fragment() {
             plantIdToNameDict[usersPlantList[i].id] = usersPlantList[i].name
         }
         val userId = loggedUser!!.id
+        Log.d("LoggedInFragment","Current Species List Size: ${speciesList.size}")
+        Log.d("LoggedInFragment","Current Users Plant List Size: ${usersPlantList.size}")
+        Log.d("LoggedInFragment","Current Users Activity Log Size: ${usersActivityLogList.size}")
         Log.d("LoggedInFragment","Passing Cookie: ${sessionCookie}")
         //plantFragment.loadNewData(sessionCookie,userId,speciesIdToNameDict,usersPlantList,usersActivityLogList)
         plantFragment.loadNewData(this)
-        logToViewFragment.loadNewData(userId,plantIdToNameDict,usersActivityLogList)
+        logToViewFragment.loadNewData(this)
+        chooseGuideToViewFragment.loadNewData(this)
         bottomNavigationView.setOnNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.tracker_item -> startActivity(Intent(requireContext(), TrackerActivity::class.java))
-//                R.id.tracker_item -> setCurrentFragment(logToViewFragment)
+                //R.id.tracker_item -> startActivity(Intent(requireContext(), TrackerActivity::class.java))
                 R.id.my_plants_item -> setCurrentFragment(plantFragment)
-                R.id.guide_item -> startActivity(Intent(requireContext(), BrowseGuidesActivity::class.java))
+                R.id.reminder_item -> setCurrentFragment(reminderViewList)
+                R.id.activity_log_item -> setCurrentFragment(logToViewFragment)
+                R.id.guide_item -> setCurrentFragment(chooseGuideToViewFragment)
+                //R.id.guide_item -> startActivity(Intent(requireContext(), BrowseGuidesActivity::class.java))
                 R.id.settings_item -> setCurrentFragment(settingsFragment)
             }
             true
         }
-        setCurrentFragment(plantFragment)
+        if (!loadOnceYet) {
+
+            setCurrentFragment(plantFragment)
+            loadOnceYet = true
+        }
     }
 
 
@@ -180,7 +203,7 @@ class LoggedInFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
-    private fun tryPullAllUsersActivities() {
+    public fun tryPullAllUsersActivities() {
         userActivityLogReady = false
         val intent = Intent(activity, PlantSpeciesLogService::class.java)
         intent.setAction("get_activity_logs")
@@ -191,8 +214,8 @@ class LoggedInFragment : Fragment() {
     }
 
     public fun tryPullAllUserPlants() {
-        userPlantListReady = false
         userActivityLogReady = false
+        userPlantListReady = false
         val intent = Intent(activity, PlantSpeciesLogService::class.java)
         intent.setAction("get_plants")
         intent.putExtra("id",loggedUser!!.id)
@@ -224,11 +247,19 @@ class LoggedInFragment : Fragment() {
         //}
     }
 
-    private fun makeToast(text: String,length: Int = Toast.LENGTH_LONG) {
+    fun makeToast(text: String,length: Int = Toast.LENGTH_LONG) {
         val msg = Toast.makeText(
             getActivity(),
             text, length
         )
         msg.show()
+    }
+
+
+    public fun invalidateCookies() {
+        this.sessionCookie = ""
+        settingsFragment.invalidateCookies()
+        logToViewFragment.invalidateCookies()
+        plantFragment.invalidateCookies()
     }
 }

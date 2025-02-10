@@ -113,8 +113,10 @@ class RegisterAccountFragment : Fragment() {
                     }
                 }
             } catch (e: Exception) {
-                makeToast("Error in account creation: ${e.toString()}")
-                Log.d("RegisterAccountFragment","Error in account creation: ${e.toString()}")
+                activity?.runOnUiThread {
+                    makeToast("Error in account creation: ${e.toString()}")
+                    Log.d("RegisterAccountFragment", "Error in account creation: ${e.toString()}")
+                }
             } finally {
                 connection.disconnect()
             }

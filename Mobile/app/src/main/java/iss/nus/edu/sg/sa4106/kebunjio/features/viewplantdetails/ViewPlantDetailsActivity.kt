@@ -17,8 +17,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import iss.nus.edu.sg.sa4106.kebunjio.DummyData
 import iss.nus.edu.sg.sa4106.kebunjio.R
+import iss.nus.edu.sg.sa4106.kebunjio.data.ActivityLog
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityViewPlantDetailsBinding
 import iss.nus.edu.sg.sa4106.kebunjio.data.EdiblePlantSpecies
+import iss.nus.edu.sg.sa4106.kebunjio.data.Plant
 import iss.nus.edu.sg.sa4106.kebunjio.features.planthealthcheck.PlantHealthCheckActivity
 import iss.nus.edu.sg.sa4106.kebunjio.features.reminders.ReminderActivity
 import iss.nus.edu.sg.sa4106.kebunjio.service.DownloadImageService
@@ -43,7 +45,7 @@ class ViewPlantDetailsActivity : AppCompatActivity() {
     lateinit var healthBtn: Button
     lateinit var reminderBtn: Button
 
-    private val dummy = DummyData()
+    //private val dummy = DummyData()
 
     // for downloading images
     //protected var receiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -117,24 +119,39 @@ class ViewPlantDetailsActivity : AppCompatActivity() {
         }
 
         // get the id to show
-        val plantId = intent.getStringExtra("plantId")
-        if (plantId != null) {
-            // make dummy data
-            showPlant(plantId)
+        //val plantId = intent.getStringExtra("plantId")
+        if (intent.getBooleanExtra("haveData",false)) {
+            val plant = intent.getSerializableExtra("currentPlant") as Plant
+            val speciesIdToNameDict = (intent.getSerializableExtra("speciesIdToNameDict") as HashMap<String, String>)!!
+            showPlant(plant, speciesIdToNameDict)
+            val thisActLog = (intent.getSerializableExtra("thisActivityLog") as ArrayList<ActivityLog>)!!
+            showActLog(thisActLog)
         }
+
+        //}
     }
 
 
-    private fun showPlant(plantId: String) {
-        val thisPlant = dummy.getPlantById(plantId)
-        if (thisPlant == null) {
-            return
+    private fun showActLog(thisActLog: ArrayList<ActivityLog>) {
+        val actTypeList = mutableListOf<String>()
+        val timestampList = mutableListOf<String>()
+        for (i in 0..thisActLog.size-1) {
+            actTypeList.add(thisActLog[i].activityType)
+            timestampList.add(thisActLog[i].timestamp)
         }
+        listLog.adapter = ViewPlantLogInDetailsAdapter(this,actTypeList,timestampList)
+    }
+
+    private fun showPlant(thisPlant: Plant,speciesIdToNameDict: HashMap<String, String>) {
         plantNameText.text = "Name: ${thisPlant.name}"
-        val thisSpecies = dummy.getSpeciesById(thisPlant.ediblePlantSpeciesId)
-        if (thisSpecies != null) {
-            val speciesText = "Species: ${thisSpecies.name} (${thisSpecies.scientificName})"
+        var thisSpecies = thisPlant.ediblePlantSpeciesId
+        var thisEdibleSpecies = speciesIdToNameDict[thisSpecies]
+        if (thisEdibleSpecies != null) {
+            val speciesText = "Species: ${thisEdibleSpecies}"
             speciesNameText.text = speciesText
+        } else {
+            speciesNameText.text = thisSpecies
+
         }
         plantDateText.text = thisPlant.plantedDate
         harvestDateText.text = thisPlant.harvestStartDate
@@ -146,15 +163,6 @@ class ViewPlantDetailsActivity : AppCompatActivity() {
         } else {
             harvestedText.text = "Not Harvested"
         }
-
-        val loggedActivities = dummy.getPlantLogs(plantId)
-        val actTypeList = mutableListOf<String>()
-        val timestampList = mutableListOf<String>()
-        for (i in 0..loggedActivities.size-1) {
-            actTypeList.add(loggedActivities[i].activityType)
-            timestampList.add(loggedActivities[i].timestamp)
-        }
-        listLog.adapter = ViewPlantLogInDetailsAdapter(this,actTypeList,timestampList)
     }
 
     //protected fun initReceiver() {

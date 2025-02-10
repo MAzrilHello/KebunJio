@@ -18,6 +18,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 // for testing
 import iss.nus.edu.sg.sa4106.kebunjio.LoggedInFragment
 import iss.nus.edu.sg.sa4106.kebunjio.data.ActivityLog
+import iss.nus.edu.sg.sa4106.kebunjio.data.EdiblePlantSpecies
 import iss.nus.edu.sg.sa4106.kebunjio.data.Plant
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentChoosePlantToViewBinding
 import iss.nus.edu.sg.sa4106.kebunjio.features.addplant.AddPlantActivity
@@ -52,16 +53,6 @@ class ChoosePlantToViewFragment : Fragment() {
         return binding.root
     }
 
-
-    //public fun loadNewData(sessionCookie: String,userId: String, speciesIdToNameDict: HashMap<String, String>, usersPlantList: ArrayList<Plant>, usersActivityLogList: ArrayList<ActivityLog>) {
-    //    this.sessionCookie = sessionCookie
-    //    this.userId = userId
-    //    this.speciesIdToNameDict = speciesIdToNameDict
-    //    this.usersPlantList = usersPlantList
-    //    this.usersActivityLogList =  usersActivityLogList
-    //    reloadPlantList()
-    //}
-
     public fun loadNewData(loggedInFragment: LoggedInFragment) {
         this.loggedInFragment = loggedInFragment
         this.sessionCookie = loggedInFragment.sessionCookie
@@ -73,8 +64,9 @@ class ChoosePlantToViewFragment : Fragment() {
 
         this.speciesIdToNameDict.clear()
         for (i in 0..loggedInFragment.speciesList.size-1) {
-            this.speciesIdToNameDict[loggedInFragment.speciesList[i].id] = loggedInFragment.speciesList[i].name
+            this.speciesIdToNameDict[loggedInFragment.speciesList[i].id] = loggedInFragment.speciesList[i].getBothSpeciesName()
         }
+        Log.d("ChoosePlantToViewFragment","speciesIdToNameDict size: ${loggedInFragment.speciesList.size} vs ${speciesIdToNameDict.size}")
         reloadPlantList()
     }
 
@@ -91,7 +83,17 @@ class ChoosePlantToViewFragment : Fragment() {
         addFAB.setOnClickListener {
             val intent = Intent(requireContext(),AddPlantActivity::class.java)
             intent.putExtra("userId",userId)
+            if (speciesIdToNameDict.size != loggedInFragment!!.speciesList.size) {
+                speciesIdToNameDict.clear()
+                for (i in 0..loggedInFragment!!.speciesList.size-1) {
+                    this.speciesIdToNameDict[loggedInFragment!!.speciesList[i].id] = loggedInFragment!!.speciesList[i].getBothSpeciesName()
+                }
+                Log.d("ChoosePlantToViewFragment","speciesIdToNameDict pre-add refresh size: ${speciesIdToNameDict.size}")
+            } else {
+                Log.d("ChoosePlantToViewFragment","speciesIdToNameDict pre-add size: ${speciesIdToNameDict.size}")
+            }
             intent.putExtra("speciesIdToNameDict",speciesIdToNameDict)
+
             intent.putExtra("sessionCookie",sessionCookie)
             Log.d("ChoosePlantToViewActivity","putExtra userId: ${userId}")
             //launcher.launch(intent)
@@ -116,7 +118,10 @@ class ChoosePlantToViewFragment : Fragment() {
         //            }
         //        }
         //}
-        plantListAdapter = PlantToChooseAdapter(requireContext(),
+        Log.d("ChoosePlantToViewFragment","speciesIdToNameDict size: ${speciesIdToNameDict.size}")
+        plantListAdapter = PlantToChooseAdapter(
+            requireContext(),
+            loggedInFragment!!,
             haveUpdateLauncher,
             sessionCookie,
             userId,
@@ -136,5 +141,10 @@ class ChoosePlantToViewFragment : Fragment() {
         } else {
             Log.d("ChoosePlantToViewFragment","Adapter not initialised, skipping reload")
         }
+    }
+
+    public fun invalidateCookies() {
+        this.sessionCookie = ""
+        plantListAdapter?.invalidateCookies()
     }
 }

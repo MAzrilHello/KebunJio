@@ -45,31 +45,21 @@
             android:name=".features.logactivities.LogActivitiesActivity"
             android:exported="false" />
         <activity
-            android:name=".features.logactivities.ChooseLogToViewActivity"
-            android:exported="false" />
-        <activity
             android:name=".features.planthealthcheck.PlantHealthCheckActivity"
             android:exported="false" />
         <activity
             android:name=".features.viewplantdetails.ViewPlantDetailsActivity"
             android:exported="false" />
         <activity
-            android:name=".features.viewplantdetails.ChoosePlantToViewActivity"
+            android:name=".features.browseguides.GuideActivity"
             android:exported="false" />
-        <activity
-            android:name=".features.tracker.TrackerActivity"
-            android:exported="false" />
-        <activity
-            android:name=".features.browseguides.BrowseGuidesActivity"
-            android:exported="false" />
-        <activity android:name=".LoggedInTestActivity" />
 
-      <service
+        <service
             android:name=".service.reminders.ReminderService"
             android:enabled="true"
             android:exported="true" />
 
-      <activity
+        <activity
             android:name=".features.addplant.AddPlantActivity"
             android:exported="false"
             android:noHistory="true" />

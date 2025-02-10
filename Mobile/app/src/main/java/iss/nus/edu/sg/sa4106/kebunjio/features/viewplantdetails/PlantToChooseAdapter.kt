@@ -17,16 +17,19 @@ import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.registerReceiver
+import iss.nus.edu.sg.sa4106.kebunjio.LoggedInFragment
 import iss.nus.edu.sg.sa4106.kebunjio.R
 import iss.nus.edu.sg.sa4106.kebunjio.data.ActivityLog
 import iss.nus.edu.sg.sa4106.kebunjio.data.Plant
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ViewPlantToChooseBinding
 import iss.nus.edu.sg.sa4106.kebunjio.features.addplant.AddPlantActivity
 import iss.nus.edu.sg.sa4106.kebunjio.service.DownloadImageService
+import iss.nus.edu.sg.sa4106.kebunjio.service.PlantSpeciesLogService
 import java.io.File
 
 
 class PlantToChooseAdapter(private val context: Context,
+                           protected var loggedInFragment: LoggedInFragment,
                            protected var haveUpdateLauncher: ActivityResultLauncher<Intent>,
                            protected var sessionCookie: String,
                            protected var userId: String,
@@ -38,10 +41,6 @@ class PlantToChooseAdapter(private val context: Context,
 
     init {
         addAll(*arrayOfNulls<Any>(usersPlantList.size))
-    }
-
-    interface OnPlantUpdateActionListener {
-        fun onPlantUpdated()
     }
 
     public fun resetData(userId: String,
@@ -79,23 +78,33 @@ class PlantToChooseAdapter(private val context: Context,
         val viewPlantBtn = binding.viewPlantBtn
         val editPlantBtn = binding.editPlantBtn
         val deletePlantBtn = binding.deletePlantBtn
+
+        // hide view if it's data does not exist
+        if (position >= usersPlantList.size) {
+            _view.visibility = View.GONE
+            return _view
+        }
+
         var currentPlant = usersPlantList[position]
         Log.d("ChoosePlantAdapter","Position ${position}'s TextView: ${showPlantName}")
 
         showPlantName.text = usersPlantList[position].name
 
-        // setup to receive broadcast from MyDownloadService
-        //initReceiver()
 
-        //if (imgUrls.size > position) {
-        //    val url = imgUrls[position]
-        //    requestImageDL(url,position)
-        //}
 
         viewPlantBtn.setOnClickListener{
-            //val intent = Intent(getContext(), ViewPlantDetailsActivity::class.java)
-            //intent.putExtra("plantId", usersPlantList[position].id)
-            //getContext().startActivity(intent)
+            val intent = Intent(getContext(), ViewPlantDetailsActivity::class.java)
+            intent.putExtra("haveData", true)
+            intent.putExtra("currentPlant", currentPlant)
+            intent.putExtra("speciesIdToNameDict",speciesIdToNameDict)
+            val thisActLog: ArrayList<ActivityLog> = arrayListOf()
+            for (i in 0..this.usersActivityLogList.size-1) {
+                if (this.usersActivityLogList[i].plantId == currentPlant.id) {
+                    thisActLog.add(this.usersActivityLogList[i])
+                }
+            }
+            intent.putExtra("thisActivityLog",thisActLog)
+            getContext().startActivity(intent)
         }
 
         editPlantBtn.setOnClickListener{
@@ -108,15 +117,31 @@ class PlantToChooseAdapter(private val context: Context,
             haveUpdateLauncher.launch(intent)
         }
 
-        //showSpeciesImg.setOnClickListener {
-        //    Log.d("ChoosePlantAdapter","*** Viewing Position: $position ***")
-        //    val thisId = this.storedPlantId[position]
-        //    Log.d("ChoosePlantAdapter","thisId: $thisId")
-        //    val intent = Intent(getContext(), ViewPlantDetailsActivity::class.java)
-        //    intent.putExtra("ediblePlantId", thisId)
-        //    getContext().startActivity(intent)
-        //}
+        deletePlantBtn.setOnClickListener{
+            Thread {
+                val deleteStatus = PlantSpeciesLogService.deletePlant(currentPlant.id,null,sessionCookie)
+                if (deleteStatus in 200..299) {
+
+                    loggedInFragment.activity?.runOnUiThread{
+                        loggedInFragment.makeToast("Deleted plant successfully")
+                        //showPlantName.visibility = View.GONE
+                        //viewPlantBtn.visibility = View.GONE
+                        //editPlantBtn.visibility = View.GONE
+                        //deletePlantBtn.visibility = View.GONE
+                        //_view.visibility = View.GONE
+                        loggedInFragment.tryPullAllUserPlants()
+                    }
+                }
+            }.start()
+
+
+        }
 
         return _view
     }
+
+    public fun invalidateCookies() {
+        this.sessionCookie = ""
+    }
+
 }
