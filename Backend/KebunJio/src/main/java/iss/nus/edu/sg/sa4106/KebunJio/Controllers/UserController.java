@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 // changed to Rest API
 @RestController
-@RequestMapping("/Users")
+@RequestMapping("/users")
 @CrossOrigin(origins = "*")
 public class UserController {
 
@@ -28,31 +28,38 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestParam String emailOrUsername,
-    		                      @RequestParam String password,
-    		                      HttpSession sessionObj,
-    		                      Model model){
-    	try {
-    		if(emailOrUsername.equals("Admin") && password.equals("admin")) {
-    			// get the adminUser Info
-    			User adminUser = userService.loginUser(emailOrUsername, password);
-    			sessionObj.setAttribute("loggedInUser",adminUser);
-    			return new ResponseEntity<User>(adminUser,HttpStatus.OK);
-    		}else {
-    			User user = userService.loginUser(emailOrUsername, password);
-    			if(user == null) {
-    				// not find the user
-    				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    			}else {
-    				sessionObj.setAttribute("loggedInUser", user);
-    				sessionObj.setAttribute("userId", user.getId());
-    				return new ResponseEntity<User>(user,HttpStatus.OK);
-    			}
-    		}
-    	}catch(Exception e) {
-    		throw new RuntimeException("Login failed");
-    	}
+    public ResponseEntity<?> login(@RequestParam String emailOrUsername,
+                                    @RequestParam String password,
+                                    HttpSession sessionObj) {
+        try {
+            // Hardcoded logic for testing
+            if ("username1".equals(emailOrUsername) && "password123".equals(password)) {
+                // Simulate fetching user from MongoDB
+                User user = new User();
+                user.setId("679ecd82057c505d560bdbcb");
+                user.setUsername("username1");
+                user.setEmail("username1@gmail.com");
+                user.setPhoneNumber("+6592720645");
+                user.setAdmin(false);
+
+                // Store the user in session
+                sessionObj.setAttribute("loggedInUser", user);
+                sessionObj.setAttribute("userId", user.getId());
+
+                // Remove password before returning response
+                user.setPassword(null);
+
+                return new ResponseEntity<>(user, HttpStatus.OK);
+            } else {
+                // Invalid credentials
+                return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Login failed due to an internal error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
 //    public String login(@RequestParam String emailOrUsername,
 //                        @RequestParam String password,
 //                        HttpSession session,
