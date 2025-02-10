@@ -9,8 +9,36 @@ import '../styling/forum-page.css'
 import placeholderImage from '../../../media/placeholder.jpg';
 import { useNavigate } from "react-router-dom";
 
+import { useAuth } from "../../../context/AuthContext";
+
 const PostHeader = ({post}) =>{
     const navigate = useNavigate()
+    
+    const {authUser,isAdmin} = useAuth()
+
+    const deletePost = () => {
+        alert("Delete post")
+        const requestData = {
+            Id: post.Id
+        }
+        /*API Implementation
+            fetch('https://', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+            })
+            .then(response => response.json())  // Parse the response to JSON
+            .then(data => {
+                console.log('Success:', data)
+            })
+            .catch((error) => {
+                console.error('Error:', error)
+            })
+        
+        */
+    }
     return(
         <Container className="post-header">
             <Row className="align-items-center">
@@ -24,16 +52,26 @@ const PostHeader = ({post}) =>{
                 <Col>
                     <div className="post-header-info">
                         <div className="post-header-username">{post.username}</div>
-                        <div className="post-header-time">{post.time}</div>
+                        <div className="post-header-time">{post.PublishedDateTime}</div>
                     </div>
                 </Col>
                 <Col xs="auto">
+                
                 {
-                    post.username==="Kelly"?(<Dropdown>
+                    post.username===authUser.Username?(<Dropdown>
                         <Dropdown.Toggle className="three-dot">
                         </Dropdown.Toggle>
                             <Dropdown.Menu>
-                                <Dropdown.Item onClick={()=>{navigate(`/forum/${post.id}/edit`, {state:{post}})}}>Edit Post</Dropdown.Item>
+                                <Dropdown.Item onClick={()=>{navigate(`/forum/${post.Id}/edit`, {state:{post}})}}>Edit Post</Dropdown.Item>
+                                <Dropdown.Item onClick={()=>{alert("Delete post")}}>Delete Post</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>):(<div></div>)
+                }
+                {
+                    isAdmin?(<Dropdown>
+                        <Dropdown.Toggle className="three-dot">
+                        </Dropdown.Toggle>
+                            <Dropdown.Menu>
                                 <Dropdown.Item onClick={()=>{alert("Delete post")}}>Delete Post</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>):(<div></div>)

@@ -17,17 +17,27 @@ class DummyData {
     }
 
 
+    public fun getActivityLogById(id:String): ActivityLog? {
+        for (i in 0..ActivityLogDummy.size-1) {
+            if (ActivityLogDummy[i].id == id) {
+                return ActivityLogDummy[i]
+            }
+        }
+        return null
+    }
+
+
     private fun setupLogDummy() {
-        val log1 = ActivityLog(0,0,0,"Water","500ml","01/01/2020 15:30")
+        val log1 = ActivityLog("a","a","a","Water","500ml","2020-01-01T15:30:00")
         ActivityLogDummy.add(log1)
-        val log2 = ActivityLog(0,0,0,"Water","500ml","02/01/2020 15:26")
+        val log2 = ActivityLog("b","a","a","Water","500ml","2020-01-02T15:26:00")
         ActivityLogDummy.add(log2)
-        val log3 = ActivityLog(0,0,1,"Fertiliser","500ml","02/01/2020 15:28")
+        val log3 = ActivityLog("c","a","b","Fertilize","500ml","2020-01-02T15:28:00")
         ActivityLogDummy.add(log3)
     }
 
 
-    public fun getPlantLogs(plantId: Int): MutableList<ActivityLog> {
+    public fun getPlantLogs(plantId: String): MutableList<ActivityLog> {
         val toReturn = mutableListOf<ActivityLog>()
         for (i in 0..ActivityLogDummy.size-1) {
             if (ActivityLogDummy[i].plantId == plantId) {
@@ -38,19 +48,40 @@ class DummyData {
     }
 
 
+    public fun getUserLogs(userId: String): MutableList<ActivityLog> {
+        val toReturn = mutableListOf<ActivityLog>()
+        for (i in 0..ActivityLogDummy.size-1) {
+            if (ActivityLogDummy[i].userId == userId) {
+                toReturn.add(ActivityLogDummy[i])
+            }
+        }
+        return toReturn
+    }
+
+
+    public fun getPlantById(id:String): Plant? {
+        for (i in 0..PlantDummy.size-1) {
+            if (PlantDummy[i].id == id) {
+                return PlantDummy[i]
+            }
+        }
+        return null
+    }
+
+
     private fun setupPlantDummy() {
-        val plant1 = Plant(0,0,0,"User 0 Type 0")
+        val plant1 = Plant("a","a","a","User 0 Type 0","","","","",false)
         PlantDummy.add(plant1)
-        val plant2 = Plant(1,1,0,"User 0 Type 1")
+        val plant2 = Plant("b","b","a","User 0 Type 1","","","","",false)
         PlantDummy.add(plant2)
-        val plant3 = Plant(2,1,1,"Plant 1 Type 1")
+        val plant3 = Plant("c","b","b","Plant 1 Type 1","","","","",false)
         PlantDummy.add(plant3)
-        val plant4 = Plant(3,2,1,"User 1 Type 2")
+        val plant4 = Plant("d","c","b","User 1 Type 2","","","","",false)
         PlantDummy.add(plant4)
     }
 
 
-    public fun getUserPlants(userId: Int): MutableList<Plant> {
+    public fun getUserPlants(userId: String): MutableList<Plant> {
         val toReturn = mutableListOf<Plant>()
         for (i in 0..PlantDummy.size-1) {
             if (PlantDummy[i].userId == userId) {
@@ -61,13 +92,23 @@ class DummyData {
     }
 
 
+    public fun getSpeciesById(id:String): EdiblePlantSpecies? {
+        for (i in 0..SpeciesDummy.size-1) {
+            if (SpeciesDummy[i].id == id) {
+                return SpeciesDummy[i]
+            }
+        }
+        return null
+    }
+
+
     private fun setupSpeciesDummy() {
         val species1 = EdiblePlantSpecies(
-            0,
+            "a",
             "Bang Kwang",
             "Pachyrhizus erosus",
-            "Group 1",
             "Bang Kwang is a large, climbing vine that is harvested for its starchy tuber.",
+            "Leafy",
             "Bang Kwang watering tips",
             "Bang Kwang sunlight",
             "Bang Kwang soil type",
@@ -79,11 +120,11 @@ class DummyData {
             "https://gardeningsg.nparks.gov.sg/images/Hardscapes/Trellis_JacChua.jpg")
         SpeciesDummy.add(species1)
         val species2 = EdiblePlantSpecies(
-            1,
+            "b",
             "Xiao Bai Cai",
             "Brassica rapa Pak Choi Group",
-            "Group 2",
             "Xiao Bai Cai is a popular leafy vegetable used in Chinese cooking, and is typically stir-fired, blanched, or steamed.",
+            "Herbs",
             "Xiao Bai Cai watering tips",
             "Xiao Bai Cai sunlight",
             "Xiao Bai Cai soil type",
@@ -95,11 +136,11 @@ class DummyData {
             "https://gardeningsg.nparks.gov.sg/images/Plants/XiaoBaiCai_JacChua%20(1).jpg")
         SpeciesDummy.add(species2)
         val species3 = EdiblePlantSpecies(
-            2,
+            "c",
             "Winter Melon",
             "Benincasa hispida",
-            "Group 3",
             "Winter Melons are one of the most impressive crops an edible gardener can grow, with singular fruit growing as heavy as 30kg!",
+            "Tuber and Roots",
             "Winter Melon watering tips",
             "Winter Melon sunlight",
             "Winter Melon soil type",
@@ -114,7 +155,7 @@ class DummyData {
 
 
     public fun nameList(): MutableList<String> {
-        var theList = mutableListOf<String>()
+        val theList = mutableListOf<String>()
         for (i in 0..SpeciesDummy.size-1) {
             theList.add(SpeciesDummy[i].name)
         }
@@ -122,17 +163,17 @@ class DummyData {
     }
 
     public fun urlList(): MutableList<String> {
-        var theList = mutableListOf<String>()
-        for (i in 0..SpeciesDummy.size-1) {
+        val theList = mutableListOf<String>()
+        for (i in 0..<SpeciesDummy.size) {
             theList.add(SpeciesDummy[i].imageURL)
         }
         return theList
     }
 
-    public fun idList(): MutableList<Int> {
-        var theList = mutableListOf<Int>()
-        for (i in 0..SpeciesDummy.size-1) {
-            theList.add(SpeciesDummy[i].ediblePlantSpeciesId)
+    public fun idList(): MutableList<String> {
+        var theList = mutableListOf<String>()
+        for (i in 0..<SpeciesDummy.size) {
+            theList.add(SpeciesDummy[i].id)
         }
         return theList
     }

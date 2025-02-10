@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 // changed to Rest API
 @RestController
+@RequestMapping("/Users")
+@CrossOrigin(origins = "*")
 public class UserController {
 
     @Autowired
@@ -33,7 +35,7 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestParam String emailOrUsername,
+    public ResponseEntity<User> login(@RequestParam String emailOrUsername,
     		                      @RequestParam String password,
     		                      HttpSession sessionObj,
     		                      Model model){
@@ -42,6 +44,7 @@ public class UserController {
     			// get the adminUser Info
     			User adminUser = userService.loginUser(emailOrUsername, password);
     			sessionObj.setAttribute("loggedInUser",adminUser);
+    			return new ResponseEntity<User>(adminUser,HttpStatus.OK);
     		}else {
     			User user = userService.loginUser(emailOrUsername, password);
     			if(user == null) {
@@ -50,13 +53,12 @@ public class UserController {
     			}else {
     				sessionObj.setAttribute("loggedInUser", user);
     				sessionObj.setAttribute("userId", user.getId());
-    				return new ResponseEntity<>(HttpStatus.OK);
+    				return new ResponseEntity<User>(user,HttpStatus.OK);
     			}
     		}
     	}catch(Exception e) {
     		throw new RuntimeException("Login failed");
     	}
-    	return new ResponseEntity<>(HttpStatus.OK);
     }
 //    public String login(@RequestParam String emailOrUsername,
 //                        @RequestParam String password,
@@ -100,9 +102,10 @@ public class UserController {
   
       @GetMapping("/current")
       public ResponseEntity getCurrentUser(HttpSession sessionObj) {
-    	  User currentUser = (User) sessionObj.getAttribute("loggedInUser");
-    	  return new ResponseEntity<>(currentUser,HttpStatus.OK);
-      }
+		  User currentUser = (User) sessionObj.getAttribute("loggedInUser");
+		  return new ResponseEntity<>(currentUser != null ? currentUser : new User(), HttpStatus.OK);
+
+	  }
 //    @ResponseBody
 //    public User getCurrentUser(HttpSession session) {
 //        return (User) session.getAttribute("loggedInUser");
@@ -115,7 +118,7 @@ public class UserController {
 //    }
 
 
-    @PostMapping("/register")
+    @PostMapping("/signup")
     public ResponseEntity processRegister(@RequestBody RegisterDAO registerInfo) {
     	
     	if(!registerInfo.password.equals(registerInfo.confirmPassword)) {

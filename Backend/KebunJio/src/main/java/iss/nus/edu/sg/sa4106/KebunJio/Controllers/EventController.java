@@ -53,11 +53,16 @@ public class EventController {
     }
 
     @DeleteMapping("/{eventId}")
-    public ResponseEntity<?> deleteEvent(@PathVariable int eventId) {
+    public ResponseEntity<?> deleteEvent(@PathVariable String eventId) {
         try {
-//            eventService.findByEventId(eventId);
-//            eventService.deleteByEventId(eventId);
-            return ResponseEntity.ok().build();
+        	if (eventService.deleteByEventId(eventId)) {
+        		return ResponseEntity.notFound().build();
+        	} else {
+        		return ResponseEntity.notFound().build();
+        	}
+//            //eventService.findByEventId(eventId);
+//            //eventService.deleteByEventId(eventId);
+            //return ResponseEntity.ok().build();
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }

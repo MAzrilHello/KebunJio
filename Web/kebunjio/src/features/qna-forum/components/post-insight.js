@@ -2,18 +2,53 @@ import React, {useState} from "react";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from "react-bootstrap/Col";
+import { useAuth } from "../../../context/AuthContext";
 
 const PostInsight = ({upvote, comment, hasLiked}) => {
-    const [postLiked, setPostLiked] = useState(hasLiked)
+
+    const [postLiked, setPostLiked] = useState(false)
     const [currentUpvote, setCurrentUpvote] = useState(upvote)
+    const {isAdmin} = useAuth()
 
     const handleUpvote = () => {
-        if (postLiked) {
-            setCurrentUpvote(currentUpvote - 1);
-        } else {
-            setCurrentUpvote(currentUpvote + 1);
+        if(!isAdmin){
+            if (postLiked) {
+                setCurrentUpvote(currentUpvote - 1);
+                                /**
+                 fetch('https://', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => response.json())  // Parse the response to JSON
+                .then(data => {
+                    console.log('Success:', data)
+                })
+                .catch((error) => {
+                    console.error('Error:', error)
+                })
+                 */
+            } else {
+                setCurrentUpvote(currentUpvote + 1);
+                                /**
+                 fetch('https://', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => response.json())  // Parse the response to JSON
+                .then(data => {
+                    console.log('Success:', data)
+                })
+                .catch((error) => {
+                    console.error('Error:', error)
+                })
+                 */
+            }
+            setPostLiked(!postLiked);
         }
-        setPostLiked(!postLiked);
     };
     
     return(

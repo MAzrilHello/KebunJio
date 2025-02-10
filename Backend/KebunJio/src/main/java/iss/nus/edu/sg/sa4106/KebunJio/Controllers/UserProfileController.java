@@ -33,14 +33,14 @@ public class UserProfileController {
     public ResponseEntity showProfilePage(HttpSession sessionObj) {
     	User user = (User) sessionObj.getAttribute("loggedInUser");
     	if(user == null) {
-    		String message =  "Can not foun user";
+    		String message =  "Can not foun User";
     		return new ResponseEntity<>(message,HttpStatus.NOT_FOUND);
     	}
     	
-    	List<Plant> history = plantHistoryService.getPlantsByUser(user);
+    	List<Plant> history = plantHistoryService.getPlantsByUserId(user.getId());
     	
     	long totalPlanted = history.size();
-    	long uniquePlantTypes = history.stream().map(Plant::getEdiblePlantSpecies).distinct().count();
+    	long uniquePlantTypes = history.stream().map(Plant::getEdiblePlantSpeciesId).distinct().count();
     	
     	UserprofileDAO userProfileInfo = new UserprofileDAO(user,history,totalPlanted,uniquePlantTypes);
     	

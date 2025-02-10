@@ -4,17 +4,20 @@ package iss.nus.edu.sg.sa4106.kebunjio.features.reminders
 import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import iss.nus.edu.sg.sa4106.kebunjio.R
 import iss.nus.edu.sg.sa4106.kebunjio.adapter.ReminderAdapter
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityReminderBinding
-import iss.nus.edu.sg.sa4106.kebunjio.features.viewplantdetails.ViewPlantDetailsActivity
-import iss.nus.edu.sg.sa4106.kebunjio.service.reminders.ReminderService
+import iss.nus.edu.sg.sa4106.kebunjio.service.ReminderApiService
+import kotlinx.coroutines.launch
+import org.json.JSONObject
 import java.util.Calendar
 
 class ReminderActivity : AppCompatActivity() {
@@ -26,6 +29,7 @@ class ReminderActivity : AppCompatActivity() {
             showToast("Notification permission is required for reminders.")
         }
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityReminderBinding.inflate(layoutInflater)
@@ -37,17 +41,20 @@ class ReminderActivity : AppCompatActivity() {
             insets
         }
 
-        // Initialize spinners and frequency pickers
         initButtons()
         initReminderTypeSpinner()
         initFrequencyPickers()
+
+        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val userId = sharedPreferences.getString("USER_ID", null) ?: return showToast("Error: User ID not found")
+        val plantId = intent.getStringExtra("PLANT_ID") ?: return showToast("Error: Plant ID not found")
+
+        fetchReminders(userId, plantId)
     }
 
     private fun initButtons() {
-
         binding.viewPlantDetailsButton.setOnClickListener {
-            val intent = Intent(this, ViewPlantDetailsActivity::class.java)
-            startActivity(intent)
+            finish()
         }
 
         binding.timeButton.setOnClickListener {
@@ -57,7 +64,6 @@ class ReminderActivity : AppCompatActivity() {
         binding.confirmButton.setOnClickListener {
             confirmReminder()
         }
-
     }
 
     private fun initReminderTypeSpinner() {
@@ -74,7 +80,7 @@ class ReminderActivity : AppCompatActivity() {
 
         val timeSetListener = TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
             val formattedTime = String.format("%02d:%02d", selectedHour, selectedMinute)
-            binding.timeButton.text = formattedTime // Update the TextView with the selected time
+            binding.timeButton.text = formattedTime
         }
 
         val timePickerDialog = TimePickerDialog(
@@ -102,25 +108,60 @@ class ReminderActivity : AppCompatActivity() {
         binding.frequencyIntervalPicker.adapter = intervalAdapter
     }
 
+    private fun fetchReminders(userId: String, plantId: String) {
+        lifecycleScope.launch {
+            val response = ReminderApiService.getRemindersByUser(userId)
+            if (response != null) {
+                Log.d("ReminderActivity", "Fetched reminders: $response")
+                // Optionally parse response and populate UI fields
+            } else {
+                Log.e("ReminderActivity", "Failed to fetch reminders.")
+            }
+        }
+    }
+
     private fun confirmReminder() {
+        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val userId = sharedPreferences.getString("USER_ID", null) ?: return showToast("Error: User ID not found")
+        val plantId = intent.getStringExtra("PLANT_ID") ?: return showToast("Error: Plant ID not found")
+
         val reminderType = binding.reminderType.selectedItem?.toString() ?: "None"
-        val reminderTime = binding.reminderTime.text.toString()
+        val reminderTime = binding.timeButton.text.toString()
         val frequencyValue = binding.frequencyNumberPicker.value
         val frequencyInterval = binding.frequencyIntervalPicker.selectedItem?.toString() ?: "Days"
 
-        if (reminderTime.isBlank() || reminderType.isBlank()) {
-            showToast("Please complete all fields.")
-        } else {
-            // Pass reminder details to the ReminderService
-            val intent = Intent(this, ReminderService::class.java).apply {
-                putExtra("reminderType", reminderType)
-                putExtra("reminderTime", reminderTime)
-                putExtra("frequencyValue", frequencyValue)
-                putExtra("frequencyInterval", frequencyInterval)
-            }
-            startService(intent)
-            showToast("Reminder set for $reminderType at $reminderTime, every $frequencyValue $frequencyInterval.")
+        if (!reminderTime.matches(Regex("\\d{2}:\\d{2}"))) {
+            showToast("Invalid reminder time. Please select a valid time.")
+            return
         }
+
+        Log.d("ReminderActivity", "Confirm Reminder button pressed")
+        Log.d("ReminderActivity", "Creating reminder with details:")
+        Log.d("ReminderActivity", "User ID: $userId, Plant ID: $plantId, Type: $reminderType, Time: $reminderTime, Frequency: $frequencyValue $frequencyInterval")
+
+        val reminderDateTime = "2025-02-10T$reminderTime:00" // Replace static date with dynamic if needed
+
+        val reminderJson = JSONObject().apply {
+            put("userId", userId)
+            put("plantId", plantId)
+            put("reminderType", reminderType)
+            put("reminderDateTime", reminderDateTime)
+            put("isRecurring", true)
+            put("recurrenceInterval", "$frequencyValue $frequencyInterval")
+            put("status", "Active")
+        }
+
+        lifecycleScope.launch {
+            val response = ReminderApiService.addReminder(reminderJson)
+            if (response != null) {
+                showToast("Reminder successfully sent to backend!")
+                Log.d("ReminderActivity", "Reminder successfully added to backend: $response")
+            } else {
+                showToast("Failed to send reminder to backend.")
+                Log.e("ReminderActivity", "Failed to add reminder to backend.")
+            }
+        }
+        showToast("Reminder set for $reminderType at $reminderTime, every $frequencyValue $frequencyInterval.")
     }
 
     private fun showToast(message: String) {

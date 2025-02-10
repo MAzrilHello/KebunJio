@@ -11,79 +11,78 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.registerReceiver
 import iss.nus.edu.sg.sa4106.kebunjio.R
+import iss.nus.edu.sg.sa4106.kebunjio.data.ActivityLog
+import iss.nus.edu.sg.sa4106.kebunjio.data.Plant
+import iss.nus.edu.sg.sa4106.kebunjio.databinding.ViewPlantToChooseBinding
+import iss.nus.edu.sg.sa4106.kebunjio.features.addplant.AddPlantActivity
 import iss.nus.edu.sg.sa4106.kebunjio.service.DownloadImageService
 import java.io.File
 
 
 class PlantToChooseAdapter(private val context: Context,
-                           protected var idList: MutableList<Int>,
-                           protected var nameList: MutableList<String>
+                           protected var haveUpdateLauncher: ActivityResultLauncher<Intent>,
+                           protected var sessionCookie: String,
+                           protected var userId: String,
+                           protected var usersPlantList: ArrayList<Plant>,
+                           protected var speciesIdToNameDict: HashMap<String, String>,
+                           protected var usersActivityLogList: ArrayList<ActivityLog>
         ): ArrayAdapter<Any?>(context, R.layout.view_plant_to_choose) {
-
-    //lateinit var showSpeciesImg: ImageButton
-    //private var showSpeciesImgArray: MutableList<ImageButton> = mutableListOf<ImageButton>()
-    lateinit var showPlantName: TextView
-    lateinit var storedPlantId:  MutableList<Int>
-
-    //protected var receiver: BroadcastReceiver = object : BroadcastReceiver() {
-    //    override fun onReceive(context: Context, intent: Intent) {
-    //        val action = intent.action
-    //        Log.d("ChoosePlantAdapter","Got feedback ${intent}, ${action}")
-    //        if (action != null) {
-    //            if (action == "download_completed_id") {
-    //                Log.d("ChoosePlantAdapter","Getting filename")
-
-                //val filename = intent.getStringExtra("filename")
-    //                val position = intent.getIntExtra("id",-1)
-    //                val filename = intent.getStringExtra("filename")
-    //                Log.d("ChoosePlantAdapter", "received position ${position} filename: ${filename}")
-    //                if (filename != null) {
-    //                    val bitmap = BitmapFactory.decodeFile(filename)
-    //                    Log.d("ChoosePlantAdapter","Set image bitmap for ${position}: ${showSpeciesImgArray[position]}")
-    //                    showSpeciesImgArray[position].setImageBitmap(bitmap)
-    //                    val file = File(filename)
-    //                    if (file.exists()) {
-    //                        val handler = android.os.Handler()
-    //                        handler.postDelayed({
-    //                            file.delete()
-    //                            Log.d("ChoosePlantAdapter","Deleted file for position ${position}")
-    //                        },5000)
-    //                    }
-    //                }
-    //            }
-    //        } else {
-    //            Log.d("ChoosePlantAdapter","ERROR: Action is null")
-    //        }
-    //    }
-    //}
 
 
     init {
-        addAll(*arrayOfNulls<Any>(nameList.size))
+        addAll(*arrayOfNulls<Any>(usersPlantList.size))
     }
+
+    interface OnPlantUpdateActionListener {
+        fun onPlantUpdated()
+    }
+
+    public fun resetData(userId: String,
+                         usersPlantList: ArrayList<Plant>,
+                         speciesIdToNameDict: HashMap<String, String>,
+                         usersActivityLogList: ArrayList<ActivityLog>){
+        this.userId = userId
+        //this.usersPlantList = usersPlantList
+        this.usersPlantList.clear()
+        this.usersPlantList.addAll(usersPlantList)
+        //this.speciesIdToNameDict = speciesIdToNameDict
+        this.speciesIdToNameDict.clear()
+        this.speciesIdToNameDict.putAll(speciesIdToNameDict)
+        //this.usersActivityLogList = usersActivityLogList
+        this.usersActivityLogList.clear()
+        this.usersActivityLogList.addAll(usersActivityLogList)
+        Log.d("PlantToChooseAdapter","notifyDataSetChanged size ${this.usersPlantList.size}")
+        notifyDataSetChanged()
+    }
+
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
         var _view = view
-
+        var binding: ViewPlantToChooseBinding
         if (_view == null) {
             val inflater = context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             // if we are not responsible for adding the view to the parent,
             // then attachToRoot should be 'false' (which is in our case)
-            _view = inflater.inflate(R.layout.view_plant_to_choose, parent, false)
+            //_view = inflater.inflate(R.layout.view_plant_to_choose, parent, false)
+            binding = ViewPlantToChooseBinding.inflate(inflater,parent,false)
+            _view = binding.root
+        } else {
+            binding = ViewPlantToChooseBinding.bind(_view)
         }
-        this.storedPlantId = idList
-        //showSpeciesImg = _view!!.findViewById<ImageButton>(R.id.show_species_choose_img)
-        //Log.d("ChoosePlantAdapter","Position ${position}'s ImageButton: ${showSpeciesImg}")
-        //showSpeciesImgArray.add(showSpeciesImg)
-        //Log.d("ChoosePlantAdapter","ImgArray Size: ${showSpeciesImgArray.size}")
-        showPlantName = _view!!.findViewById<TextView>(R.id.plant_name_choose_text)
+        val showPlantName = binding.plantNameChooseText
+        val viewPlantBtn = binding.viewPlantBtn
+        val editPlantBtn = binding.editPlantBtn
+        val deletePlantBtn = binding.deletePlantBtn
+        var currentPlant = usersPlantList[position]
         Log.d("ChoosePlantAdapter","Position ${position}'s TextView: ${showPlantName}")
 
-        showPlantName.text = nameList[position]
+        showPlantName.text = usersPlantList[position].name
 
         // setup to receive broadcast from MyDownloadService
         //initReceiver()
@@ -93,11 +92,20 @@ class PlantToChooseAdapter(private val context: Context,
         //    requestImageDL(url,position)
         //}
 
-        showPlantName.setOnClickListener{
-            val thisId = this.storedPlantId[position]
-            val intent = Intent(getContext(), ViewPlantDetailsActivity::class.java)
-            intent.putExtra("plantId", thisId)
-            getContext().startActivity(intent)
+        viewPlantBtn.setOnClickListener{
+            //val intent = Intent(getContext(), ViewPlantDetailsActivity::class.java)
+            //intent.putExtra("plantId", usersPlantList[position].id)
+            //getContext().startActivity(intent)
+        }
+
+        editPlantBtn.setOnClickListener{
+            val intent = Intent(getContext(), AddPlantActivity::class.java)
+            intent.putExtra("userId",userId)
+            intent.putExtra("speciesIdToNameDict",speciesIdToNameDict)
+            intent.putExtra("sessionCookie",sessionCookie)
+            intent.putExtra("currentPlant",currentPlant)
+            intent.putExtra("update", true)
+            haveUpdateLauncher.launch(intent)
         }
 
         //showSpeciesImg.setOnClickListener {
@@ -111,20 +119,4 @@ class PlantToChooseAdapter(private val context: Context,
 
         return _view
     }
-
-    //protected fun requestImageDL(imgURL: String, position: Int) {
-    //    val intent = Intent(getContext(), DownloadImageService::class.java)
-    //    intent.setAction("download_file_id")
-    //    intent.putExtra("url", imgURL)
-    //    intent.putExtra("id", position)
-    //    intent.putExtra("returnBitmap",false)
-    //    Log.d("ChoosePlantAdapter","URL for position ${position}: ${imgURL}")
-    //    getContext().startService(intent)
-    //}
-
-    //protected fun initReceiver() {
-    //    val filter = IntentFilter()
-    //    filter.addAction("download_completed_id")
-    //    registerReceiver(getContext(),receiver, filter, ContextCompat.RECEIVER_EXPORTED)
-    //}
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
@@ -18,13 +19,17 @@ import iss.nus.edu.sg.sa4106.KebunJio.DAO.CommentDAO;
 import iss.nus.edu.sg.sa4106.KebunJio.DAO.CommentLikeDAO;
 import iss.nus.edu.sg.sa4106.KebunJio.DAO.PostDAO;
 import iss.nus.edu.sg.sa4106.KebunJio.DAO.PostWithCommentDAO;
+import iss.nus.edu.sg.sa4106.KebunJio.DAO.PostWithUpvoteDAO;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.Comment;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.Post;
+import iss.nus.edu.sg.sa4106.KebunJio.Models.PostES;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.User;
 import iss.nus.edu.sg.sa4106.KebunJio.Services.CommentService;
 import iss.nus.edu.sg.sa4106.KebunJio.Services.PostService;
+import iss.nus.edu.sg.sa4106.KebunJio.Services.UpvoteService;
 import jakarta.servlet.http.HttpSession;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.validation.Valid;
@@ -39,11 +44,20 @@ public class ForumController {
 	@Autowired
 	private CommentService commentService;
 	
+	@Autowired
+	private UpvoteService upvoteService;
+	
 	//URL: /Forum
 	@GetMapping
 	public ResponseEntity getAllPosts() {
 		List<Post> postList = postService.getAllPosts();
-		return new ResponseEntity<>(postList,HttpStatus.OK);
+		List<PostWithUpvoteDAO> resultList = new ArrayList<>();
+		for(Post post : postList) {
+			int upvoteCount = upvoteService.getUpvoteCountByPost(post.getId());
+			PostWithUpvoteDAO result = new PostWithUpvoteDAO(post,upvoteCount);
+			resultList.add(result);
+		}
+		return new ResponseEntity<>(resultList,HttpStatus.OK);
 	}
 	
 	// URL:/Forum/Post/Create
@@ -51,8 +65,8 @@ public class ForumController {
 	@PostMapping("/Post/Create")
 	public ResponseEntity createNewPost(@RequestBody @Valid PostDAO postData,BindingResult bindingResult,HttpSession SessionObj){
 		// wait for user Create 
-		String userId = (String) SessionObj.getAttribute("userId");
-//		String userId = "679b022388afce6495e8dbca";
+//		String userId = (String) SessionObj.getAttribute("userId");
+		String userId = "679b022388afce6495e8dbca";
 		if(bindingResult.hasErrors()) {
 			return new ResponseEntity<>(bindingResult.getAllErrors(),HttpStatus.BAD_REQUEST);
 		}
@@ -107,8 +121,11 @@ public class ForumController {
 	}
 	
 	// URL: /Forum/Post/{id}/Upvote
-	public ResponseEntity upvotePost(@PathVariable String id,boolean hasUpvoted) {
-		if(postService.calculateUpvote(id, hasUpvoted)) {
+	@PutMapping("/Post/{id}/Upvote")
+	public ResponseEntity upvotePost(@PathVariable String id,boolean hasUpvoted,HttpSession sessionObj) {
+//		String userId = (String) sessionObj.getAttribute("userId");
+		String userId = "679b022388afce6495e8dbca";
+		if(upvoteService.calculateUpvote(id,userId, hasUpvoted)) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -226,5 +243,13 @@ public class ForumController {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
 	}
+	
+	//Search
+	@GetMapping("/Search")
+	public ResponseEntity searchPosts(@RequestParam String query) {
+		List<PostES> searchResult = postService.searchES(query);
+		return new ResponseEntity<>(searchResult,HttpStatus.OK);
+	}
+	
 	
 }

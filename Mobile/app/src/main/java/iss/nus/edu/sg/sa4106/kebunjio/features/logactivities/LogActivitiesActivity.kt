@@ -1,7 +1,5 @@
 package iss.nus.edu.sg.sa4106.kebunjio.features.logactivities
 
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
@@ -15,26 +13,33 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import iss.nus.edu.sg.sa4106.kebunjio.DummyData
 import iss.nus.edu.sg.sa4106.kebunjio.R
+import iss.nus.edu.sg.sa4106.kebunjio.TimeClassHandler
 import iss.nus.edu.sg.sa4106.kebunjio.data.ActivityLog
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityLogActivitiesBinding
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 
 class LogActivitiesActivity : AppCompatActivity() {
+
+    private var currentUserId: String? = ""
+
+    private var updateLogId: String? = null
 
     // for ui
     private var _binding: ActivityLogActivitiesBinding? = null
     private val binding get() = _binding!!
+
+    lateinit var timeStampHandler: TimeClassHandler
     lateinit var timeStampText: TextView
     lateinit var changeDateBtn: Button
     lateinit var changeTimeBtn: Button
+
     lateinit var logActivitiesBtn: Button
-    lateinit var activityTypeText: EditText
+    lateinit var activityTypeSpinner: Spinner
     lateinit var activityDescText: EditText
     lateinit var plantSpinner: Spinner
-    var currentUser: Int = 0
+    private var plantSpinnerIdxToId = mutableListOf<String>()
     private var dummyData: DummyData = DummyData()
+
+    lateinit var logActTypes: MutableList<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,31 +50,24 @@ class LogActivitiesActivity : AppCompatActivity() {
         timeStampText = binding.timeStampText
         changeDateBtn = binding.changeDateBtn
         changeTimeBtn = binding.changeTimeBtn
-        activityTypeText = binding.activityTypeText
+
+        timeStampHandler = TimeClassHandler(timeStampText,changeDateBtn,changeTimeBtn,this)
+
+        activityTypeSpinner = binding.activityTypeSpinner
         activityDescText = binding.activityDescText
         logActivitiesBtn = binding.logActivitiesBtn
         plantSpinner = binding.plantSpinner
 
-        val userPlants = dummyData.getUserPlants(currentUser)
-        val userPlantNames: MutableList<String> = mutableListOf<String>()
-        userPlantNames.add("NO PLANT")
-        for (i in 0..userPlants.size-1) {
-            userPlantNames.add(userPlants[i].name)
-        }
+        logActTypes = mutableListOf<String>()
+        logActTypes.add("Water")
+        logActTypes.add("Fertilize")
+        logActTypes.add("Harvest")
+        logActTypes.add("Withered")
 
-        val adapter = ArrayAdapter(this,
+        val logActAdapter = ArrayAdapter(this,
                                     android.R.layout.simple_spinner_item,
-                                    userPlantNames)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        plantSpinner.adapter = adapter
-
-        changeDateBtn.setOnClickListener {
-            changeDateTime(true)
-        }
-
-        changeTimeBtn.setOnClickListener {
-            changeDateTime(false)
-        }
+                                    logActTypes)
+        activityTypeSpinner.adapter = logActAdapter
 
         logActivitiesBtn.setOnClickListener {
             logNewActivity()
@@ -80,110 +78,83 @@ class LogActivitiesActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        // get the current user id
+        currentUserId = intent.getStringExtra("userId")
+        Log.d("LogActivitiesActivity","userId: ${currentUserId}")
+        if (currentUserId != null) {
+            setUserPlants(currentUserId!!)
+        }
+        if (intent.getBooleanExtra("update",false)) {
+            Log.d("LogActivitiesActivity","We are in update mode")
+            binding.titlePart.text = "Update Activity Log"
+            binding.logActivitiesBtn.text = "Update Log"
+            val logId = intent.getStringExtra("logId")
+            Log.d("LogActivitiesActivity","logId: ${logId}")
+            if (logId != null) {
+                val chosenActLog = dummyData.getActivityLogById(logId)
+                if (chosenActLog != null) {
+                    setData(chosenActLog)
+                }
+            }
+
+
+        }
+    }
+
+
+    private fun setUserPlants(id: String) {
+        plantSpinnerIdxToId.clear()
+        plantSpinnerIdxToId.add("")
+        val userPlants = dummyData.getUserPlants(id)
+        val userPlantNames: MutableList<String> = mutableListOf<String>("NO PLANT")
+        for (i in 0..userPlants.size-1) {
+            userPlantNames.add(userPlants[i].name)
+            plantSpinnerIdxToId.add(userPlants[i].id)
+        }
+        val plantAdapter = ArrayAdapter(this,
+            android.R.layout.simple_spinner_item,
+            userPlantNames)
+        plantAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        plantSpinner.adapter = plantAdapter
+    }
+
+
+    public fun setData(actLog: ActivityLog) {
+        updateLogId = actLog.id
+        // Never set the user in setData
+        //currentUserId = actLog.userId
+        Log.d("LogActivitiesActivity","plantId: ${actLog.plantId}")
+        if (actLog.plantId!=null) {
+            plantSpinner.setSelection(plantSpinnerIdxToId.indexOf(actLog.plantId))
+        } else {
+            plantSpinner.setSelection(0)
+        }
+        Log.d("LogActivitiesActivity","Activity Type: ${actLog.activityType}")
+        activityTypeSpinner.setSelection(logActTypes.indexOf(actLog.activityType))
+        activityDescText.setText(actLog.activityDescription)
+        timeStampText.text = actLog.timestamp
     }
 
 
     private fun logNewActivity() {
-        val logId = -1 // Must assign a proper id later
-        val userId = -1 // must assign a proper id later
-        var plantId: Int? = null // must assign a proper id later
-        if (plantSpinner.selectedItemPosition > 0) {
-            plantId = plantSpinner.selectedItemPosition - 1
+        var logId = "" // Must assign a proper id later
+        if (updateLogId!=null){
+            logId = updateLogId!!
         }
-        val activityType = activityTypeText.text.toString()
+        var userId = ""
+        if (currentUserId!=null) {
+            userId = currentUserId!! // must assign a proper id later
+        }
+        var plantId: String? = null // must assign a proper id later
+        if (plantSpinner.selectedItemPosition > 0) {
+            plantId = plantSpinnerIdxToId[plantSpinner.selectedItemPosition]
+        }
+        val activityType = activityTypeSpinner.selectedItem.toString()
         val activityDesc = activityDescText.text.toString()
         val timeStamp = timeStampText.text.toString()
 
-        var ActivityLog = ActivityLog(logId,userId,plantId,activityType,activityDesc,timeStamp)
+        var actLog = ActivityLog(logId,userId,plantId,activityType,activityDesc,timeStamp)
         // TODO: log the new activity
-    }
-
-
-    private fun changeDateTime(dateNotTime: Boolean) {
-
-        //val c = Calendar.getInstance()
-        val c = getCurrentDate()
-        val year = c.get(Calendar.YEAR)
-        val month = c.get(Calendar.MONTH)
-        val day = c.get(Calendar.DAY_OF_MONTH)
-        val hour = c.get(Calendar.HOUR_OF_DAY)
-        val minute = c.get(Calendar.MINUTE)
-
-        if (dateNotTime) {
-            val datePickerDialog = DatePickerDialog(
-                // on below line we are passing context.
-                this,
-                { view, year, monthOfYear, dayOfMonth ->
-                    setCurrentDate(year,(monthOfYear+1),dayOfMonth,hour,minute)
-                },
-                year,
-                month,
-                day
-            )
-            datePickerDialog.show()
-        } else {
-            val timePickerDialog = TimePickerDialog(
-                this,
-                { view, hourOfDay, minute ->
-                    setCurrentDate(year,month+1,day,hourOfDay,minute)
-                },
-                hour,
-                minute,
-                false
-            )
-            timePickerDialog.show()
-        }
-
-
-    }
-
-
-    private fun setCurrentDate(year: Int, month: Int, day: Int, hour: Int, minute: Int) {
-        var full_str = ""
-        // day
-        if (day < 10) {
-            full_str = "0$day"
-        } else {
-            full_str = "$day"
-        }
-        // month and year
-        if (month < 10) {
-            full_str = "$full_str/0$month/$year"
-        } else {
-            full_str = "$full_str/$month/$year"
-        }
-        // hour
-        if (hour < 10) {
-            full_str = "$full_str 0$hour"
-        } else {
-            full_str = "$full_str $hour"
-        }
-        // minute
-        if (minute < 10) {
-            full_str = "$full_str:0$minute"
-        } else {
-            full_str = "$full_str:$minute"
-        }
-
-        timeStampText.text = full_str
-    }
-
-
-    private fun getCurrentDate(): Calendar {
-        val dateText = timeStampText.text.toString()
-
-        var thisCalendar = Calendar.getInstance()
-
-        try {
-            val sdf = SimpleDateFormat("dd/MM/yyyy hh:mm", Locale.ENGLISH)
-            thisCalendar.time = sdf.parse(dateText)!!
-        } catch (_: Exception) {
-
-        }
-
-        Log.d("Got Date:",thisCalendar.toString())
-
-        return thisCalendar
     }
 
 }

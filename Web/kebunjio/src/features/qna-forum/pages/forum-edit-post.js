@@ -15,16 +15,14 @@ function ForumEditPost() {
     category: "",
     title: "",
     question: "",
-    image: null,
   });
 
   useEffect(() => {
     if (post) {
       setFormData({
-        category: post.tag || "",
-        title: post.title || "",
-        question: post.content || "",
-        image: null,
+        category: post.PostCategory || "",
+        title: post.Title || "",
+        question: post.Content || "",
       });
     }
   }, [post]);
@@ -39,11 +37,36 @@ function ForumEditPost() {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     //if all are filled
     if(formData.category!==''&&formData.title!==''&&formData.question!==''){
-      console.log('Form submitted:', formData);
-      alert('Post created successfully!');
+      const requestData = {
+        Id: post.Id,
+        Title: formData.title,
+        Content: formData.question,
+        PostCategory: formData.category,
+        PublishedDateTime: new Date(),
+        UserId: post.UserId
+      }
+      console.log(requestData)
+      alert("Updated post!")
+      /*API Implementation
+      fetch('https://', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+        })
+        .then(response => response.json())  // Parse the response to JSON
+        .then(data => {
+            console.log('Success:', data)
+        })
+        .catch((error) => {
+            console.error('Error:', error)
+        })
+      
+      */
     }
   };
 
@@ -59,7 +82,7 @@ function ForumEditPost() {
             <MenuSidebar/>
         </div>
         <div className="main-content">
-          <p className="page-header">New post</p>
+          <p className="page-header">Edit post</p>
           <Form onSubmit={handleSubmit}>
             <Form.Group controlId="category">
               <Form.Label>Select category</Form.Label>

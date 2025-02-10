@@ -11,6 +11,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical" >
     <TextView
+        android:id="@+id/title_part"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:text="Add New Plant"
@@ -90,8 +91,8 @@
 
     <ImageView
         android:id="@+id/show_chosen_img"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         android:layout_gravity="center"
         android:scaleType="centerCrop" />
     <Button
@@ -99,20 +100,153 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Guess Species" />
+        android:text="Classify Species" />
     <TextView
         android:id="@+id/predict_species_text"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:text="Species: ___"
+        android:gravity="center"
+        android:textSize="20sp"
         />
-    <Button
-        android:id="@+id/add_plant_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Add Plant" />
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="Planted Date: "
+                android:textSize="20sp"
+                />
+            <TextView
+                android:id="@+id/plant_date_time_text"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="dd/mm/yyyy hh:mm"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="right">
+            <Button
+                android:id="@+id/change_plant_date_btn"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="right"
+                android:text="Change Date" />
+            <Button
+                android:id="@+id/change_plant_time_btn"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="right"
+                android:text="Change Time" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="Harvested: "
+                android:textSize="20sp"
+                />
+            <Spinner
+                android:id="@+id/harvested_spinner"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="Harvest Start Date: "
+                android:textSize="20sp"
+                />
+            <TextView
+                android:id="@+id/harvest_date_time_text"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="dd/mm/yyyy hh:mm"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="right">
+            <Button
+                android:id="@+id/change_harvest_date_btn"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="right"
+                android:text="Change Date" />
+            <Button
+                android:id="@+id/change_harvest_time_btn"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="right"
+                android:text="Change Time" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="Plant Health: "
+                android:textSize="20sp"
+                />
+            <EditText
+                android:id="@+id/plant_health_text"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:hint="ex. healthy/ unhealthy"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:text="Disease: "
+                android:textSize="20sp"
+                />
+            <EditText
+                android:id="@+id/disease_text"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:hint="ex. yellow spot"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
 
+        <Button
+            android:id="@+id/add_plant_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Add Plant" />
+        <Button
+            android:id="@+id/back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Back" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

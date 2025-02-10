@@ -7,6 +7,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface PlantHistoryRepository extends MongoRepository<Plant, String> {
-    List<Plant> findByUser(User user);
+    List<Plant> findByUserId(String userId);
 }
 
