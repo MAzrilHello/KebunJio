@@ -8,60 +8,36 @@ const LoginPage = () => {
     const [emailOrUsername, setEmailOrUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const [users, setUsers] = useState([]);
     const {setAuthUser, setIsLoggedIn, setIsAdmin} = useAuth();
 
     const navigate = useNavigate()
 
-    //temp function, will delete once backend is connected
-    useEffect(()=>{
-        async function fetchData(){
-            const usersRes = await fetch("/dummy-data/user-login-data.json")
-            const users = await usersRes.json()
-
-            setUsers(users)
-        }
-        fetchData()
-
-    },[])
-
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        const user = users.find(user =>
-            (user.Username === emailOrUsername || user.Username === emailOrUsername) &&
-            user.Password === password
-        );
-
-        if(user){
-            setAuthUser(user)
-            setIsLoggedIn(true)
-            if(user.Username==="Admin"){
-                setIsAdmin(true)
-            }
-            else{
-                setIsAdmin(false)
-            }
-            navigate(`/forum`)
-        }
-        else{
-            alert("Incorrect password or username")
-        }
-
-        //Ruihan's code, do not delete
-        /*
-        axios.post('/login', {
+        axios.post('http://localhost:8080/api/users/login', {
             emailOrUsername,
             password
         })
             .then(response => {
+                console.log(response.status)
                 if (response.status === 200) {
-                    window.location.href = '/userProfile';
+                    const user = response.data;
+                    setAuthUser(user)
+                    setIsLoggedIn(true)
+                    if(user.isAdmin===true){
+                        setIsAdmin(true)
+                    }
+                    else{
+                        setIsAdmin(false)
+                    }
+                    navigate(`/forum`)
+
                 }
             })
             .catch(err => {
                 setError('Invalid username or password');
-            });*/
+            });
     };
 
     return (

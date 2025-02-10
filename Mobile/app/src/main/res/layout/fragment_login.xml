@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#0A803D"
     tools:context=".MainActivity">
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,9 +15,11 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:text="Login"
-            android:textSize="20sp"
+            android:textColor="@android:color/white"
+            android:textSize="30sp"
             android:textStyle="bold"
             android:gravity="center"
+            android:layout_marginTop="40dp"
             />
         <LinearLayout
             android:layout_height="wrap_content"
@@ -26,8 +29,10 @@
                 android:id="@+id/username_text"
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content"
+                android:layout_marginTop="20dp"
                 android:textSize="20sp"
                 android:layout_weight="10"
+                android:textColor="@android:color/white"
                 android:hint="username / email"
                 />
         </LinearLayout>
@@ -41,7 +46,9 @@
                 android:layout_width="wrap_content"
                 android:textSize="20sp"
                 android:layout_weight="10"
+                android:layout_marginTop="20dp"
                 android:inputType="textPassword"
+                android:textColor="@android:color/white"
                 android:hint="password"
                 />
         </LinearLayout>
@@ -50,12 +57,16 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:textColor="@android:color/white"
+            android:background="#024620"
             android:text="Login" />
         <Button
             android:id="@+id/back_btn"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="20dp"
             android:text="Back" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
