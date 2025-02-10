@@ -9,6 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#0A803D"
         android:orientation="vertical" >
         <TextView
             android:id="@+id/title_part"
@@ -17,6 +18,7 @@
             android:text="Log Activities"
             android:textSize="30sp"
             android:textStyle="bold"
+            android:textColor="@android:color/white"
             />
 
         <LinearLayout
@@ -28,12 +30,14 @@
                 android:layout_width="wrap_content"
                 android:text="Plant: "
                 android:textSize="20sp"
+                android:textColor="@android:color/white"
                 />
             <Spinner
                 android:id="@+id/plant_spinner"
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content"
                 android:textSize="20sp"
+                android:textColor="@android:color/white"
                 />
         </LinearLayout>
 
@@ -46,12 +50,14 @@
                 android:layout_width="wrap_content"
                 android:text="Activity Type: "
                 android:textSize="20sp"
+                android:textColor="@android:color/white"
                 />
             <Spinner
                 android:id="@+id/activity_type_spinner"
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content"
                 android:textSize="20sp"
+                android:textColor="@android:color/white"
                 />
         </LinearLayout>
 
@@ -64,6 +70,7 @@
                 android:layout_width="wrap_content"
                 android:text="Activity Description: "
                 android:textSize="20sp"
+                android:textColor="@android:color/white"
                 />
             <EditText
                 android:id="@+id/activity_desc_text"
@@ -71,6 +78,7 @@
                 android:layout_width="wrap_content"
                 android:hint="ex. watered 500ml"
                 android:textSize="20sp"
+                android:textColor="@android:color/white"
                 />
         </LinearLayout>
 
@@ -83,6 +91,7 @@
                 android:layout_width="wrap_content"
                 android:text="Date and Time: "
                 android:textSize="20sp"
+                android:textColor="@android:color/white"
                 />
             <TextView
                 android:id="@+id/time_stamp_text"
@@ -90,6 +99,7 @@
                 android:layout_width="wrap_content"
                 android:text="dd/mm/yyyy hh:mm"
                 android:textSize="20sp"
+                android:textColor="@android:color/white"
                 />
         </LinearLayout>
         <LinearLayout
@@ -113,13 +123,16 @@
         <Button
             android:id="@+id/log_activities_btn"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:layout_gravity="center"
+            android:textColor="@android:color/white"
+            android:background="#024620"
+
             android:text="Log Activities" />
         <Button
             android:id="@+id/back_btn"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:layout_gravity="center"
             android:text="Back" />
     </LinearLayout>

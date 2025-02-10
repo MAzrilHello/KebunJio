@@ -6,11 +6,11 @@
         android:title="My Plants"/>
     <item
         android:id="@+id/reminder_item"
-        android:icon="@drawable/icons8_calendar_50"
+        android:icon="@drawable/icons8_alarm_50"
         android:title="My Reminders"/>
     <item
         android:id="@+id/activity_log_item"
-        android:icon="@drawable/icons8_alarm_50"
+        android:icon="@drawable/icons8_calendar_50"
         android:title="Activity Logs"/>
     <item
         android:id="@+id/guide_item"
