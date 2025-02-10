@@ -7,16 +7,24 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useAuth } from '../context/AuthContext';
 import Image from 'react-bootstrap/Image';
 import AppbarLogo from "../media/logo_appbar.png"
+import axios from 'axios';
 
 function Appbar() {
   const {isAdmin, setAuthUser, setIsLoggedIn} = useAuth()
   const navigate = useNavigate()
 
-  const logout = () =>{
-    setAuthUser(null)
-    setIsLoggedIn(false)
-    navigate(`/login`)
-  }
+  const logout = () => {
+    axios.post('http://localhost:8080/api/users/logout', {}, { withCredentials: true }) 
+        .then(() => {
+            setAuthUser(null);
+            setIsLoggedIn(false);
+            navigate('/login'); 
+        })
+        .catch(err => {
+            console.error("Logout failed:", err);
+        });
+};
+
   return (
     <div>
       {

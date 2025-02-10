@@ -28,6 +28,8 @@ public class UserService {
             }
             String encryptedPassword = AES_password.encrypt(user.getPassword());
             user.setPassword(encryptedPassword);
+            
+            System.out.println("Saved");
 
             return userRepository.save(user);
 
