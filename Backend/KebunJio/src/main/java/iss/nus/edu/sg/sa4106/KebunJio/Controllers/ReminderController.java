@@ -55,35 +55,7 @@ public class ReminderController {
             ex.printStackTrace();
             return ResponseEntity.internalServerError().body("An error occurred while fetching reminders.");
         }
-    }
-
-
-    // Must restrict to owner only
-    @PostMapping
-    public ResponseEntity<Reminder> addReminder(@RequestBody Reminder reminder, HttpSession sessionObj) {
-    	// first validate that we have permission
-    	User currentUser = (User) sessionObj.getAttribute("loggedInUser");
-    	// Must restrict to owner only
-    	HttpStatus editStatus = Reusables.editStatusType(currentUser, reminder.getUserId());
-    	if (editStatus != HttpStatus.OK) {
-    		return new ResponseEntity<Reminder>(editStatus);
-    	}
-    	try {
-    		Reminder newReminder = new Reminder();
-    		newReminder.setUserId(reminder.getUserId());
-    		newReminder.setPlantId(reminder.getPlantId());
-    		newReminder.setReminderType(reminder.getReminderType());
-    		newReminder.setReminderDateTime(reminder.getReminderDateTime());
-    		newReminder.setIsRecurring(reminder.getIsRecurring());
-    		newReminder.setRecurrenceInterval(reminder.getRecurrenceInterval());
-    		newReminder.setStatus(reminder.getStatus());
-    		newReminder.setCreatedDateTime(LocalDateTime.now());
-    		return ResponseEntity.ok(reminderService.addReminder(newReminder));
-    	} catch (Exception e) {
-    		System.out.println(e);
-			return ResponseEntity.internalServerError().build();
-    	}
-      }
+    }    
 
     @GetMapping("/user/{userId}/plant/{plantId}")
     public ResponseEntity<?> getRemindersByUserAndPlant(@PathVariable String userId, @PathVariable String plantId) {
@@ -148,18 +120,32 @@ public class ReminderController {
         return ResponseEntity.ok(reminderService.getRemindersWithinTimeframe(start, end));
     }
     
-    @PostMapping("/add")
-    public ResponseEntity<?> addReminder(@RequestBody Reminder reminder) {
-        try {
-            Reminder savedReminder = reminderService.addReminder(reminder);
-            return ResponseEntity.ok(savedReminder);
-        } catch (IllegalArgumentException ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        } catch (Exception ex) {
-            return ResponseEntity.internalServerError().body("An error occurred while adding the reminder.");
-        }
+      // Must restrict to owner only
+    @PostMapping
+    public ResponseEntity<Reminder> addReminder(@RequestBody Reminder reminder, HttpSession sessionObj) {
+    	// first validate that we have permission
+    	User currentUser = (User) sessionObj.getAttribute("loggedInUser");
+    	// Must restrict to owner only
+    	HttpStatus editStatus = Reusables.editStatusType(currentUser, reminder.getUserId());
+    	if (editStatus != HttpStatus.OK) {
+    		return new ResponseEntity<Reminder>(editStatus);
+    	}
+    	try {
+    		Reminder newReminder = new Reminder();
+    		newReminder.setUserId(reminder.getUserId());
+    		newReminder.setPlantId(reminder.getPlantId());
+    		newReminder.setReminderType(reminder.getReminderType());
+    		newReminder.setReminderDateTime(reminder.getReminderDateTime());
+    		newReminder.setIsRecurring(reminder.getIsRecurring());
+    		newReminder.setRecurrenceInterval(reminder.getRecurrenceInterval());
+    		newReminder.setStatus(reminder.getStatus());
+    		newReminder.setCreatedDateTime(LocalDateTime.now());
+    		return ResponseEntity.ok(reminderService.addReminder(newReminder));
+    	} catch (Exception e) {
+    		System.out.println(e);
+			return ResponseEntity.internalServerError().build();
+    	}
     }
-
 
 
     // Must restrict to owner only
