@@ -26,6 +26,7 @@ import iss.nus.edu.sg.sa4106.kebunjio.data.User
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentLoggedInBinding
 import iss.nus.edu.sg.sa4106.kebunjio.features.browseguides.ChooseGuideToViewFragment
 import iss.nus.edu.sg.sa4106.kebunjio.features.logactivities.ChooseLogToViewFragment
+import iss.nus.edu.sg.sa4106.kebunjio.features.reminders.ViewReminderListFragment
 import iss.nus.edu.sg.sa4106.kebunjio.features.settings.SettingsFragment
 //import iss.nus.edu.sg.sa4106.kebunjio.features.tracker.TrackerActivity
 import iss.nus.edu.sg.sa4106.kebunjio.features.viewplantdetails.ChoosePlantToViewFragment
@@ -40,6 +41,7 @@ class LoggedInFragment : Fragment() {
     private var plantFragment = ChoosePlantToViewFragment()
     private var settingsFragment = SettingsFragment()
     private var chooseGuideToViewFragment = ChooseGuideToViewFragment()
+    private var reminderViewList = ViewReminderListFragment()
 
     public var loggedUser: User? = null
     public var sessionCookie: String = ""
@@ -179,7 +181,8 @@ class LoggedInFragment : Fragment() {
         bottomNavigationView.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 //R.id.tracker_item -> startActivity(Intent(requireContext(), TrackerActivity::class.java))
-
+                R.id.tracker_item -> setCurrentFragment(logToViewFragment)
+                R.id.my_reminder_item -> setCurrentFragment(reminderViewList)
                 R.id.my_plants_item -> setCurrentFragment(plantFragment)
                 R.id.reminder_item -> null
                 R.id.activity_log_item -> setCurrentFragment(logToViewFragment)
