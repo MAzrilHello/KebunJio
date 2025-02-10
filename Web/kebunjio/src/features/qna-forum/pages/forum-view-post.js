@@ -8,11 +8,23 @@ import { useLocation } from "react-router-dom";
 import Appbar from "../../../components/Appbar";
 import MenuSidebar from "../components/menu-sidebar";
 import "../styling/forum-page.css";
+import axios from "axios";
+import { useAuth } from "../../../context/AuthContext";
 
 const Post = () => {
     const location = useLocation();
     const [post, setPost] = useState(null);
     const [comments, setComments] = useState([]);
+    const { authUser, setAuthUser } = useAuth();
+
+    useEffect(() => {
+        axios.get("/userProfile")
+            .then(res => {
+                console.log("Fetched user profile:", res.data);
+                setAuthUser(res.data);
+            })
+            .catch(err => console.error("Failed to fetch user profile:", err));
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {

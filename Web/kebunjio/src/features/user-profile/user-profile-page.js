@@ -2,55 +2,50 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
-import Button from 'react-bootstrap/Button'
-import Table  from "react-bootstrap/Table";
+import Button from 'react-bootstrap/Button';
+import Table from "react-bootstrap/Table";
 import Appbar from '../../components/Appbar';
-import "./user-profile-style.css"
+import "./user-profile-style.css";
 import Card from 'react-bootstrap/Card';
 
 const UserProfilePage = () => {
+    const { authUser, setAuthUser } = useAuth();
 
-    const {authUser} = useAuth()
+    const [username, setUsername] = useState(authUser.Username);
+    const [email, setEmail] = useState(authUser.Email);
+    const [phone, setPhoneNumber] = useState(authUser.PhoneNumber);
+    const [isEdit, setIsEdit] = useState(false);
+    const [plants, setPlants] = useState([]);
 
-    const [username, setUsername] = useState(authUser.Username)
-    const [email, setEmail] = useState(authUser.Email)
-    const [phone, setPhoneNumber] = useState(authUser.PhoneNumber)
-    const [isEdit, setIsEdit] = useState(false)
-
-    const [plants,setPlants] = useState([])
+    const [userInfo, setUserInfo] = useState({
+        totalPlant: authUser.totalPlant || 0,
+        totalHarvested: authUser.totalHarvested || 0,
+        totalType: authUser.totalType || 0
+    });
 
     const [avatar, setAvatar] = useState(authUser.Avatar || process.env.PUBLIC_URL + "/logo.jpg");
 
-    const userInfo = {
-        totalPlant:authUser.totalPlant,
-        totalHarvested:authUser.totalHarvested,
-        totalType:authUser.totalType
-    }
-
     const onEdit = () => {
-        if(!isEdit){
-            setIsEdit(true)
-        }
-        else{
-            setIsEdit(false)
-            //send data to API
-        }    
-        }
+        setIsEdit(prevState => !prevState);
+    };
 
     const handleInputChange = (event) => {
-            const { id, value } = event.target; 
-            if (id === "username") {
-                setUsername(value);
-            } else if (id === "email") {
-                setEmail(value);
-            } else if (id === "phone") {
-                setPhoneNumber(value);
-            }
+        const { id, value } = event.target;
+        if (id === "username") {
+            setUsername(value);
+        } else if (id === "email") {
+            setEmail(value);
+        } else if (id === "phone") {
+            setPhoneNumber(value);
+        }
     };
 
     const handleAvatarChange = async (event) => {
         const file = event.target.files[0];
         if (file) {
+            const previewUrl = URL.createObjectURL(file);
+            setAvatar(previewUrl);
+
             const formData = new FormData();
             formData.append("avatar", file);
 
@@ -59,19 +54,25 @@ const UserProfilePage = () => {
                     headers: { "Content-Type": "multipart/form-data" }
                 });
 
-                setAvatar(response.data);
+                if (response.data.avatarUrl) {
+                    const updatedAvatarUrl = response.data.avatarUrl;
+
+                    setAvatar(updatedAvatarUrl);
+                    setAuthUser(prevUser => ({
+                        ...prevUser,
+                        Avatar: updatedAvatarUrl
+                    }));
+
+                    console.log("Updated Avatar:", updatedAvatarUrl);
+                } else {
+                    console.error("No avatarUrl in response");
+                }
             } catch (error) {
                 console.error("Upload failed", error);
             }
         }
     };
 
-
-    /*
-    const [userProfile, setUserProfile] = useState(null);
-    const [error, setError] = useState(null);
-    const {authUser} = useAuth()
-    */
 
     useEffect(() => {
         async function fetchData() {
@@ -80,10 +81,16 @@ const UserProfilePage = () => {
                 setPlants(plantsRes.data);
 
                 const userRes = await axios.get("/userProfile");
-
                 console.log("User Data:", userRes.data);
 
                 setAvatar(userRes.data.avatarUrl || "/logo.jpg");
+
+                setUserInfo({
+                    totalPlant: userRes.data.totalPlant || 0,
+                    totalHarvested: userRes.data.totalHarvested || 0,
+                    totalType: userRes.data.totalType || 0
+                });
+
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -92,25 +99,18 @@ const UserProfilePage = () => {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        setAvatar(authUser.Avatar || "/logo.jpg");
+        setUserInfo({
+            totalPlant: authUser.totalPlant || 0,
+            totalHarvested: authUser.totalHarvested || 0,
+            totalType: authUser.totalType || 0
+        });
+    }, [authUser]);
 
-    /*Ruihan's code, do not delete
-    axios.get('/userProfile')
-        .then(response => {
-            setUserProfile(response.data);
-        })
-        .catch(err => {
-            setError("Error fetching user profile.");
-        });*/
-
-    /*Ruihan's code, do not delete
-    if (error) return <div>{error}</div>;
-
-    if (!userProfile) {
-        return <div>Loading...</div>;
-    }*/
 
     return (
-        <div className="user-profile-page"> 
+        <div className="user-profile-page">
             <Appbar/>
             <div className="user-profile">
                 <div className="page-header">
@@ -121,7 +121,7 @@ const UserProfilePage = () => {
                         <div className="avatar-container">
                             <label htmlFor="avatar-upload">
                                 <img
-                                    src={avatar}
+                                    src={`${avatar}?timestamp=${new Date().getTime()}`}
                                     alt="User Avatar"
                                     className="user-avatar"
                                 />
@@ -228,7 +228,7 @@ const UserProfilePage = () => {
                         </div>
                         <div>
                             <p className="summary-title">Total number of plants harvested</p>
-                            <p className="summary-number">{userInfo.totalHarvested}</p>                           
+                            <p className="summary-number">{userInfo.totalHarvested}</p>
                         </div>
                     </Card>
                 </div>

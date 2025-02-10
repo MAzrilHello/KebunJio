@@ -41,7 +41,7 @@ const PostHeader = ({ post }) => {
             <Row className="align-items-center">
                 <Col xs="auto">
                     <Image
-                        src={avatarUrl}
+                        src={post.username === authUser?.Username ? authUser.avatarUrl : post.avatarUrl}
                         roundedCircle
                         className="post-header-avatar"
                     />

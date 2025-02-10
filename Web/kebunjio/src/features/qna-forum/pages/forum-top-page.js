@@ -4,9 +4,21 @@ import MenuSidebar from '../components/menu-sidebar';
 import PostSneakPeak from '../components/post-sneak-peek';
 import '../styling/forum-page.css';
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useAuth } from "../../../context/AuthContext";
 
 function ForumTopPage() {
     const [posts, setPosts] = useState([]);
+    const { authUser, setAuthUser } = useAuth();
+
+    useEffect(() => {
+        axios.get("/userProfile")
+            .then(res => {
+                console.log("Fetched user profile:", res.data);
+                setAuthUser(res.data);
+            })
+            .catch(err => console.error("Failed to fetch user profile:", err));
+    }, []);
 
     useEffect(() => {
         async function fetchData() {

@@ -49,7 +49,6 @@ function ForumEditPost() {
         PostCategory: formData.category,
         PublishedDateTime: new Date(),
         UserId: post.UserId,
-        avatarUrl: formData.avatarUrl,
       };
       console.log(requestData);
       alert("Updated post!");
@@ -70,7 +69,6 @@ function ForumEditPost() {
           <div className="main-content">
             <p className="page-header">Edit post</p>
             <div className="edit-post-avatar-container">
-              <img src={formData.avatarUrl} alt="User Avatar" className="edit-post-avatar" />
               <span>{authUser?.username || "Unknown User"}</span>
             </div>
             <Form onSubmit={handleSubmit}>

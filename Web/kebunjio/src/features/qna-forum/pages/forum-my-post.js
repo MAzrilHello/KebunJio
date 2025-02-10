@@ -5,10 +5,20 @@ import '../styling/forum-page.css';
 import PostSneakPeak from '../components/post-sneak-peek';
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
+import axios from "axios";
 
 function ForumMyPage() {
     const { authUser,setAuthUser } = useAuth();
     const [posts, setPosts] = useState([]);
+
+    useEffect(() => {
+        axios.get("/userProfile")
+            .then(res => {
+                console.log("Fetched user profile:", res.data);
+                setAuthUser(res.data);
+            })
+            .catch(err => console.error("Failed to fetch user profile:", err));
+    }, []);
 
     useEffect(() => {
         console.log("Current User:", authUser);

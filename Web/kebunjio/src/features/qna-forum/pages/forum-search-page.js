@@ -6,6 +6,8 @@ import PostSneakPeak from '../components/post-sneak-peek';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useAuth } from "../../../context/AuthContext";
 
 function ForumSearchPage() {
     let navigate = useNavigate();
@@ -17,6 +19,17 @@ function ForumSearchPage() {
     const [posts, setPosts] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
     const [searchInput, setSearchInput] = useState('');
+    const { authUser, setAuthUser } = useAuth();
+
+
+    useEffect(() => {
+        axios.get("/userProfile")
+            .then(res => {
+                console.log("Fetched user profile:", res.data);
+                setAuthUser(res.data);
+            })
+            .catch(err => console.error("Failed to fetch user profile:", err));
+    }, []);
 
     useEffect(() => {
         async function fetchData() {

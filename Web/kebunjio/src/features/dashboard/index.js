@@ -9,7 +9,7 @@ import {
   faVirusCovid
 } from '@fortawesome/free-solid-svg-icons';
 import statisticsService from './statisticsService';
-import './style.css';
+import './style.css';import { AuthProvider } from './context/AuthContext';
 
 const Dashboard = () => {
   console.log('Dashboard组件被加载');
