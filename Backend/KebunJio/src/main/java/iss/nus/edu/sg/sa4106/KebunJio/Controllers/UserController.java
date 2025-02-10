@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 // changed to Rest API
 @RestController
-@RequestMapping("/Users")
+@RequestMapping("/users")
 @CrossOrigin(origins = "*")
 public class UserController {
 
@@ -52,7 +52,9 @@ public class UserController {
     	}catch(Exception e) {
     		throw new RuntimeException("Login failed");
     	}
+
     }
+
 //    public String login(@RequestParam String emailOrUsername,
 //                        @RequestParam String password,
 //                        HttpSession session,

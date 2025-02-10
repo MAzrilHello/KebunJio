@@ -10,19 +10,13 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 
-class TimeClassHandler(timeTextView: TextView, changeDateBtn: Button, changeTimeBtn: Button, context: Context) {
+class TimeClassHandler(var timeTextView: TextView,
+                       var changeDateBtn: Button, var changeTimeBtn: Button, var context: Context
+) {
 
-    lateinit var timeTextView: TextView
-    lateinit var changeDateBtn: Button
-    lateinit var changeTimeBtn: Button
-    lateinit var context: Context
     public var pattern = "yyyy-MM-dd'T'hh:mm:ss"
 
     init {
-        this.timeTextView = timeTextView
-        this.changeDateBtn = changeDateBtn
-        this.changeTimeBtn = changeTimeBtn
-        this.context = context
         this.timeTextView.text = ""
 
         this.changeDateBtn.setOnClickListener {

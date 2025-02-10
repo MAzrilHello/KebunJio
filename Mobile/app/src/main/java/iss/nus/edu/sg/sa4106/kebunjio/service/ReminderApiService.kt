@@ -13,10 +13,19 @@ import java.net.URL
 object ReminderApiService {
     private const val BASE_URL = "http://10.0.2.2:8080/api/reminders"
 
+    suspend fun getRemindersByPlant(plantId: String): String? {
+        val fullUrl = "$BASE_URL/plant/$plantId"
+        Log.d("ReminderApiService", "Sending GET request to: $fullUrl")
+
+        return sendGetRequest(fullUrl)?.also { response ->
+            Log.d("ReminderApiService", "API Response: $response")
+        }
+    }
     suspend fun getRemindersByUser(userId: String): String? {
         val fullUrl = "$BASE_URL/user/$userId"
-        return sendGetRequest(fullUrl)
-    }
+        return sendGetRequest(fullUrl)?.also { response ->
+            Log.d("ReminderApiService", "API Response: $response")
+        }    }
     private suspend fun sendGetRequest(urlString: String): String? {
         return withContext(Dispatchers.IO) {
             try {

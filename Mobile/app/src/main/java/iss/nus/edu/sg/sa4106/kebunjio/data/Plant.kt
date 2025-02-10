@@ -24,7 +24,11 @@ data class Plant(
 
     companion object {
         fun getFromResponseObject(responseObject: JSONObject): Plant {
-            val id = ifNullString(responseObject.getString("id"))
+            val id = if (responseObject.has("_id")) {
+                ifNullString(responseObject.getString("_id"))
+            } else {
+                ifNullString(responseObject.getString("id"))
+            }
             val ediblePlantSpeciesId = ifNullString(responseObject.getString("ediblePlantSpeciesId"))
             val userId = ifNullString(responseObject.getString("userId"))
             val name = ifNullString(responseObject.getString("name"))
