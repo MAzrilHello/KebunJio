@@ -18,12 +18,12 @@ public interface ReminderRepository extends MongoRepository<Reminder, String>{
     @Query("{'id': ?0}")
     Optional<Reminder> findById(String id);
 
+    @Query("{'plantId': ?0}") 
+    Optional<List<Reminder>> findByPlantId(String plantId);
+    
     @Query("{'userId': ?0}")
     List<Reminder> findByUserId(String userId);
-    
-    @Query("{'plantId': ?0}")
-    List<Reminder> findByPlantId(String plantId);
-    
+        
     @Query("{'status': ?0}")
     List<Reminder> findByStatus(String status);
     

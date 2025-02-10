@@ -1,5 +1,6 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Controllers;
 
+import iss.nus.edu.sg.sa4106.KebunJio.DAO.LoginDAO;
 import iss.nus.edu.sg.sa4106.KebunJio.DAO.RegisterDAO;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.User;
 import iss.nus.edu.sg.sa4106.KebunJio.Services.UserService;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 // changed to Rest API
 @RestController
-@RequestMapping("/Users")
+@RequestMapping("/users")
 @CrossOrigin(origins = "*")
 public class UserController {
 
@@ -28,18 +29,17 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestParam String emailOrUsername,
-    		                      @RequestParam String password,
+    public ResponseEntity<User> login(@RequestBody LoginDAO loginDAO,
     		                      HttpSession sessionObj,
     		                      Model model){
     	try {
-    		if(emailOrUsername.equals("Admin") && password.equals("admin")) {
+    		if(loginDAO.emailOrUsername.equals("Admin") && loginDAO.password.equals("admin")) {
     			// get the adminUser Info
-    			User adminUser = userService.loginUser(emailOrUsername, password);
+    			User adminUser = userService.loginUser(loginDAO.emailOrUsername, loginDAO.password);
     			sessionObj.setAttribute("loggedInUser",adminUser);
     			return new ResponseEntity<User>(adminUser,HttpStatus.OK);
     		}else {
-    			User user = userService.loginUser(emailOrUsername, password);
+    			User user = userService.loginUser(loginDAO.emailOrUsername, loginDAO.password);
     			if(user == null) {
     				// not find the user
     				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -52,7 +52,9 @@ public class UserController {
     	}catch(Exception e) {
     		throw new RuntimeException("Login failed");
     	}
+
     }
+
 //    public String login(@RequestParam String emailOrUsername,
 //                        @RequestParam String password,
 //                        HttpSession session,
