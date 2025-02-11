@@ -5,7 +5,7 @@ const API_URL = 'http://localhost:8080/api/events';
 const eventService = {
   // 获取所有事件
   getAllEvents: async (page = 0, size = 10) => {
-    const response = await axios.get(`${API_URL}?page=${page}&size=${size}`);
+    const response = await axios.get(API_URL);
     return response.data;
   },
 

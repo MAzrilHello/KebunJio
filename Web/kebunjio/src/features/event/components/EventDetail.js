@@ -8,11 +8,11 @@ const EventDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [event, setEvent] = useState(null);
-  //const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
 
-    /*
+    
     const fetchEvent = async () => {
       try {
         const response = await getEventById(id);
@@ -22,31 +22,23 @@ const EventDetail = () => {
       } finally {
         setLoading(false);
       }
-    };*/
-    //fetchEvent();
+    };
+    fetchEvent();
 
-    //Kelly's code, can delete after BE connects
-    async function fetchData(){
-      const eventsRes = await fetch("/dummy-data/event.json");
-      const events = await eventsRes.json()
-      const getEvent = events.find(event=> event.id === parseInt(id))
-      setEvent(getEvent)
-    }
-
-    fetchData()
     console.log(event)
   }, [id]);
 
-  /*
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
+        <Appbar/>
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500" />
       </div>
     );
-  }*/
+  }
 
-  //if (!event) return <div>Event not found</div>;
+  if (!event) return <div><Appbar/>Event not found</div>;
 
   const formatDateTime = (dateTime) => {
     return new Date(dateTime).toLocaleDateString("en-US", {
