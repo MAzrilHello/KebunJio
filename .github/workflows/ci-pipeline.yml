@@ -2,7 +2,7 @@ name: Build and Test
 on:
   push:
     branches:
-      - stgv2_event  # Trigger when pushing to this branch
+      - staging_v2_test  # Trigger when pushing to this branch
     paths:
       - 'Backend/**'  # Only run when Backend files change
 
