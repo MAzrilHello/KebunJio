@@ -77,13 +77,6 @@
 	        <groupId>org.springframework.data</groupId>
 	        <artifactId>spring-data-mongodb</artifactId>
 	    </dependency>
-	
-	    <!-- Spring Data Elasticsearch Dependency -->
-	    <dependency>
-	        <groupId>org.springframework.data</groupId>
-	        <artifactId>spring-data-elasticsearch</artifactId>
-	    </dependency>
-	
 	    <!-- JSR 303/JSR 380 Bean Validation API -->
 	    <dependency>
 	        <groupId>javax.validation</groupId>
