@@ -5,7 +5,6 @@ import { ArrowLeftOutlined, ClockCircleOutlined, EnvironmentOutlined } from '@an
 import eventService from '../service/eventService';
 import "./EventDetail.css";
 import moment from 'moment';
-import placeholderImage from '../../media/event-placeholder.jpeg'
 import Appbar from '../../components/Appbar';
 
 const { Content } = Layout;
@@ -26,7 +25,7 @@ const AdminEventDetail = () => {
         setEvent(data);
       } catch (error) {
         message.error('Failed to fetch event details');
-        navigate('/events');
+        navigate('/admin/events');
       } finally {
         setLoading(false);
       }
@@ -65,7 +64,6 @@ const AdminEventDetail = () => {
             <div className="event-detail-container">
               {/* 左侧图片 */}
               <div className="event-detail-image">
-                <img src={placeholderImage}/>
                 {
                 event?.picture ? (
                   <img
@@ -94,13 +92,15 @@ const AdminEventDetail = () => {
                 <p className="event-detail-description">
                   {event?.description}
                 </p>
-                {//chingnam's code, do not delete
-                /*
+                {
                 <div className="event-detail-actions">
-                  <Button className="google-calendar-btn" onClick={handleAddToCalendar}>
-                    Add to my Google Calendar
+                  <Button className="google-calendar-btn" onClick={()=>{navigate(`/admin/events/edit/${event.id}`, { state: { event } })}}>
+                    Edit event
                   </Button>
-                </div>*/
+                  <Button className="google-calendar-btn" style={{backgroundColor:"red", marginLeft:"16px"}}onClick={()=>{eventService.deleteEvent(event.id)}}>
+                    Delete event
+                  </Button>
+                </div>
                 }
               </div>
             </div>
