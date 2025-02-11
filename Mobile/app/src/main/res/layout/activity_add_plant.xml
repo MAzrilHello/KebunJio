@@ -223,11 +223,10 @@
                 android:textSize="20sp"
                 android:textColor="@android:color/white"
                 />
-            <EditText
-                android:id="@+id/plant_health_text"
+            <Spinner
+                android:id="@+id/plant_health_spinner"
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content"
-                android:hint="ex. healthy/ unhealthy"
                 android:textSize="20sp"
                 android:textColor="@android:color/white"
                 />
