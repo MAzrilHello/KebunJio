@@ -6,7 +6,6 @@ on:
     paths:
       - 'Backend/**'  # Only run when Backend files change
 
-
 jobs:
   build-and-test-backend:
     name: Build and Test Backend
@@ -48,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: junit-reports
-          path: Backend/KebunJio/target/surefire-reports/*.xml
+          path: Backend/KebunJio/target/surefire-reports/
 
   # Mobile Build
   mobile:
