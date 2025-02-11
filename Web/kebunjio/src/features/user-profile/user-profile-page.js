@@ -19,7 +19,7 @@ const UserProfilePage = () => {
 
     const [plants,setPlants] = useState([])
 
-    const userInfo = useState({
+    const [userInfo,setUserInfo] = useState({
         totalPlant:authUser.totalPlant,
         totalHarvested:authUser.totalHarvested,
         totalType:authUser.totalType
@@ -85,6 +85,12 @@ const UserProfilePage = () => {
 
                 console.log("User Data:", userRes.data);
 
+                setAuthUser(prevUser => ({
+                    ...prevUser,
+                    totalPlant: userRes.data.totalPlant,
+                    totalHarvested: userRes.data.totalHarvested,
+                    totalType: userRes.data.totalType
+                }));
 
                 setUserInfo({
                     totalPlant: userRes.data.totalPlant || 0,
