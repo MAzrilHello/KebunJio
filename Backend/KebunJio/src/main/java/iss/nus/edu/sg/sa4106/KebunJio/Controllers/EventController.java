@@ -3,23 +3,37 @@ package iss.nus.edu.sg.sa4106.KebunJio.Controllers;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.Event;
 import iss.nus.edu.sg.sa4106.KebunJio.Services.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
+<<<<<<< Updated upstream
 @RequestMapping("/events")
 @CrossOrigin(origins = "*")
+=======
+@RequestMapping("/Events")
+>>>>>>> Stashed changes
 public class EventController {
 
     @Autowired
     private EventService eventService;
 
     @GetMapping
-    public List<Event> getAllEvents() {
-        return eventService.findAll();
+    public Page<Event> getAllEvents(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size,
+                                    @RequestParam(value = "name", required = false) String name, @RequestParam(value = "date", required = false) String date) {
+        if (page == null) {
+            page = 0;
+        }
+        if (size == null) {
+            size = 10;
+        }
+        Pageable pageable = PageRequest.of(page, size);
+        return eventService.findAll(name, date, pageable);
     }
-    
+
     //Change the id to String
     @GetMapping("/{eventId}")
     public ResponseEntity<Event> getEventById(@PathVariable String eventId) {
@@ -30,11 +44,11 @@ public class EventController {
             return ResponseEntity.notFound().build();
         }
     }
-    
+
     // Have some little question
     // Which data we need to transfer?
     // do we need return event info?
-    
+
     @PostMapping
     public Event createEvent(@RequestBody Event event) {
         return eventService.save(event);
@@ -55,11 +69,11 @@ public class EventController {
     @DeleteMapping("/{eventId}")
     public ResponseEntity<?> deleteEvent(@PathVariable String eventId) {
         try {
-        	if (eventService.deleteByEventId(eventId)) {
-        		return ResponseEntity.notFound().build();
-        	} else {
-        		return ResponseEntity.notFound().build();
-        	}
+            if (eventService.deleteByEventId(eventId)) {
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.notFound().build();
+            }
 //            //eventService.findByEventId(eventId);
 //            //eventService.deleteByEventId(eventId);
             //return ResponseEntity.ok().build();

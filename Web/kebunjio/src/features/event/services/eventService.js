@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:8080/api/events';
+const BASE_URL = 'http://localhost:8080/api/Events';
 
 // Add error handling wrapper
 const handleApiError = async (apiCall) => {

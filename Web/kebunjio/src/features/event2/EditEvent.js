@@ -14,6 +14,7 @@ const EditEvent = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
+  
   const isNewEvent = id === 'new';
   const [loading, setLoading] = useState(false);
 
@@ -72,7 +73,7 @@ const EditEvent = () => {
         await eventService.updateEvent(id, formData);
         message.success('Event updated successfully');
       }
-      navigate('/events');
+      navigate('/admin/events');
     } catch (error) {
       message.error(`Failed to ${isNewEvent ? 'create' : 'update'} event`);
     } finally {

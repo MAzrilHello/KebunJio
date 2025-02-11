@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = 'http://localhost:8080/api';
 
 // 创建一个axios实例
 const axiosInstance = axios.create({
@@ -16,10 +16,10 @@ const statisticsService = {
     // 获取最新的统计数据
     getLatestStatistics: async () => {
         console.log('statisticsService: 开始请求Dashboard数据...');
-        console.log('请求URL:', `${API_BASE_URL}/api/statistics`);
+        console.log('请求URL:', `${API_BASE_URL}/Dashboard/statistics`);
         
         try {
-            const response = await axiosInstance.get('/api/statistics');
+            const response = await axiosInstance.get('/Dashboard/statistics');
             
             console.log('statisticsService: 收到响应');
             console.log('响应状态:', response.status);
