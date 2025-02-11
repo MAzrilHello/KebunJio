@@ -7,15 +7,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import iss.nus.edu.sg.sa4106.KebunJio.Services.PostService;
 
-@SpringBootTest
 public class PostServiceTest {
-	@Autowired
-	private PostService postService;
-	
-	@Test
-	void testAdd() {
-		int result = postService.add(1, 3);
-		Assertions.assertEquals(4,result);
-	}
-	
+
+    private final PostService postService = new PostService();
+
+    @Test
+    void testAdd() {
+        int result = postService.add(1, 3);
+        Assertions.assertEquals(4, result);
+    }
 }
