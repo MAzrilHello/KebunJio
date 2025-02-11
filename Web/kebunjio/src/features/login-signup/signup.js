@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './login-signup.css';
+import { useNavigate } from "react-router-dom";
 
 const SignUpPage = () => {
     const [email, setEmail] = useState('');
@@ -10,6 +11,8 @@ const SignUpPage = () => {
     const [contactPhone, setContactPhone] = useState('');
     const [error, setError] = useState('');
 
+    const navigate = useNavigate()
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -18,7 +21,7 @@ const SignUpPage = () => {
             return;
         }
 
-        axios.post('/signup', {
+        axios.post('http://localhost:8080/api/users/signup', {
             email,
             username,
             password,
@@ -27,7 +30,7 @@ const SignUpPage = () => {
         })
             .then(response => {
                 if (response.status === 201) {
-                    window.location.href = '/login';
+                    navigate(`/login`)
                 }
             })
             .catch(err => {

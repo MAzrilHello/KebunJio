@@ -26,6 +26,7 @@ class ChooseGuideToViewFragment : Fragment() {
     public fun loadNewData(loggedInFragment: LoggedInFragment) {
         this.loggedInFragment = loggedInFragment
         this.ediblePlantSpeciesList = loggedInFragment.speciesList
+        Log.d("ChooseGuideToViewFragment","ediblePlantSpeciesList size: ${ediblePlantSpeciesList.size}")
         //reloadEdiblePlantSpeciesList()
     }
 

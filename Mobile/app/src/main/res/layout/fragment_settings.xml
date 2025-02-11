@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#0A803D"
     tools:context=".features.settings.SettingsFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -17,13 +18,23 @@
             android:layout_gravity="center"
             android:textSize="30sp"
             android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="20dp"
             android:text="Settings" />
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:background="#EEEEEE"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_width="300dp"
+        android:orientation="vertical" >
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:id="@+id/username_text"
             android:layout_gravity="center"
             android:textSize="25sp"
+            android:textColor="#111111"
             android:text="Username" />
         <LinearLayout
             android:layout_height="wrap_content"
@@ -33,6 +44,7 @@
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content"
                 android:text="Email: "
+                android:textColor="#111111"
                 android:textSize="20sp"
                 />
             <TextView
@@ -40,6 +52,7 @@
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content"
                 android:text="user@email.com"
+                android:textColor="#111111"
                 android:textSize="20sp"
                 />
         </LinearLayout>
@@ -51,6 +64,7 @@
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content"
                 android:text="Phone Number: "
+                android:textColor="#111111"
                 android:textSize="20sp"
                 />
             <TextView
@@ -58,9 +72,11 @@
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content"
                 android:text="8111 2222"
+                android:textColor="#111111"
                 android:textSize="20sp"
                 />
         </LinearLayout>
+    </LinearLayout>
         <Button
             android:id="@+id/edit_profile_btn"
             android:layout_height="wrap_content"
@@ -71,8 +87,9 @@
         <Button
             android:id="@+id/logout_btn"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_width="300dp"
             android:text="Logout" />
     </LinearLayout>
 

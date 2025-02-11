@@ -78,6 +78,8 @@ const UserProfilePage = () => {
         return <div>Loading...</div>;
     }*/
 
+    
+
     return (
         <div className="user-profile-page"> 
             <Appbar/>

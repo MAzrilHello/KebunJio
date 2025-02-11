@@ -17,4 +17,5 @@ public class PostServiceTest {
 		int result = postService.add(1, 3);
 		Assertions.assertEquals(4,result);
 	}
+	
 }

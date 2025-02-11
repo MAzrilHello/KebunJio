@@ -25,10 +25,13 @@ const Events = () => {
   const fetchEvents = async (page = currentPage) => {
     try {
       setLoading(true);
-      const response = await eventService.getAllEvents(page, pageSize);
-      setEvents(response.content);
-      setTotalElements(response.totalElements);
-      setCurrentPage(response.number);
+      const response = await eventService.getAllEvents();
+      console.log("Fetched data")
+      console.log(response)
+      setEvents(response);
+      setFilteredEvents(response);
+      //setTotalElements(response.totalElements);
+      //setCurrentPage(response.number);
     } catch (error) {
       message.error('Failed to fetch events');
     } finally {
@@ -37,17 +40,8 @@ const Events = () => {
   };
 
   useEffect(() => {
-    //Chingnam's code, do not delete
-    //fetchEvents();
+    fetchEvents();
 
-    //Kelly's code, can delete after connect to backend
-    async function fetchData(){
-      const eventsRes = await fetch("/dummy-data/event.json")
-      const eventsData = await eventsRes.json()
-      setEvents(eventsData)
-      setFilteredEvents(eventsData)
-    }
-    fetchData()
   }, [pageSize]);
 
   const handlePageChange = (page) => {
@@ -190,7 +184,7 @@ const Events = () => {
                 <Card key={event.id} className="event-card">
                   <div className="event-image-container">
                     <img src={placeholderImage}></img>
-                    {/*event.picture ? (
+                    {event.picture ? (
                       <img 
                         src={`http://localhost:8080/api/events/images/${event.picture}`} 
                         alt={event.name} 
@@ -204,7 +198,7 @@ const Events = () => {
                       <div className="event-image placeholder-image">
                         <div className="placeholder-text">No Image</div>
                       </div>
-                    )*/}
+                    )}
                     <Dropdown
                       menu={{ items: getDropdownItems(event) }}
                       trigger={['click']}

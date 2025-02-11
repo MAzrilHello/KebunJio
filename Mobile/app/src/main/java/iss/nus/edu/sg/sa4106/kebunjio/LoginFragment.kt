@@ -93,10 +93,11 @@ class LoginFragment : Fragment() {
 
     private fun attemptLogin(username: String, password: String) {
         Thread{
-            val partUrl = "http://10.0.2.2:8080/api/Users/login"
+            val partUrl = "http://10.0.2.2:8080/api/users/login"
             val encodedUsername = URLEncoder.encode(username, StandardCharsets.UTF_8.toString())
             val encodedPassword = URLEncoder.encode(password, StandardCharsets.UTF_8.toString())
-            val fullUrl = "$partUrl?emailOrUsername=$encodedUsername&password=$encodedPassword"
+            //val fullUrl = "$partUrl?emailOrUsername=$encodedUsername&password=$encodedPassword"
+            val fullUrl = partUrl
             val url = URL(fullUrl)
             val connection = url.openConnection() as HttpURLConnection
 
@@ -110,8 +111,18 @@ class LoginFragment : Fragment() {
                 connection.doOutput = true
                 connection.useCaches = false
 
+                connection.setRequestProperty("Content-Type", "application/json")
+                connection.setRequestProperty("Accept", "application/json")
+
+                val reminderJson = JSONObject().apply {
+                    put("emailOrUsername",username)
+                    put("password",password)
+                }
+
                 Log.d("LoginFragment","Data output stream")
                 val outputStream = DataOutputStream(connection.outputStream)
+                Log.d("LoginFragment","Write by Bytes")
+                outputStream.writeBytes(reminderJson.toString())
                 Log.d("LoginFragment","Flush data")
                 outputStream.flush()
                 Log.d("LoginFragment","Close output stream")

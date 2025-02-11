@@ -1,6 +1,7 @@
 package iss.nus.edu.sg.sa4106.kebunjio.features.reminders
 
 import android.content.BroadcastReceiver
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -10,24 +11,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import iss.nus.edu.sg.sa4106.kebunjio.adapter.ReminderGroupAdapter
 import iss.nus.edu.sg.sa4106.kebunjio.data.Reminder
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentViewReminderListBinding
-import iss.nus.edu.sg.sa4106.kebunjio.service.reminders.ReminderService
+import iss.nus.edu.sg.sa4106.kebunjio.service.ReminderApiService
+import kotlinx.coroutines.launch
+import org.json.JSONArray
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ViewReminderListFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ViewReminderListFragment : Fragment() {
     private var _binding: FragmentViewReminderListBinding? = null
     private val binding get() = _binding!!
@@ -42,7 +37,8 @@ class ViewReminderListFragment : Fragment() {
             Log.d(TAG, "Broadcast received: $action")
 
             if (action == "fetch_reminders") {
-                val reminderList = intent.getSerializableExtra("reminderList") as? ArrayList<Reminder>
+                val reminderList =
+                    intent.getSerializableExtra("reminderList") as? ArrayList<Reminder>
                 Log.d(TAG, "Received ${reminderList?.size ?: 0} reminders")
 
                 if (reminderList.isNullOrEmpty()) {
@@ -73,11 +69,29 @@ class ViewReminderListFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentViewReminderListBinding.inflate(inflater, container, false)
 
         setupRecyclerView()
-        fetchRemindersFromBackend()
+
+        Log.d(TAG, "Arguments in ViewReminderListFragment: ${arguments?.toString()}")
+
+        val plantId = arguments?.getString("plantId") ?: ""
+        if (plantId.isEmpty()) {
+            // Fallback handling for missing plantId
+            Log.e(TAG, "Error: plantId is missing! Check navigation from LoggedInFragment.")
+            binding.recyclerView.visibility = View.GONE
+            binding.emptyStateText.visibility = View.VISIBLE
+            binding.emptyStateText.text = "No reminders available. Please select a plant."
+            return binding.root
+        } else {
+            Log.d(TAG, "Received plantId: $plantId")
+            fetchRemindersFromBackend(plantId)
+        }
 
         initButtons()
         return binding.root
@@ -98,23 +112,80 @@ class ViewReminderListFragment : Fragment() {
         }
     }
 
-    private fun fetchRemindersFromBackend() {
-        if (userId.isNullOrEmpty()) {
-            Log.e(TAG, "Error: userId is null, cannot fetch reminders.")
-            return
+    private fun fetchRemindersFromBackend(plantId: String) {
+
+        if (plantId.isEmpty()) {
+            Log.e(TAG, "Error: plantId is missing! Check navigation from LoggedInFragment.")
         }
 
-        val intent = Intent(activity, ReminderService::class.java).apply {
-            action = "fetch_reminders"
-            putExtra("userId", userId)
+
+        lifecycleScope.launch {
+            Log.d(TAG, "Fetching reminders for plantId: $plantId")
+
+            try {
+                val response = ReminderApiService.getRemindersByPlant(plantId)
+
+                if (response.isNullOrEmpty()) {
+                    Log.e(TAG, "No reminders found for plantId: $plantId")
+                    binding.recyclerView.visibility = View.GONE
+                    binding.emptyStateText.visibility = View.VISIBLE
+                } else {
+                    Log.d(TAG, "Fetched reminders from API: $response")
+                    val reminders = parseReminderList(response)
+                    groupedReminders = groupRemindersByDate(reminders)
+                    reminderAdapter.updateData(groupedReminders)
+                    binding.recyclerView.visibility = View.VISIBLE
+                    binding.emptyStateText.visibility = View.GONE
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error fetching reminders: ${e.message}", e)
+                binding.recyclerView.visibility = View.GONE
+                binding.emptyStateText.visibility = View.VISIBLE
+            }
         }
-        activity?.startService(intent)
-        Log.d(TAG, "Fetching reminders for user ID: $userId")
+    }
+
+    private fun parseReminderList(response: String): List<Reminder> {
+        val reminderList = mutableListOf<Reminder>()
+        val jsonArray = JSONArray(response)
+        val formatter = DateTimeFormatter.ISO_DATE_TIME
+
+        for (i in 0 until jsonArray.length()) {
+            val jsonObject = jsonArray.getJSONObject(i)
+            try {
+                val reminderDateTime =
+                    jsonObject.optString("reminderDateTime", "").takeIf { it.isNotEmpty() }
+                        ?.let {
+                            LocalDateTime.parse(it, formatter)
+                        } ?: LocalDateTime.now()
+
+                val createdDateTime =
+                    jsonObject.optString("createdDateTime", "").takeIf { it.isNotEmpty() }
+                        ?.let {
+                            LocalDateTime.parse(it, formatter)
+                        } ?: LocalDateTime.now()
+
+                val reminder = Reminder(
+                    id = jsonObject.getString("_id"),
+                    userId = jsonObject.getString("userId"),
+                    plantId = jsonObject.getString("plantId"),
+                    reminderType = jsonObject.getString("reminderType"),
+                    reminderDateTime = reminderDateTime,
+                    isRecurring = jsonObject.getBoolean("isRecurring"),
+                    recurrenceInterval = jsonObject.optString("recurrenceInterval", ""),
+                    status = jsonObject.getString("status"),
+                    createdDateTime = createdDateTime
+                )
+                reminderList.add(reminder)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error parsing reminder: ${e.message}", e)
+            }
+        }
+        return reminderList
     }
 
     private fun groupRemindersByDate(reminders: List<Reminder>): MutableMap<String, List<Reminder>> {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-        val today = LocalDateTime.now().toLocalDate()
+        val today = LocalDate.now()
         val tomorrow = today.plusDays(1)
         val weekEnd = today.plusDays(6)
 
@@ -123,17 +194,14 @@ class ViewReminderListFragment : Fragment() {
         val remainingWeekReminders = mutableListOf<Reminder>()
 
         for (reminder in reminders) {
-            val reminderDate = try {
-                LocalDateTime.parse(reminder.reminderDateTime.toString()).toLocalDate()
-            } catch (e: Exception) {
-                Log.e(TAG, "Invalid date format for reminder: ${reminder.reminderDateTime}", e)
-                continue
-            }
+            val reminderDate = reminder.reminderDateTime.toLocalDate()
 
             when {
                 reminderDate == today -> todayReminders.add(reminder)
                 reminderDate == tomorrow -> tomorrowReminders.add(reminder)
-                reminderDate in today..weekEnd -> remainingWeekReminders.add(reminder)
+                reminderDate.isAfter(today) && reminderDate.isBefore(weekEnd.plusDays(1)) -> remainingWeekReminders.add(
+                    reminder
+                )
             }
         }
 
@@ -146,17 +214,11 @@ class ViewReminderListFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        val filter = IntentFilter("fetch_reminders")
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            requireContext().registerReceiver(
-                reminderReceiver,
-                filter,
-                Context.RECEIVER_NOT_EXPORTED
-            )
-        } else {
-            requireContext().registerReceiver(reminderReceiver, filter,
-                Context.RECEIVER_NOT_EXPORTED)
-        }
+        requireContext().registerReceiver(
+            reminderReceiver,
+            IntentFilter("fetch_reminders"),
+            Context.RECEIVER_NOT_EXPORTED
+        )
     }
 
     override fun onStop() {
@@ -177,3 +239,4 @@ class ViewReminderListFragment : Fragment() {
         private val TAG = "ViewReminderListFragment"
     }
 }
+

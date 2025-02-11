@@ -26,9 +26,8 @@ import iss.nus.edu.sg.sa4106.kebunjio.data.User
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentLoggedInBinding
 import iss.nus.edu.sg.sa4106.kebunjio.features.browseguides.ChooseGuideToViewFragment
 import iss.nus.edu.sg.sa4106.kebunjio.features.logactivities.ChooseLogToViewFragment
-import iss.nus.edu.sg.sa4106.kebunjio.features.reminders.ViewReminderListFragment
+import iss.nus.edu.sg.sa4106.kebunjio.features.reminders.ChoosePlantForReminderFragment
 import iss.nus.edu.sg.sa4106.kebunjio.features.settings.SettingsFragment
-//import iss.nus.edu.sg.sa4106.kebunjio.features.tracker.TrackerActivity
 import iss.nus.edu.sg.sa4106.kebunjio.features.viewplantdetails.ChoosePlantToViewFragment
 import iss.nus.edu.sg.sa4106.kebunjio.service.PlantSpeciesLogService
 
@@ -41,19 +40,19 @@ class LoggedInFragment : Fragment() {
     private var plantFragment = ChoosePlantToViewFragment()
     private var settingsFragment = SettingsFragment()
     private var chooseGuideToViewFragment = ChooseGuideToViewFragment()
-    private var reminderViewList = ViewReminderListFragment()
+    private var choosePlantForReminderFragment = ChoosePlantForReminderFragment()
 
     public var loggedUser: User? = null
     public var sessionCookie: String = ""
     public var speciesList: ArrayList<EdiblePlantSpecies> = ArrayList()
     public var usersPlantList: ArrayList<Plant> = ArrayList()
     public var usersActivityLogList: ArrayList<ActivityLog> = ArrayList()
-    public var usersReminderList: ArrayList<Reminder> = ArrayList()
+    public var usersPlantListReminderList: ArrayList<Plant> = ArrayList()
 
     private var speciesReady: Boolean = false
     private var userPlantListReady: Boolean = false
     private var userActivityLogReady: Boolean = false
-    private var userReminderReady: Boolean = false
+    private var userPlantListReminderReady: Boolean = false
     private var loadOnceYet: Boolean = false
     private lateinit var bottomNavigationView: BottomNavigationView
 
@@ -61,32 +60,36 @@ class LoggedInFragment : Fragment() {
     protected var receiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action
-            val responseCode = intent.getIntExtra("responseCode",-2)
+            val responseCode = intent.getIntExtra("responseCode", -2)
+
             if (responseCode in 200..299) {
+                Log.d("LoggedInFragmentReceiver", "$action: response successful ($responseCode)")
             } else if (responseCode == -1) {
-                Log.d("LoggedInFragmentReceiver","${action}: response error: ${intent.getStringExtra("exception")}")
+                Log.d("LoggedInFragmentReceiver", "$action: response error: ${intent.getStringExtra("exception")}")
             } else {
-                Log.d("LoggedInFragmentReceiver","${action}: response with no error: ${responseCode}")
+                Log.d("LoggedInFragmentReceiver", "$action: response received ($responseCode)")
             }
+
             if (action == "get_species_all") {
                 speciesList = intent.getSerializableExtra("speciesList") as ArrayList<EdiblePlantSpecies>
                 speciesReady = true
-                Log.d("LoggedInFragmentReceiver","species list size: ${speciesList.size}")
-                //for (i in 0..speciesList.size-1) {
-                //    Log.d("LoggedInFragmentReceiver",speciesList[i].id)
-                //    Log.d("LoggedInFragmentReceiver",speciesList[i].name)
-                //}
             } else if (action == "get_plants_byuser") {
                 usersPlantList = intent.getSerializableExtra("plantList") as ArrayList<Plant>
                 userPlantListReady = true
-                Log.d("LoggedInFragmentReceiver","user plant list size: ${usersPlantList.size}")
+                Log.d("LoggedInFragmentReceiver", "User plant list size: ${usersPlantList.size}")
+
+                // ✅ Ensure Reminder-Specific Plant List is Loaded Separately
+                usersPlantListReminderList = ArrayList(usersPlantList) // Copy list instead of overwriting
+
+                userPlantListReminderReady = true
                 tryPullAllUsersActivities()
+                //pullAllUserPlantsToAddReminder()
             } else if (action == "get_activity_log_byuser") {
                 usersActivityLogList = intent.getSerializableExtra("logList") as ArrayList<ActivityLog>
                 userActivityLogReady = true
-                Log.d("LoggedInFragmentReceiver","user activity log list size: ${usersActivityLogList.size}")
             }
-            if (speciesReady && userPlantListReady && userActivityLogReady) {
+
+            if (speciesReady && userPlantListReady && userActivityLogReady && userPlantListReminderReady) {
                 postAllArraysDownloaded()
             }
         }
@@ -112,6 +115,8 @@ class LoggedInFragment : Fragment() {
         filter.addAction("get_species_all")
         //filter.addAction("get_species_byname")
         //filter.addAction("get_species_byid")
+
+        filter.addAction("get_reminders_byuser")
         registerReceiver(requireContext(), receiver, filter, ContextCompat.RECEIVER_EXPORTED)
     }
 
@@ -153,6 +158,8 @@ class LoggedInFragment : Fragment() {
         initHaveUpdateLauncher()
         tryPullAllSpecies()
         tryPullAllUserPlants()
+        pullAllUserPlantsToAddReminder()
+
         // do not need to pull all user activities, plants will pull immediately after
         //tryPullAllUsersActivities()
         Log.d("LoggedInFragment","LoggedInFragment onCreateView")
@@ -179,11 +186,14 @@ class LoggedInFragment : Fragment() {
         plantFragment.loadNewData(this)
         logToViewFragment.loadNewData(this)
         chooseGuideToViewFragment.loadNewData(this)
+        choosePlantForReminderFragment.loadNewData(this)
+        //choosePlantForReminderFragment.loadNewData(this)
+
         bottomNavigationView.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 //R.id.tracker_item -> startActivity(Intent(requireContext(), TrackerActivity::class.java))
                 R.id.my_plants_item -> setCurrentFragment(plantFragment)
-                R.id.reminder_item -> setCurrentFragment(reminderViewList)
+                R.id.reminder_item -> setCurrentFragment(choosePlantForReminderFragment)
                 R.id.activity_log_item -> setCurrentFragment(logToViewFragment)
                 R.id.guide_item -> setCurrentFragment(chooseGuideToViewFragment)
                 //R.id.guide_item -> startActivity(Intent(requireContext(), BrowseGuidesActivity::class.java))
@@ -224,8 +234,20 @@ class LoggedInFragment : Fragment() {
         activity?.startService(intent)
     }
 
+    // @Azril:
+    // this won't do anything
+    // the service only responds to 'get_plants', not 'get_plants_byuser'
+    // if you want all from the user you must set  "byUser" to 'true'
+    // as it is functionally the same as tryPullAllUserPlants you should not run this
+    public fun pullAllUserPlantsToAddReminder() {
+        userPlantListReminderReady = false
+        val intent = Intent(activity, PlantSpeciesLogService::class.java)
+        intent.action = "get_plants_byuser"
+        intent.putExtra("id", loggedUser!!.id)
+        activity?.startService(intent)
+    }
 
-    private fun tryPullAllSpecies() {
+        private fun tryPullAllSpecies() {
         speciesReady = false
         val intent = Intent(activity, PlantSpeciesLogService::class.java)
         intent.setAction("get_species")

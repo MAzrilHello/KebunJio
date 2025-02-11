@@ -34,7 +34,93 @@ public class ReminderController {
     @Autowired
     private ReminderService reminderService;
 
-    // Must restrict to owner only
+    @GetMapping("/plant/{plantId}")
+    public ResponseEntity<?> getRemindersByPlant(@PathVariable String plantId) {
+        try {
+            System.out.println("Fetching reminders for plantId: " + plantId);
+
+            // Call service method
+            List<Reminder> reminders = reminderService.getRemindersByPlant(plantId);
+
+            // If no reminders found, return 404
+            if (reminders.isEmpty()) {
+                System.out.println("No reminders found for plantId: " + plantId);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No reminders found for this plant.");
+            }
+
+            System.out.println("Fetched reminders: " + reminders);
+            return ResponseEntity.ok(reminders);
+        } catch (Exception ex) {
+            System.err.println("Unexpected error while fetching reminders for plantId: " + plantId);
+            ex.printStackTrace();
+            return ResponseEntity.internalServerError().body("An error occurred while fetching reminders.");
+        }
+    }    
+
+    @GetMapping("/user/{userId}/plant/{plantId}")
+    public ResponseEntity<?> getRemindersByUserAndPlant(@PathVariable String userId, @PathVariable String plantId) {
+        try {
+            // Call service method
+            List<Reminder> reminders = reminderService.getRemindersByUserAndPlant(userId, plantId);
+            return ResponseEntity.ok(reminders);
+        } catch (IllegalArgumentException ex) {
+            // Handle invalid inputs
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (Exception ex) {
+            // Handle unexpected errors
+            return ResponseEntity.internalServerError().body("An error occurred while fetching reminders.");
+        }
+    }
+    
+    // Non-owners can still view.
+    @GetMapping
+    public ResponseEntity<List<Reminder>> getAllReminders() {
+        return ResponseEntity.ok(reminderService.getAllReminders());
+    }
+
+    // Non-owners can still view.
+    @GetMapping("/{id}")
+    public ResponseEntity<Reminder> getReminderById(@PathVariable String id) {
+        return reminderService.getReminderById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // Non-owners can still view.
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Reminder>> getRemindersByUserId(@PathVariable String userId) {
+        System.out.println("Fetching reminders for userId: " + userId);
+        try {
+            List<Reminder> reminders = reminderService.getRemindersByUserId(userId);
+            System.out.println("Fetched reminders: " + reminders);
+            return ResponseEntity.ok(reminders);
+        } catch (Exception e) {
+            System.err.println("Error fetching reminders for userId: " + userId);
+            e.printStackTrace(); 
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
+    // Non-owners can still view.
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<Reminder>> getRemindersByStatus(@PathVariable String status) {
+        return ResponseEntity.ok(reminderService.getRemindersByStatus(status));
+    }
+
+    // Non-owners can still view.
+    @GetMapping("/type/{reminderType}")
+    public ResponseEntity<List<Reminder>> getRemindersByType(@PathVariable String reminderType) {
+        return ResponseEntity.ok(reminderService.getRemindersByType(reminderType));
+    }
+
+    // Non-owners can still view.
+    @GetMapping("/timeframe")
+    public ResponseEntity<List<Reminder>> getRemindersWithinTimeframe(
+            @RequestParam LocalDateTime start, @RequestParam LocalDateTime end) {
+        return ResponseEntity.ok(reminderService.getRemindersWithinTimeframe(start, end));
+    }
+    
+      // Must restrict to owner only
     @PostMapping
     public ResponseEntity<Reminder> addReminder(@RequestBody Reminder reminder, HttpSession sessionObj) {
     	// first validate that we have permission
@@ -59,79 +145,8 @@ public class ReminderController {
     		System.out.println(e);
 			return ResponseEntity.internalServerError().build();
     	}
-      }
-  
-    /**
-     * GET endpoint to retrieve reminders for a specific user and plant.
-     * @param userId The user ID.
-     * @param plantId The plant ID.
-     * @return A list of reminders.
-     */
-    @GetMapping("/user/{userId}/plant/{plantId}")
-    public ResponseEntity<?> getRemindersByUserAndPlant(@PathVariable String userId, @PathVariable String plantId) {
-        try {
-            // Call service method
-            List<Reminder> reminders = reminderService.getRemindersByUserAndPlant(userId, plantId);
-            return ResponseEntity.ok(reminders);
-        } catch (IllegalArgumentException ex) {
-            // Handle invalid inputs
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        } catch (Exception ex) {
-            // Handle unexpected errors
-            return ResponseEntity.internalServerError().body("An error occurred while fetching reminders.");
-        }
-    }
-    
-    @PostMapping("/add")
-    public ResponseEntity<?> addReminder(@RequestBody Reminder reminder) {
-        try {
-            Reminder savedReminder = reminderService.addReminder(reminder);
-            return ResponseEntity.ok(savedReminder);
-        } catch (IllegalArgumentException ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        } catch (Exception ex) {
-            return ResponseEntity.internalServerError().body("An error occurred while adding the reminder.");
-        }
     }
 
-    // Non-owners can still view.
-    @GetMapping
-    public ResponseEntity<List<Reminder>> getAllReminders() {
-        return ResponseEntity.ok(reminderService.getAllReminders());
-    }
-
-    // Non-owners can still view.
-    @GetMapping("/{id}")
-    public ResponseEntity<Reminder> getReminderById(@PathVariable String id) {
-        return reminderService.getReminderById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    // Non-owners can still view.
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Reminder>> getRemindersByUserId(@PathVariable String userId) {
-        return ResponseEntity.ok(reminderService.getRemindersByUserId(userId));
-    }
-
-    // Non-owners can still view.
-    @GetMapping("/status/{status}")
-    public ResponseEntity<List<Reminder>> getRemindersByStatus(@PathVariable String status) {
-        return ResponseEntity.ok(reminderService.getRemindersByStatus(status));
-    }
-
-    // Non-owners can still view.
-    @GetMapping("/type/{reminderType}")
-    public ResponseEntity<List<Reminder>> getRemindersByType(@PathVariable String reminderType) {
-        return ResponseEntity.ok(reminderService.getRemindersByType(reminderType));
-    }
-
-    // Non-owners can still view.
-    @GetMapping("/timeframe")
-    public ResponseEntity<List<Reminder>> getRemindersWithinTimeframe(
-            @RequestParam LocalDateTime start, @RequestParam LocalDateTime end) {
-        return ResponseEntity.ok(reminderService.getRemindersWithinTimeframe(start, end));
-    }
 
     // Must restrict to owner only
     @PutMapping("/{reminderId}")

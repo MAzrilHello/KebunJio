@@ -13,6 +13,10 @@ import iss.nus.edu.sg.sa4106.kebunjio.LoggedInFragment
 import iss.nus.edu.sg.sa4106.kebunjio.R
 import iss.nus.edu.sg.sa4106.kebunjio.data.User
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentSettingsBinding
+import iss.nus.edu.sg.sa4106.kebunjio.service.CookieHandling
+import java.io.DataOutputStream
+import java.net.HttpURLConnection
+import java.net.URL
 
 
 class SettingsFragment : Fragment() {
@@ -40,14 +44,27 @@ class SettingsFragment : Fragment() {
         // Set the click listener here
         logoutButton.setOnClickListener {
             //requireActivity().findNavController().navigate(R.id.action_loggedInFragment_to_loginFragment)
-            loggedInFragment?.invalidateCookies()
-            requireView().findNavController().navigate(R.id.action_loggedInFragment_to_loginFragment)
+
+            Thread {
+                val responseCode = callLogoutApi()
+                activity?.runOnUiThread {
+                    if (responseCode in 200..299) {
+                        loggedInFragment?.makeToast("Logged out successfully")
+                        loggedInFragment?.invalidateCookies()
+                        requireView().findNavController().navigate(R.id.action_loggedInFragment_to_loginFragment)
+                    } else {
+                        loggedInFragment?.makeToast("Failed to logout")
+                    }
+                }
+            }.start()
+
         }
         return binding.root
     }
 
     fun loadNewData(loggedInFragment: LoggedInFragment) {
         thisUser = loggedInFragment.loggedUser!!
+        this.loggedInFragment = loggedInFragment
         Log.d("SettingsFragment","loggedUser username: ${loggedInFragment.loggedUser!!.username}")
 
         sessionCookie = loggedInFragment.sessionCookie
@@ -77,6 +94,40 @@ class SettingsFragment : Fragment() {
         this.sessionCookie = ""
 
     }
+
+
+    private fun callLogoutApi(): Int {
+        val partUrl = "http://10.0.2.2:8080/api/users/logout"
+        val fullUrl = partUrl
+        val url = URL(fullUrl)
+        val connection = url.openConnection() as HttpURLConnection
+        var responseCode = -1
+
+        try {
+            connection.requestMethod = "POST"
+            connection.connectTimeout = 15000  // 15 seconds
+            connection.readTimeout = 15000    // 15 seconds
+
+            connection.doInput = true
+            connection.doOutput = true
+            connection.useCaches = false
+            CookieHandling.setSessionCookie(connection,sessionCookie)
+
+            val outputStream = DataOutputStream(connection.outputStream)
+
+            outputStream.flush()
+            outputStream.close()
+
+            responseCode = connection.responseCode
+
+        } catch (e: Exception) {
+
+        } finally {
+            connection.disconnect()
+        }
+        return responseCode
+    }
+
 
     companion object {
     }

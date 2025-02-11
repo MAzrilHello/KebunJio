@@ -1,6 +1,7 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Services;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +32,11 @@ public class ReminderService {
         }
 
         return reminderRepo.findByUserIdAndPlantId(userId, plantId);
+    }
+    
+    public List<Reminder> getRemindersByPlant(String plantId) {
+        return reminderRepo.findByPlantId(plantId)
+                .orElse(Collections.emptyList()); 
     }
     
     public Reminder addReminder(Reminder reminder) {

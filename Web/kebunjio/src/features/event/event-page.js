@@ -6,7 +6,7 @@ import Appbar from '../../components/Appbar';
 export const EventList = () => {
     const [events, setEvents] = useState([]);
           
-    //const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const eventsPerPage = 4;
@@ -14,19 +14,10 @@ export const EventList = () => {
     const [searchDate, setSearchDate] = useState('');
 
     useEffect(() => {
-        //zhongyun's code
-        //fetchEvents();
-
-        //kelly's code, can remove after connect with backend
-        async function fetchData(){
-            const eventsRes = await fetch("/dummy-data/event.json")
-            const eventsData = await eventsRes.json()
-            setEvents(eventsData)
-          }
-          fetchData()
+        fetchEvents();
     }, []);
 
-    /*
+    
     const fetchEvents = async () => {
         try {
             setLoading(true);
@@ -40,7 +31,7 @@ export const EventList = () => {
             setLoading(false);
         }
     };
-    */
+    
 
     const filteredEvents = events.filter((event) => {
         const matchesName = event.name.toLowerCase().includes(searchName.toLowerCase());
@@ -50,10 +41,11 @@ export const EventList = () => {
         return matchesName && matchesDate;
     });
 
-    /*
+    
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-screen">
+                <Appbar/>
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600" />
             </div>
         );
@@ -62,13 +54,15 @@ export const EventList = () => {
     if (error) {
         return (
             <div className="container mx-auto px-4 py-8 text-center">
+                <Appbar/>
+
                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
                     {error}
                 </div>
             </div>
         );
     }
-    */
+    
 
     const indexOfLastEvent = currentPage * eventsPerPage;
     const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
