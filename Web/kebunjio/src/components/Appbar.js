@@ -13,8 +13,12 @@ function Appbar() {
   const {isAdmin, setAuthUser, setIsLoggedIn} = useAuth()
   const navigate = useNavigate()
 
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+  const getLogoutEndpoint = `${API_BASE_URL}/users/logout`;
+
   const logout = () => {
-    axios.post('http://localhost:8080/api/users/logout', {}) 
+    axios.post(getLogoutEndpoint, {}) 
         .then(() => {
             setAuthUser(null);
             setIsLoggedIn(false);

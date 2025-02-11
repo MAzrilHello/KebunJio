@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api/events';
+const API_URL = `${process.env.REACT_APP_API_BASE_URL}/events`;
 
 const eventService = {
   // 获取所有事件

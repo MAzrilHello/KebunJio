@@ -11,6 +11,10 @@ const SignUpPage = () => {
     const [contactPhone, setContactPhone] = useState('');
     const [error, setError] = useState('');
 
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+    const getSignupEndpoint = `${API_BASE_URL}/users/signup`;
+
     const navigate = useNavigate()
 
     const handleSubmit = (e) => {
@@ -21,7 +25,7 @@ const SignUpPage = () => {
             return;
         }
 
-        axios.post('http://localhost:8080/api/users/signup', {
+        axios.post(getSignupEndpoint, {
             email,
             username,
             password,
