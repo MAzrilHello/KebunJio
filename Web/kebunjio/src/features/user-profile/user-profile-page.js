@@ -19,21 +19,37 @@ const UserProfilePage = () => {
 
     const [plants,setPlants] = useState([])
 
-    const userInfo = {
+    const userInfo = useState({
         totalPlant:authUser.totalPlant,
         totalHarvested:authUser.totalHarvested,
         totalType:authUser.totalType
-    }
+    });
 
-    const onEdit = () => {
-        if(!isEdit){
-            setIsEdit(true)
+    const onEdit = async () => {
+        if (isEdit) {
+            try {
+                const response = await axios.post("http://localhost:8080/api/userProfile/update", {
+                    username,
+                    email,
+                    phoneNumber: phone
+                });
+
+                if (response.status === 200) {
+                    setAuthUser(prevUser => ({
+                        ...prevUser,
+                        Username: username,
+                        Email: email,
+                        PhoneNumber: phone
+                    }));
+                    alert("Profile updated successfully!");
+                }
+            } catch (error) {
+                console.error("Failed to update profile:", error);
+                alert("Profile update failed.");
+            }
         }
-        else{
-            setIsEdit(false)
-            //send data to API
-        }    
-        }
+        setIsEdit(prevState => !prevState);
+    };
 
     const handleInputChange = (event) => {
             const { id, value } = event.target; 
@@ -53,13 +69,36 @@ const UserProfilePage = () => {
     */
 
     useEffect(() => {
-        //Kelly's code, can remove later
-        async function fetchData(){
-            const plantsRes = await fetch("/dummy-data/plant.json")
-            const plantsData = await plantsRes.json()
-            setPlants(plantsData)
+
+        if (!authUser) {
+            console.log("No authUser found, redirecting...");
+            navigate("/login");
+            return;
         }
-        fetchData()
+        async function fetchData() {
+            try {
+                const plantsRes = await axios.get("http://localhost:8080/api/userProfile/plants");
+                setPlants(plantsRes.data);
+
+
+                const userRes = await axios.get("http://localhost:8080/api/userProfile");
+
+                console.log("User Data:", userRes.data);
+
+
+                setUserInfo({
+                    totalPlant: userRes.data.totalPlant || 0,
+                    totalHarvested: userRes.data.totalHarvested || 0,
+                    totalType: userRes.data.totalType || 0
+                });
+
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        fetchData();
+    }, []);
 
         /*Ruihan's code, do not delete
         axios.get('/userProfile')
@@ -69,7 +108,7 @@ const UserProfilePage = () => {
             .catch(err => {
                 setError("Error fetching user profile.");
             });*/
-    }, []);
+
 
     /*Ruihan's code, do not delete
     if (error) return <div>{error}</div>;
@@ -141,7 +180,7 @@ const UserProfilePage = () => {
                                 <p>Phone: {phone}</p>
                             )}
                         </div>
-                        <Button onClick={onEdit} style={{backgroundColor:"white",color:"#002E14"}}>Edit</Button>
+                        <Button onClick={onEdit} style={{backgroundColor:"white",color:"#002E14"}}>{isEdit ? "Save" : "Edit"}</Button>
                     </Card>
                 </div>
             </div>

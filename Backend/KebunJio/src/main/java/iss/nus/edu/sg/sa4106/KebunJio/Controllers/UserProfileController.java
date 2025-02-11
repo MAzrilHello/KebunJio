@@ -37,6 +37,7 @@ public class UserProfileController {
     	List<Plant> history = plantHistoryService.getPlantsByUserId(user.getId());
     	
     	long totalPlanted = history.size();
+		long totalHarvested = history.stream().filter(Plant::getHarvested).count();
     	long uniquePlantTypes = history.stream().map(Plant::getEdiblePlantSpeciesId).distinct().count();
     	
     	UserprofileDAO userProfileInfo = new UserprofileDAO(user,history,totalPlanted,uniquePlantTypes);
@@ -76,6 +77,19 @@ public class UserProfileController {
     	sessionObj.setAttribute("loggedInUser", updateUser);
     	return new ResponseEntity<>(HttpStatus.OK);
     }
+
+	@GetMapping("/plants")
+	public ResponseEntity<?> getUserPlantHistory(HttpSession sessionObj) {
+		User user = (User) sessionObj.getAttribute("loggedInUser");
+		if (user == null) {
+			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+		}
+
+		List<Plant> history = plantHistoryService.getPlantsByUserId(user.getId());
+
+		return new ResponseEntity<>(history, HttpStatus.OK);
+	}
+
 //    public String updateProfile(
 //            @RequestParam String username,
 //            @RequestParam String email,
