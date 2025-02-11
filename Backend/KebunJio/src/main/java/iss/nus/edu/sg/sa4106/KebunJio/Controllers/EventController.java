@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/events")
+@RequestMapping("/Event")
 @CrossOrigin(origins = "http://localhost:3000")
 public class EventController {
 
@@ -29,10 +29,6 @@ public class EventController {
 
     }
     
-    // Have some little question
-    // Which data we need to transfer?
-    // do we need return event info?
-    
     @PostMapping
     public Event createEvent(@RequestBody Event event) {
         return eventService.createEvent(event);
@@ -46,10 +42,17 @@ public class EventController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEvent(@PathVariable String id) {
-        if (eventService.deleteEvent(id)) {
-            return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteEvent(@PathVariable String eventId) {
+        try {
+            if (eventService.deleteByEventId(eventId)) {
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+//            //eventService.findByEventId(eventId);
+//            //eventService.deleteByEventId(eventId);
+            //return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
     }
-}
