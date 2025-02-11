@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+
+
 // changed to Rest API
 @RestController
 @RequestMapping("/users")
@@ -23,9 +25,16 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
+    @GetMapping("/login")
+    public String showLoginPage() {
+        return "login";
+    }
+
 //    public String showLoginPage() {
 //        return "login";
 //    }
+
 
 
     @PostMapping("/login")
@@ -92,12 +101,9 @@ public class UserController {
     	sessionObj.invalidate();
     	return new ResponseEntity<>(HttpStatus.OK);
     }
-//    public String logout(HttpSession session) {
-//        session.invalidate();
-//        return "redirect:/login";
-//    }
 
-      
+
+  
       @GetMapping("/current")
       public ResponseEntity getCurrentUser(HttpSession sessionObj) {
 		  User currentUser = (User) sessionObj.getAttribute("loggedInUser");

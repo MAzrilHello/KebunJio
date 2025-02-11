@@ -61,8 +61,36 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- Elasticsearch Dependency -->
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+	    </dependency>
+		<!-- Hibernate Validator 依赖 -->
+	    <dependency>
+	        <groupId>org.hibernate.validator</groupId>
+	        <artifactId>hibernate-validator</artifactId>
+	        <version>7.0.0.Final</version>
+	    </dependency>
+	    <!-- Spring Data MongoDB Dependency -->
+	    <dependency>
+	        <groupId>org.springframework.data</groupId>
+	        <artifactId>spring-data-mongodb</artifactId>
+	    </dependency>
+	    <!-- JSR 303/JSR 380 Bean Validation API -->
+	    <dependency>
+	        <groupId>javax.validation</groupId>
+	        <artifactId>validation-api</artifactId>
+	        <version>2.0.1.Final</version>
+	    </dependency>
+
+
 		<dependency>
-      <groupId>org.springframework.boot</groupId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+		<dependency>
+      		<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
 		<dependency>
