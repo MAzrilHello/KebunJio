@@ -20,28 +20,12 @@
         android:text="Name of Plant"
         />
     <Button
-        android:id="@+id/view_plant_btn"
+        android:id="@+id/select_plant_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="1"
         android:textColor="@android:color/white"
         android:background="#024620"
-        android:text="View" />
-    <Button
-        android:id="@+id/edit_plant_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:textColor="@android:color/white"
-        android:background="#024620"
-        android:text="Edit" />
-    <Button
-        android:id="@+id/delete_plant_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:text="Delete" />
+        android:text="Select" />
 </LinearLayout>
