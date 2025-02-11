@@ -38,6 +38,7 @@ class ViewReminderListActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
         plantId = intent.getStringExtra("plantId")
         Log.d("ViewReminderListActivity", "Received plantId: $plantId")
 
@@ -46,15 +47,18 @@ class ViewReminderListActivity : AppCompatActivity() {
             binding.emptyStateText.visibility = View.VISIBLE
             binding.emptyStateText.text = "No reminders available. Please select a plant."
         } else {
+            setupRecyclerView()
             fetchReminders(plantId!!)
         }
 
-        setupRecyclerView()
         initButtons()
     }
 
     private fun setupRecyclerView() {
-        reminderAdapter = ReminderGroupAdapter(groupedReminders)
+        if (!::reminderAdapter.isInitialized) {
+            reminderAdapter = ReminderGroupAdapter(groupedReminders)
+        }
+
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(this@ViewReminderListActivity)
             adapter = reminderAdapter
@@ -74,20 +78,26 @@ class ViewReminderListActivity : AppCompatActivity() {
             Log.d("ViewReminderListActivity", "Fetching reminders for plantId: $plantId")
             try {
                 val response = ReminderApiService.getRemindersByPlant(plantId)
+
                 if (response.isNullOrEmpty()) {
-                    binding.recyclerView.visibility = View.GONE
-                    binding.emptyStateText.visibility = View.VISIBLE
+                    showEmptyState()
                 } else {
                     val reminders = parseReminderList(response)
                     groupedReminders = groupRemindersByDate(reminders)
-                    reminderAdapter.updateData(groupedReminders)
-                    binding.recyclerView.visibility = View.VISIBLE
-                    binding.emptyStateText.visibility = View.GONE
+
+                    Log.d("ViewReminderListActivity", "Grouped reminders: $groupedReminders")
+
+                    runOnUiThread {
+                        if (!isDestroyed) {
+                            reminderAdapter.updateData(groupedReminders)
+                            binding.recyclerView.visibility = View.VISIBLE
+                            binding.emptyStateText.visibility = View.GONE
+                        }
+                    }
                 }
             } catch (e: Exception) {
                 Log.e("ViewReminderListActivity", "Error fetching reminders: ${e.message}")
-                binding.recyclerView.visibility = View.GONE
-                binding.emptyStateText.visibility = View.VISIBLE
+                showEmptyState()
             }
         }
     }
@@ -130,12 +140,16 @@ class ViewReminderListActivity : AppCompatActivity() {
         val tomorrow = today.plusDays(1)
         val weekEnd = today.plusDays(6)
 
+        Log.d("ViewReminderListActivity", "Today's date: $today")
+        Log.d("ViewReminderListActivity", "Reminders received: $reminders")
+
         val todayReminders = mutableListOf<Reminder>()
         val tomorrowReminders = mutableListOf<Reminder>()
         val remainingWeekReminders = mutableListOf<Reminder>()
 
         for (reminder in reminders) {
             val reminderDate = reminder.reminderDateTime.toLocalDate()
+            Log.d("ViewReminderListActivity", "Reminder Date: $reminderDate")
 
             when {
                 reminderDate == today -> todayReminders.add(reminder)
@@ -144,10 +158,21 @@ class ViewReminderListActivity : AppCompatActivity() {
             }
         }
 
-        return mutableMapOf(
-            "Today" to todayReminders,
-            "Tomorrow" to tomorrowReminders,
-            "This Week" to remainingWeekReminders
-        )
+        return mutableMapOf<String, List<Reminder>>().apply {
+            if (todayReminders.isNotEmpty()) put("Today", todayReminders)
+            if (tomorrowReminders.isNotEmpty()) put("Tomorrow", tomorrowReminders)
+            if (remainingWeekReminders.isNotEmpty()) put("This Week", remainingWeekReminders)
+        }
     }
+
+
+    private fun showEmptyState() {
+        runOnUiThread {
+            if (!isDestroyed) {
+                binding.recyclerView.visibility = View.GONE
+                binding.emptyStateText.visibility = View.VISIBLE
+            }
+        }
+    }
+
 }
