@@ -428,7 +428,7 @@ class PlantSpeciesLogService : Service() {
                 isList = true
                 forIntent?.setAction("get_plants_byuser")
             } else {
-                fullUrl = "${startUrl}/Plants/${id}"
+                fullUrl = "${startUrl}/plants/${id}"
                 isList = false
                 forIntent?.setAction("get_plants")
             }
