@@ -11,10 +11,10 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 object ReminderApiService {
-    private const val BASE_URL = "http://10.0.2.2:8080/api/reminders"
+    private const val BASE_URL = "http://10.0.2.2:8080/api/Reminders"
 
     suspend fun getRemindersByPlant(plantId: String): String? {
-        val fullUrl = "$BASE_URL/plant/$plantId"
+        val fullUrl = "$BASE_URL/Plant/$plantId"
         Log.d("ReminderApiService", "Sending GET request to: $fullUrl")
 
         return sendGetRequest(fullUrl)?.also { response ->
@@ -51,7 +51,7 @@ object ReminderApiService {
     }
 
     suspend fun addReminder(reminderData: JSONObject): String? {
-        val fullUrl = "$BASE_URL/add"
+        val fullUrl = "$BASE_URL/Add"
         return sendPostRequest(fullUrl, reminderData.toString())
     }
 

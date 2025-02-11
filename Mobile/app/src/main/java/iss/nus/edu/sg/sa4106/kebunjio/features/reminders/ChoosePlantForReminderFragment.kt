@@ -1,6 +1,5 @@
 package iss.nus.edu.sg.sa4106.kebunjio.features.reminders
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,7 +9,6 @@ import android.view.ViewGroup
 import iss.nus.edu.sg.sa4106.kebunjio.LoggedInFragment
 import iss.nus.edu.sg.sa4106.kebunjio.data.Plant
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentChoosePlantForReminderBinding
-import iss.nus.edu.sg.sa4106.kebunjio.features.viewplantdetails.PlantToChooseAdapter
 
 class ChoosePlantForReminderFragment : Fragment() {
     private var _binding: FragmentChoosePlantForReminderBinding? = null
@@ -71,7 +69,7 @@ class ChoosePlantForReminderFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (usersPlantList.isEmpty()) {
-            binding.plantToChooseText.text = "No plants available for reminders"
+            binding.plantToChooseText.text = "No plants available to add for reminders"
         } else {
             binding.plantToChooseText.text = "Choose a Plant to Set a Reminder"
         }

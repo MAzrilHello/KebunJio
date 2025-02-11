@@ -72,7 +72,7 @@ const EditEvent = () => {
         await eventService.updateEvent(id, formData);
         message.success('Event updated successfully');
       }
-      navigate('/events');
+      navigate('/admin/events');
     } catch (error) {
       message.error(`Failed to ${isNewEvent ? 'create' : 'update'} event`);
     } finally {

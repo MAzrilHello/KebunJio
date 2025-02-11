@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import eventService from '../service/eventService';
 import moment from 'moment';
 import Appbar from '../../components/Appbar';
-import placeholderImage from '../../media/event-placeholder.jpeg'
 
 const { Content } = Layout;
 
@@ -183,7 +182,6 @@ const Events = () => {
               {filteredEvents.map(event => (
                 <Card key={event.id} className="event-card">
                   <div className="event-image-container">
-                    <img src={placeholderImage}></img>
                     {event.picture ? (
                       <img 
                         src={`http://localhost:8080/api/events/images/${event.picture}`} 

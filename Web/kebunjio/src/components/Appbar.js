@@ -14,7 +14,7 @@ function Appbar() {
   const navigate = useNavigate()
 
   const logout = () => {
-    axios.post('http://localhost:8080/api/users/logout', {}, { withCredentials: true }) 
+    axios.post('http://localhost:8080/api/users/logout', {}) 
         .then(() => {
             setAuthUser(null);
             setIsLoggedIn(false);
