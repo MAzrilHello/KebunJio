@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Card, Button, Input, Select, Dropdown, message, Pagination, Spin } from 'antd';
+
+import { Layout, Card, Button, Input, Select, Dropdown, message, Pagination, DatePicker } from 'antd';
 import { EllipsisOutlined, CloseCircleOutlined, CalendarOutlined, LeftOutlined, RightOutlined, EditOutlined, DeleteOutlined, ClockCircleOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import './style.css';
 import { useNavigate } from 'react-router-dom';
@@ -12,7 +13,8 @@ const { Content } = Layout;
 const Events = () => {
   const [events, setEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
-  const [filterSearch, setFilterSearch] = useState("");
+  const [filterSearch, setFilterSearch] = useState(""); // 用于存储搜索的 EventName
+  const [filterDate, setFilterDate] = useState(null); // 用于存储搜索的 Date
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
@@ -21,16 +23,16 @@ const Events = () => {
   const navigate = useNavigate();
 
   // 获取事件列表
-  const fetchEvents = async (page = currentPage) => {
+  const fetchEvents = async (page = currentPage, searchParams = {}) => {
     try {
       setLoading(true);
-      const response = await eventService.getAllEvents();
-      console.log("Fetched data")
-      console.log(response)
-      setEvents(response);
-      setFilteredEvents(response);
-      //setTotalElements(response.totalElements);
-      //setCurrentPage(response.number);
+
+      const response = await eventService.getAllEvents(page, pageSize, searchParams);
+      console.log(response);
+      setEvents(response.content);
+      setFilteredEvents(response.content);
+      setTotalElements(response.totalElements);
+      setCurrentPage(response.number);
     } catch (error) {
       message.error('Failed to fetch events');
     } finally {
@@ -40,7 +42,6 @@ const Events = () => {
 
   useEffect(() => {
     fetchEvents();
-
   }, [pageSize]);
 
   const handlePageChange = (page) => {
@@ -85,7 +86,6 @@ const Events = () => {
     },
   ];
 
-  // 处理删除事件
   const handleDeleteEvent = async (id) => {
     try {
       await eventService.deleteEvent(id);
@@ -96,17 +96,14 @@ const Events = () => {
     }
   };
 
-  // 处理编辑事件
   const handleEditEvent = (event) => {
     navigate(`/admin/events/edit/${event.id}`, { state: { event } });
   };
 
-  // 处理查看详情
   const handleViewMore = (event) => {
     navigate(`/admin/events/${event.id}`, { state: { event } });
   };
 
-  // 处理添加新事件
   const handleAddNewEvent = () => {
     navigate(`/admin/events/edit/new`);
   };
@@ -115,146 +112,170 @@ const Events = () => {
     return moment(dateTime).format('MMM D, YYYY h:mm A');
   };
 
-  const onSearchChange = (event) =>{
-    setFilterSearch(event.target.value)
-  }
+  const onSearchChange = (event) => {
+    setFilterSearch(event.target.value);
+  };
 
-  const onClickSearch = () =>{
-    const filteredEventFromSearch = events.filter(event => event.name.toLowerCase().includes(filterSearch.toLowerCase()))
-    setFilteredEvents(filteredEventFromSearch)
-  }
+  const handleDateChange = (value) => {
+    console.log("Selected date:", value); // 打印选中的日期
+    setFilterDate(value);
+  };
+
+  const handleClearDate = () => {
+    setFilterDate(null);
+  };
+
+  const handleClearSearch = () => {
+    setFilterSearch('');
+  };
+
+  const onClickSearch = () => {
+    console.log("filterSearch", filterSearch);
+    console.log("filterDate", filterDate);
+
+    const searchParams = {};
+    if (filterSearch.trim() !== '') {
+      searchParams.name = filterSearch;
+    }
+    if (filterDate) {
+      try {
+        // 确保日期格式为YYYY-MM-DD
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+      const formattedDate = new Intl.DateTimeFormat('en-US', options).format(filterDate);
+        console.log("Formatted date:", formattedDate);
+        searchParams.date = formattedDate;
+      } catch (error) {
+        console.error("Failed to format date:", error);
+        message.error("Invalid date format");
+        return; // 阻止搜索
+      }
+    }
+    fetchEvents(0, searchParams); // 从第一页开始搜索
+    setCurrentPage(0); // 重置当前页码
+  };
 
   return (
     <div>
-      <Appbar/>
+      <Appbar />
       <Content className="events-page">
-            <div className="page-header">
-              <div className="header-left">
-                <h1>Upcoming Events</h1>
-                <Button 
-                  type="primary" 
-                  className="add-event-btn"
-                  onClick={handleAddNewEvent}
-                >
-                  + Add new event
-                </Button>
-              </div>
-              <div className="header-right">
-                <div className="filter-item">
-                  <div className="filter-label">Event Name</div>
-                  <div className="input-wrapper">
-                    <Input placeholder="Event name" suffix={<CloseCircleOutlined />} value={filterSearch} onChange={onSearchChange}/>
-                  </div>
-                </div>
-                <div className="filter-item">
-                  <div className="filter-label">Date</div>
-                  <div className="input-wrapper">
-                    <Input 
-                      placeholder="MM/DD/YYYY" 
-                      suffix={<CalendarOutlined />}
-                    />
-                  </div>
-                </div>
-                <div className="filter-item">
-                  <Button style={{backgroundColor:"#002E14", color:"white", height:"60px"}} onClick={onClickSearch}>Search</Button>
-                </div>
-                <div className="filter-item">
-                  <div className="filter-label">Result per page</div>
-                  <Select
-                    defaultValue={10}
-                    value={pageSize}
-                    onChange={(value) => {
-                      setPageSize(value);
-                      setCurrentPage(0);
-                      fetchEvents(0);
-                    }}
-                    options={[
-                      { value: 10, label: '10' },
-                      { value: 20, label: '20' },
-                      { value: 50, label: '50' },
-                    ]}
-                  />
-                </div>
+        <div className="page-header">
+          <div className="header-left">
+            <h1>Upcoming Events</h1>
+            <Button 
+              type="primary" 
+              className="add-event-btn"
+              onClick={handleAddNewEvent}
+            >
+              + Add new event
+            </Button>
+          </div>
+          <div className="header-right">
+            <div className="filter-item">
+              <div className="filter-label">Event Name</div>
+              <div className="input-wrapper">
+                <Input
+                  placeholder="Event name"
+                  value={filterSearch}
+                  onChange={onSearchChange}
+                  suffix={<CloseCircleOutlined onClick={handleClearSearch} />}
+                />
               </div>
             </div>
-
-            <div className="events-grid">
-              {filteredEvents.map(event => (
-                <Card key={event.id} className="event-card">
-                  <div className="event-image-container">
-                    {event.picture ? (
-                      <img 
-                        src={`http://localhost:8080/api/events/images/${event.picture}`} 
-                        alt={event.name} 
-                        className="event-image"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjQjRFQUFGIi8+';
-                        }}
-                      />
-                    ) : (
-                      <div className="event-image placeholder-image">
-                        <div className="placeholder-text">No Image</div>
-                      </div>
-                    )}
-                    <Dropdown
-                      menu={{ items: getDropdownItems(event) }}
-                      trigger={['click']}
-                      placement="bottomRight"
-                      overlayClassName="event-dropdown"
-                    >
-                      <Button 
-                        type="text" 
-                        icon={<EllipsisOutlined />} 
-                        className="more-btn"
-                      />
-                    </Dropdown>
-                  </div>
-                  <div className="event-info">
-                    <div className="event-date">
-                      <div className="month">
-                        {moment(event.startDateTime || new Date()).format('MMM').toUpperCase()}
-                      </div>
-                      <div className="day">
-                        {moment(event.startDateTime || new Date()).format('D')}
-                      </div>
-                    </div>
-                    <div className="event-date">
-                      <div className="month">
-                        {moment(event.endDateTime || new Date()).format('MMM').toUpperCase()}
-                      </div>
-                      <div className="day">
-                        {moment(event.endDateTime || new Date()).format('D')}
-                      </div>
-                    </div>
-                    <div className="event-content">
-                      <h3>{event.name}</h3>
-                      <p>{event.description}</p>
-                      <button 
-                        className="view-more-btn"
-                        onClick={() => handleViewMore(event)}
-                      >
-                        View more
-                      </button>
-                    </div>
-                  </div>
-                </Card>
-              ))}
+            <div className="filter-item">
+              <div className="filter-label">Date</div>
+              <div className="small-input" > 
+                <DatePicker
+                  value={filterDate}
+                  onChange={handleDateChange}
+                  suffixIcon={<CalendarOutlined />}
+                />
+              </div>
             </div>
-
-            <div className="events-pagination">
-              <Pagination
-                current={currentPage + 1}
-                total={totalElements}
-                pageSize={pageSize}
-                onChange={handlePageChange}
-                showSizeChanger={false}
+            <div className="filter-item">
+              <Button style={{ backgroundColor: "#002E14", color: "white", height: "60px" }} onClick={onClickSearch}>Search</Button>
+            </div>
+            <div className="filter-item">
+              <div className="filter-label">Result per page</div>
+              <Select
+                defaultValue={10}
+                value={pageSize}
+                onChange={(value) => {
+                  setPageSize(value);
+                  setCurrentPage(0);
+                  fetchEvents(0);
+                }}
+                options={[
+                  { value: 10, label: '10' },
+                  { value: 20, label: '20' },
+                  { value: 50, label: '50' },
+                ]}
               />
             </div>
-          </Content>
+          </div>
+        </div>
+
+        <div className="events-grid">
+          {filteredEvents.map(event => (
+            <Card key={event.id} className="event-card">
+              <div className="event-image-container">
+                <img src={placeholderImage} alt={event.name} className="event-image" />
+                <Dropdown
+                  menu={{ items: getDropdownItems(event) }}
+                  trigger={['click']}
+                  placement="bottomRight"
+                  overlayClassName="event-dropdown"
+                >
+                  <Button 
+                    type="text" 
+                    icon={<EllipsisOutlined />} 
+                    className="more-btn"
+                  />
+                </Dropdown>
+              </div>
+              <div className="event-info">
+                <div className="event-date">
+                  <div className="month">
+                    {moment(event.startDateTime || new Date()).format('MMM').toUpperCase()}
+                  </div>
+                  <div className="day">
+                    {moment(event.startDateTime || new Date()).format('D')}
+                  </div>
+                </div>
+                <div className="event-date">
+                  <div className="month">
+                    {moment(event.endDateTime || new Date()).format('MMM').toUpperCase()}
+                  </div>
+                  <div className="day">
+                    {moment(event.endDateTime || new Date()).format('D')}
+                  </div>
+                </div>
+                <div className="event-content">
+                  <h3>{event.name}</h3>
+                  <p>{event.description}</p>
+                  <button 
+                    className="view-more-btn"
+                    onClick={() => handleViewMore(event)}
+                  >
+                    View more
+                  </button>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        <div className="events-pagination">
+          <Pagination
+            current={currentPage + 1}
+            total={totalElements}
+            pageSize={pageSize}
+            onChange={handlePageChange}
+            showSizeChanger={false}
+          />
+        </div>
+      </Content>
     </div>
-  
   );
 };
 
-export default Events; 
+export default Events;

@@ -1,12 +1,14 @@
 package iss.nus.edu.sg.sa4106.kebunjio.features.viewplantdetails
 
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
@@ -17,11 +19,17 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 // for testing
 import iss.nus.edu.sg.sa4106.kebunjio.LoggedInFragment
+import iss.nus.edu.sg.sa4106.kebunjio.R
 import iss.nus.edu.sg.sa4106.kebunjio.data.ActivityLog
 import iss.nus.edu.sg.sa4106.kebunjio.data.EdiblePlantSpecies
 import iss.nus.edu.sg.sa4106.kebunjio.data.Plant
+import iss.nus.edu.sg.sa4106.kebunjio.data.Reminder
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentChoosePlantToViewBinding
 import iss.nus.edu.sg.sa4106.kebunjio.features.addplant.AddPlantActivity
+
+interface PlantSelectionListener {
+    fun onPlantSelected(plantId: String)
+}
 
 class ChoosePlantToViewFragment : Fragment() {
 
@@ -34,6 +42,7 @@ class ChoosePlantToViewFragment : Fragment() {
     private var speciesIdToNameDict: HashMap<String, String> = hashMapOf<String, String>()
     private var usersPlantList = arrayListOf<Plant>()
     private var usersActivityLogList = arrayListOf<ActivityLog>()
+    private var usersReminderList: ArrayList<Reminder> = ArrayList()
     private var loggedInFragment: LoggedInFragment? = null
 
     lateinit var plantToViewText: TextView
@@ -61,6 +70,7 @@ class ChoosePlantToViewFragment : Fragment() {
         this.usersPlantList = loggedInFragment.usersPlantList
         this.usersActivityLogList = loggedInFragment.usersActivityLogList
         this.haveUpdateLauncher = loggedInFragment.haveUpdateLauncher
+        //this.usersReminderList = loggedInFragment.usersPlantListReminderList
 
         this.speciesIdToNameDict.clear()
         for (i in 0..loggedInFragment.speciesList.size-1) {

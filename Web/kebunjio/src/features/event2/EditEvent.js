@@ -14,6 +14,7 @@ const EditEvent = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
+  
   const isNewEvent = id === 'new';
   const [loading, setLoading] = useState(false);
 

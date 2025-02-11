@@ -7,12 +7,14 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_weight="30"
         android:orientation="vertical">
         <TextView
             android:id="@+id/which_plant_text"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:textSize="20sp"
+            android:textColor="@android:color/white"
             android:text="Plant Name"
             />
         <TextView
@@ -21,6 +23,7 @@
             android:layout_width="wrap_content"
             android:textSize="20sp"
             android:text="Last Log"
+            android:textColor="@android:color/white"
             />
 
         <TextView
@@ -29,6 +32,7 @@
             android:layout_width="wrap_content"
             android:textSize="15sp"
             android:text="dd/mm/yyyy hh:mm"
+            android:textColor="@android:color/white"
             />
     </LinearLayout>
     <Button
@@ -43,11 +47,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:textColor="@android:color/white"
+        android:background="#024620"
+        android:layout_weight="1"
         android:text="Edit" />
     <Button
         android:id="@+id/delete_log_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_weight="1"
         android:text="Delete" />
 </LinearLayout>

@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#0A803D"
     tools:context=".features.browseguides.GuideActivity">
 
     <LinearLayout
@@ -22,12 +23,14 @@
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal" >
             <TextView
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content"
                 android:text="Name: "
                 android:textSize="20sp"
+                android:textColor="@android:color/white"
                 />
             <TextView
                 android:id="@+id/name_text"
@@ -35,17 +38,20 @@
                 android:layout_width="wrap_content"
                 android:text="___"
                 android:textSize="20sp"
+                android:textColor="@android:color/white"
                 />
         </LinearLayout>
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal" >
             <TextView
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content"
                 android:text="Scientific Name: "
                 android:textSize="20sp"
+                android:textColor="@android:color/white"
                 />
             <TextView
                 android:id="@+id/sci_name_text"
@@ -53,6 +59,7 @@
                 android:layout_width="wrap_content"
                 android:text="___"
                 android:textSize="20sp"
+                android:textColor="@android:color/white"
                 />
         </LinearLayout>
         <TextView
@@ -61,34 +68,43 @@
             android:layout_width="match_parent"
             android:text="Description"
             android:textSize="20sp"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="10dp"
             />
+
         <LinearLayout
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal" >
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
             <TextView
-                android:layout_height="match_parent"
                 android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:text="Watering Tips: "
-                android:textSize="20sp"
-                />
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+
             <TextView
                 android:id="@+id/water_tips_text"
-                android:layout_height="match_parent"
                 android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:text="___"
-                android:textSize="20sp"
-                />
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal" >
             <TextView
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content"
                 android:text="Sunlight: "
                 android:textSize="20sp"
+                android:textColor="@android:color/white"
                 />
             <TextView
                 android:id="@+id/sunlight_text"
@@ -96,17 +112,20 @@
                 android:layout_width="wrap_content"
                 android:text="___"
                 android:textSize="20sp"
+                android:textColor="@android:color/white"
                 />
         </LinearLayout>
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal" >
             <TextView
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content"
                 android:text="Soil Type: "
                 android:textSize="20sp"
+                android:textColor="@android:color/white"
                 />
             <TextView
                 android:id="@+id/soil_type_text"
@@ -114,17 +133,20 @@
                 android:layout_width="wrap_content"
                 android:text="___"
                 android:textSize="20sp"
+                android:textColor="@android:color/white"
                 />
         </LinearLayout>
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal" >
             <TextView
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content"
                 android:text="Harvest Time: "
                 android:textSize="20sp"
+                android:textColor="@android:color/white"
                 />
             <TextView
                 android:id="@+id/harvest_time_text"
@@ -132,17 +154,20 @@
                 android:layout_width="wrap_content"
                 android:text="___"
                 android:textSize="20sp"
+                android:textColor="@android:color/white"
                 />
         </LinearLayout>
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal" >
             <TextView
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content"
                 android:text="Common Pests: "
                 android:textSize="20sp"
+                android:textColor="@android:color/white"
                 />
 
             <TextView
@@ -150,17 +175,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="___"
+                android:textColor="@android:color/white"
                 android:textSize="20sp" />
         </LinearLayout>
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal" >
             <TextView
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content"
                 android:text="Growing Space: "
                 android:textSize="20sp"
+                android:textColor="@android:color/white"
                 />
             <TextView
                 android:id="@+id/grow_space_text"
@@ -168,25 +196,29 @@
                 android:layout_width="wrap_content"
                 android:text="___"
                 android:textSize="20sp"
+                android:textColor="@android:color/white"
                 />
         </LinearLayout>
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal" >
             <TextView
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content"
                 android:text="Fertilizer Tips: "
                 android:textSize="20sp"
+                android:textColor="@android:color/white"
                 />
+
             <TextView
                 android:id="@+id/fertilizer_tips_text"
-                android:layout_height="match_parent"
                 android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:text="___"
-                android:textSize="20sp"
-                />
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
         </LinearLayout>
         <LinearLayout
             android:layout_height="wrap_content"
@@ -197,14 +229,17 @@
                 android:layout_width="wrap_content"
                 android:text="Special Needs: "
                 android:textSize="20sp"
+                android:layout_marginTop="10dp"
+                android:textColor="@android:color/white"
                 />
+
             <TextView
                 android:id="@+id/special_needs_text"
-                android:layout_height="match_parent"
                 android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:text="___"
-                android:textSize="20sp"
-                />
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
         </LinearLayout>
         <Button
             android:id="@+id/back_btn"

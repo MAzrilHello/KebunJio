@@ -13,19 +13,20 @@ import './style.css';
 import Appbar from '../../components/Appbar';
 
 const Dashboard = () => {
-  //console.log('Dashboard组件被加载');
+  console.log('Dashboard组件被加载');
   const [statistics, setStatistics] = useState(null);
   
   //Chingnam's code, do not delete
-  //const [loading, setLoading] = useState(true);
-  //const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
 
   useEffect(() => {
     /*Chingnam's code, do not delete
+   
+    */
     console.log('Dashboard useEffect被触发');
     fetchStatistics();
-    */
 
     //Kelly's code with dummy data, comment the code below after integrate with backend
     async function fetchData() {
@@ -38,7 +39,7 @@ const Dashboard = () => {
 
   }, []);
 
-  /*Chingnam's code, do not delete
+ 
   const fetchStatistics = async () => {
     console.log('开始获取统计数据...');
     try {
@@ -75,7 +76,7 @@ const Dashboard = () => {
       setLoading(false);
       console.log('数据获取流程结束');
     }
-  };*/
+  }
 
   /*Chingnam's code, do not delete
   if (loading) {
