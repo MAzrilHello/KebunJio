@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react';
-<<<<<<< Updated upstream
-import { Layout, Card, Button, Input, Select, Dropdown, message, Pagination, Spin } from 'antd';
-=======
+
 import { Layout, Card, Button, Input, Select, Dropdown, message, Pagination, DatePicker } from 'antd';
->>>>>>> Stashed changes
 import { EllipsisOutlined, CloseCircleOutlined, CalendarOutlined, LeftOutlined, RightOutlined, EditOutlined, DeleteOutlined, ClockCircleOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import './style.css';
 import { useNavigate } from 'react-router-dom';
 import eventService from '../service/eventService';
 import moment from 'moment';
 import Appbar from '../../components/Appbar';
-import placeholderImage from '../../media/event-placeholder.jpeg';
 
 const { Content } = Layout;
 
@@ -30,22 +26,13 @@ const Events = () => {
   const fetchEvents = async (page = currentPage, searchParams = {}) => {
     try {
       setLoading(true);
-<<<<<<< Updated upstream
-      const response = await eventService.getAllEvents();
-      console.log("Fetched data")
-      console.log(response)
-      setEvents(response);
-      setFilteredEvents(response);
-      //setTotalElements(response.totalElements);
-      //setCurrentPage(response.number);
-=======
+
       const response = await eventService.getAllEvents(page, pageSize, searchParams);
       console.log(response);
       setEvents(response.content);
       setFilteredEvents(response.content);
       setTotalElements(response.totalElements);
       setCurrentPage(response.number);
->>>>>>> Stashed changes
     } catch (error) {
       message.error('Failed to fetch events');
     } finally {
@@ -55,10 +42,6 @@ const Events = () => {
 
   useEffect(() => {
     fetchEvents();
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
   }, [pageSize]);
 
   const handlePageChange = (page) => {
@@ -198,72 +181,6 @@ const Events = () => {
                 />
               </div>
             </div>
-<<<<<<< Updated upstream
-
-            <div className="events-grid">
-              {filteredEvents.map(event => (
-                <Card key={event.id} className="event-card">
-                  <div className="event-image-container">
-                    <img src={placeholderImage}></img>
-                    {event.picture ? (
-                      <img 
-                        src={`http://localhost:8080/api/events/images/${event.picture}`} 
-                        alt={event.name} 
-                        className="event-image"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjQjRFQUFGIi8+';
-                        }}
-                      />
-                    ) : (
-                      <div className="event-image placeholder-image">
-                        <div className="placeholder-text">No Image</div>
-                      </div>
-                    )}
-                    <Dropdown
-                      menu={{ items: getDropdownItems(event) }}
-                      trigger={['click']}
-                      placement="bottomRight"
-                      overlayClassName="event-dropdown"
-                    >
-                      <Button 
-                        type="text" 
-                        icon={<EllipsisOutlined />} 
-                        className="more-btn"
-                      />
-                    </Dropdown>
-                  </div>
-                  <div className="event-info">
-                    <div className="event-date">
-                      <div className="month">
-                        {moment(event.startDateTime || new Date()).format('MMM').toUpperCase()}
-                      </div>
-                      <div className="day">
-                        {moment(event.startDateTime || new Date()).format('D')}
-                      </div>
-                    </div>
-                    <div className="event-date">
-                      <div className="month">
-                        {moment(event.endDateTime || new Date()).format('MMM').toUpperCase()}
-                      </div>
-                      <div className="day">
-                        {moment(event.endDateTime || new Date()).format('D')}
-                      </div>
-                    </div>
-                    <div className="event-content">
-                      <h3>{event.name}</h3>
-                      <p>{event.description}</p>
-                      <button 
-                        className="view-more-btn"
-                        onClick={() => handleViewMore(event)}
-                      >
-                        View more
-                      </button>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-=======
             <div className="filter-item">
               <div className="filter-label">Date</div>
               <div className="small-input" > 
@@ -273,7 +190,6 @@ const Events = () => {
                   suffixIcon={<CalendarOutlined />}
                 />
               </div>
->>>>>>> Stashed changes
             </div>
             <div className="filter-item">
               <Button style={{ backgroundColor: "#002E14", color: "white", height: "60px" }} onClick={onClickSearch}>Search</Button>

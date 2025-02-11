@@ -10,12 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-<<<<<<< Updated upstream
 @RequestMapping("/events")
 @CrossOrigin(origins = "*")
-=======
-@RequestMapping("/Events")
->>>>>>> Stashed changes
+
 public class EventController {
 
     @Autowired
@@ -74,6 +71,7 @@ public class EventController {
             } else {
                 return ResponseEntity.notFound().build();
             }
+
 //            //eventService.findByEventId(eventId);
 //            //eventService.deleteByEventId(eventId);
             //return ResponseEntity.ok().build();
