@@ -481,11 +481,11 @@ class PlantSpeciesLogService : Service() {
             val isList: Boolean
             val fullUrl: String
             if (byUser) {
-                fullUrl = "${startUrl}/reminders/user/${id}"
+                fullUrl = "${startUrl}/Reminders/user/${id}"
                 isList = true
                 forIntent?.setAction("get_reminders_byuser")
             } else {
-                fullUrl = "${startUrl}/reminders/${id}"
+                fullUrl = "${startUrl}/Reminders/${id}"
                 isList = false
                 forIntent?.setAction("get_reminders")
             }
@@ -536,7 +536,7 @@ class PlantSpeciesLogService : Service() {
 
         fun createOrUpdateReminder(theReminder: Reminder, isUpdate: Boolean, forIntent: Intent?, sessionCookie: String): Reminder? {
             // url for adding and updating situation
-            val fullUrl: String = if (isUpdate) {"${startUrl}/reminders/${theReminder.id}"} else {"${startUrl}/reminders"}
+            val fullUrl: String = if (isUpdate) {"${startUrl}/Reminders/${theReminder.id}"} else {"${startUrl}/Reminders"}
             val action: String
             if (isUpdate) {
                 action = "update_reminder"
@@ -615,7 +615,7 @@ class PlantSpeciesLogService : Service() {
 
 
         fun deleteReminder(id: String, forIntent: Intent?, sessionCookie: String): Int {
-            val fullUrl = "${startUrl}/reminders/${id}"
+            val fullUrl = "${startUrl}/Reminders/${id}"
 
             val url = URL(fullUrl)
             val connection = url.openConnection() as HttpURLConnection
