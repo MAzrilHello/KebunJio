@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-@Document(collection = "reminders")
+@Document(collection = "Reminders")
 public class Reminder {
 	@Id
 	private String id;  

@@ -63,6 +63,8 @@
             android:name=".features.addplant.AddPlantActivity"
             android:exported="false"
             android:noHistory="true" />
+        <activity android:name=".features.reminders.ViewReminderListActivity"
+            android:exported="false" />
         <activity android:name=".features.reminders.ReminderActivity" />
         <activity
             android:name=".MainActivity"

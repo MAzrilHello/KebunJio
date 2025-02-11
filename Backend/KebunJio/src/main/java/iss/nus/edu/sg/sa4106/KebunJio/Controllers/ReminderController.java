@@ -27,14 +27,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/reminders")
+@RequestMapping("/Reminders")
 @CrossOrigin(origins = "*")
 public class ReminderController {
 
     @Autowired
     private ReminderService reminderService;
 
-    @GetMapping("/plant/{plantId}")
+    @GetMapping("/Plant/{plantId}")
     public ResponseEntity<?> getRemindersByPlant(@PathVariable String plantId) {
         try {
             System.out.println("Fetching reminders for plantId: " + plantId);
@@ -57,7 +57,7 @@ public class ReminderController {
         }
     }    
 
-    @GetMapping("/user/{userId}/plant/{plantId}")
+    @GetMapping("/user/{userId}/Plant/{plantId}")
     public ResponseEntity<?> getRemindersByUserAndPlant(@PathVariable String userId, @PathVariable String plantId) {
         try {
             // Call service method
@@ -102,13 +102,13 @@ public class ReminderController {
     }
 
     // Non-owners can still view.
-    @GetMapping("/status/{status}")
+    @GetMapping("/Status/{status}")
     public ResponseEntity<List<Reminder>> getRemindersByStatus(@PathVariable String status) {
         return ResponseEntity.ok(reminderService.getRemindersByStatus(status));
     }
 
     // Non-owners can still view.
-    @GetMapping("/type/{reminderType}")
+    @GetMapping("/Type/{reminderType}")
     public ResponseEntity<List<Reminder>> getRemindersByType(@PathVariable String reminderType) {
         return ResponseEntity.ok(reminderService.getRemindersByType(reminderType));
     }
@@ -121,7 +121,7 @@ public class ReminderController {
     }
     
       // Must restrict to owner only
-    @PostMapping
+    @PostMapping("/Add")
     public ResponseEntity<Reminder> addReminder(@RequestBody Reminder reminder, HttpSession sessionObj) {
     	// first validate that we have permission
     	User currentUser = (User) sessionObj.getAttribute("loggedInUser");
@@ -149,7 +149,7 @@ public class ReminderController {
 
 
     // Must restrict to owner only
-    @PutMapping("/{reminderId}")
+    @PutMapping("/{id}")
     public ResponseEntity<Reminder> updateReminder(@PathVariable String reminderId,
     												@RequestBody Reminder updatedReminder,
     												HttpSession sessionObj) {
@@ -171,7 +171,7 @@ public class ReminderController {
     }
 
     // Must restrict to owner only
-    @DeleteMapping("/{reminderId}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteReminder(@PathVariable String reminderId, HttpSession sessionObj) {
     	// first validate that we have permission
 		User currentUser = (User) sessionObj.getAttribute("loggedInUser");
