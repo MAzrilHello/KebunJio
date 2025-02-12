@@ -7,7 +7,7 @@ import eventService from '../service/eventService';
 import './EditEvent.css';
 import axios from 'axios';
 import Appbar from '../../components/Appbar';
-import { sanitizeInput } from '../service/sanitizeService';
+import { sanitizeInput } from '../../service/sanitizeService';
 
 const { Content } = Layout;
 
