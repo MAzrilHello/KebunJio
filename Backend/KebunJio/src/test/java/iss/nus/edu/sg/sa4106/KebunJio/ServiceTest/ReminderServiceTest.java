@@ -23,18 +23,18 @@ public class ReminderServiceTest {
 
 	//e
     @Mock
-    private ReminderRepository reminderRepo; // ✅ Mock the database repository
+    private ReminderRepository reminderRepo; 
 
     @InjectMocks
-    private ReminderService reminderService; // ✅ Inject mock repository into ReminderService
+    private ReminderService reminderService; 
 
     @Test
     public void testAddReminder() {
         // Testing reminder service and instantiating data
     	
         Reminder reminder = new Reminder();
-        reminder.setUserId("user12");
-        reminder.setPlantId("plant45");
+        reminder.setUserId("user123");
+        reminder.setPlantId("plant456");
         reminder.setReminderType("Watering");
         reminder.setReminderDateTime(LocalDateTime.of(2025, 3, 10, 10, 0));
         reminder.setStatus("Active");
