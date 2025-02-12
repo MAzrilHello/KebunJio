@@ -103,6 +103,12 @@ class ChooseLogToViewFragment : Fragment() {
         addFAB.setOnClickListener {
             val intent = Intent(requireContext(),LogActivitiesActivity::class.java)
             intent.putExtra("userId",userId)
+            if (plantIdToNameDict.size != loggedInFragment!!.usersPlantList.size) {
+                plantIdToNameDict.clear()
+                for (i in 0..loggedInFragment!!.usersPlantList.size-1) {
+                    plantIdToNameDict[loggedInFragment!!.usersPlantList[i].id] = loggedInFragment!!.usersPlantList[i].name
+                }
+            }
             intent.putExtra("plantIdToNameDict",plantIdToNameDict)
             intent.putExtra("sessionCookie",sessionCookie)
             haveUpdateLauncher.launch(intent)

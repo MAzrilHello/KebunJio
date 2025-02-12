@@ -98,7 +98,7 @@ class LogToChooseAdapter(private val context: Context,
         val editLogBtn = binding.editLogBtn
         val deleteLogBtn = binding.deleteLogBtn
 
-        if (plantIdToNameDict.size < loggedInFragment.usersPlantList.size) {
+        if (plantIdToNameDict.size != loggedInFragment.usersPlantList.size) {
             plantIdToNameDict.clear()
             for (i in 0..loggedInFragment.usersPlantList.size-1) {
                 plantIdToNameDict[loggedInFragment.usersPlantList[i].id] = loggedInFragment.usersPlantList[i].name
@@ -125,7 +125,7 @@ class LogToChooseAdapter(private val context: Context,
             val thisId = positionId
             val intent = Intent(getContext(), LogActivitiesActivity::class.java)
             intent.putExtra("userId",userId)
-            if (plantIdToNameDict.size < loggedInFragment.usersPlantList.size) {
+            if (plantIdToNameDict.size != loggedInFragment.usersPlantList.size) {
                 plantIdToNameDict.clear()
                 for (i in 0..loggedInFragment.usersPlantList.size-1) {
                     plantIdToNameDict[loggedInFragment.usersPlantList[i].id] = loggedInFragment.usersPlantList[i].name

@@ -98,7 +98,7 @@ class PlantToChooseAdapter(private val context: Context,
             val intent = Intent(getContext(), ViewPlantDetailsActivity::class.java)
             intent.putExtra("haveData", true)
             intent.putExtra("currentPlant", currentPlant)
-            if (speciesIdToNameDict.size < this.loggedInFragment.speciesList.size) {
+            if (speciesIdToNameDict.size != this.loggedInFragment.speciesList.size) {
                 speciesIdToNameDict.clear()
                 for (i in 0..this.loggedInFragment.speciesList.size-1) {
                     speciesIdToNameDict[this.loggedInFragment.speciesList[i].id] = this.loggedInFragment.speciesList[i].getBothSpeciesName()
@@ -118,7 +118,7 @@ class PlantToChooseAdapter(private val context: Context,
         editPlantBtn.setOnClickListener{
             val intent = Intent(getContext(), AddPlantActivity::class.java)
             intent.putExtra("userId",userId)
-            if (speciesIdToNameDict.size < this.loggedInFragment.speciesList.size) {
+            if (speciesIdToNameDict.size != this.loggedInFragment.speciesList.size) {
                 speciesIdToNameDict.clear()
                 for (i in 0..this.loggedInFragment.speciesList.size-1) {
                     speciesIdToNameDict[this.loggedInFragment.speciesList[i].id] = this.loggedInFragment.speciesList[i].getBothSpeciesName()
