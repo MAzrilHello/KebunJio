@@ -10,12 +10,16 @@ const LoginPage = () => {
     const [error, setError] = useState('');
     const {setAuthUser, setIsLoggedIn, setIsAdmin} = useAuth();
 
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+    const getLoginEndpoint = `${API_BASE_URL}/users/login`;
+
     const navigate = useNavigate()
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        axios.post('http://localhost:8080/api/users/login', {
+        axios.post(getLoginEndpoint, {
             emailOrUsername,
             password
         })
