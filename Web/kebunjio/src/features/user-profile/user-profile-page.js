@@ -15,34 +15,41 @@ const UserProfilePage = () => {
 
     const navigate = useNavigate();
 
-    const [username, setUsername] = useState(authUser.Username)
-    const [email, setEmail] = useState(authUser.Email)
-    const [phone, setPhoneNumber] = useState(authUser.PhoneNumber)
-    const [isEdit, setIsEdit] = useState(false)
+    const [username, setUsername] = useState(authUser?.Username || "");
+    const [email, setEmail] = useState(authUser?.Email || "");
+    const [phone, setPhoneNumber] = useState(authUser?.PhoneNumber || "");
 
-    const [plants,setPlants] = useState([])
+    const [isEdit, setIsEdit] = useState(false);
+    const [plants, setPlants] = useState([]);
+
 
     const [userInfo,setUserInfo] = useState({
-        totalPlant:authUser.totalPlant || 0,
-        totalHarvested:authUser.totalHarvested || 0,
-        totalType:authUser.totalType || 0
+        totalPlant:authUser?.totalPlant || 0,
+        totalHarvested:authUser?.totalHarvested || 0,
+        totalType:authUser?.totalType || 0
     });
 
     const onEdit = async () => {
         if (isEdit) {
             try {
-                const response = await axios.post("http://localhost:8080/api/userProfile/update", {
-                    username,
-                    email,
-                    phoneNumber: phone
-                });
+                const response = await axios.put(
+                    "http://localhost:8080/api/userProfile/update",
+                    JSON.stringify({ username, email, phoneNumber: phone }),
+                    {
+                        withCredentials: true,
+                        headers: { "Content-Type": "application/json" }
+                    }
+                );
+
 
                 if (response.status === 200) {
+                    const updatedUser = response.data;
+
                     setAuthUser(prevUser => ({
                         ...prevUser,
-                        Username: username,
-                        Email: email,
-                        PhoneNumber: phone
+                        Username: updatedUser.username,
+                        Email: updatedUser.email,
+                        PhoneNumber: updatedUser.phoneNumber
                     }));
                     alert("Profile updated successfully!");
                 }
@@ -72,33 +79,43 @@ const UserProfilePage = () => {
     */
 
     useEffect(() => {
-
-        if (!authUser) {
-            console.log("No authUser found, redirecting...");
+        const storedUser = JSON.parse(localStorage.getItem("authUser"));
+        if (authUser) {
+            setUsername(authUser.Username || "");
+            setEmail(authUser.Email || "");
+            setPhoneNumber(authUser.PhoneNumber || "");
+        }
+        if (!storedUser) {
+            console.log("No stored user, redirecting...");
             navigate("/login");
             return;
         }
+
+        if (!authUser) {
+            setAuthUser(storedUser);
+        }
+
         async function fetchData() {
             try {
-                const plantsRes = await axios.get("http://localhost:8080/api/userProfile/plants");
-                setPlants(plantsRes.data);
+                const response = await axios.get("http://localhost:8080/api/userProfile", { withCredentials: true });
 
+                console.log("User Data:", response.data);
 
-                const userRes = await axios.get("http://localhost:8080/api/userProfile");
-
-                console.log("User Data:", userRes.data);
+                if (response.data.history) {
+                    setPlants(response.data.history);
+                }
 
                 setAuthUser(prevUser => ({
                     ...prevUser,
-                    totalPlant: userRes.data.totalPlant,
-                    totalHarvested: userRes.data.totalHarvested,
-                    totalType: userRes.data.totalType
+                    totalPlant: response.data.totalPlant || 0,
+                    totalHarvested: response.data.totalHarvested || 0,
+                    totalType: response.data.totalType || 0
                 }));
 
                 setUserInfo({
-                    totalPlant: userRes.data.totalPlant || 0,
-                    totalHarvested: userRes.data.totalHarvested || 0,
-                    totalType: userRes.data.totalType || 0
+                    totalPlant: response.data.totalPlant || 0,
+                    totalHarvested: response.data.totalHarvested || 0,
+                    totalType: response.data.totalType || 0
                 });
 
             } catch (error) {
@@ -107,16 +124,17 @@ const UserProfilePage = () => {
         }
 
         fetchData();
-    }, [authUser]);
+    }, [navigate,authUser,setAuthUser]);
 
-        /*Ruihan's code, do not delete
-        axios.get('/userProfile')
-            .then(response => {
-                setUserProfile(response.data);
-            })
-            .catch(err => {
-                setError("Error fetching user profile.");
-            });*/
+
+    /*Ruihan's code, do not delete
+    axios.get('/userProfile')
+        .then(response => {
+            setUserProfile(response.data);
+        })
+        .catch(err => {
+            setError("Error fetching user profile.");
+        });*/
 
 
     /*Ruihan's code, do not delete

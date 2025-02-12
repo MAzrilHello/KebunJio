@@ -18,7 +18,7 @@ const LoginPage = () => {
         axios.post('http://localhost:8080/api/users/login', {
             emailOrUsername,
             password
-        })
+        },{ withCredentials: true })
             .then(response => {
                 console.log(response.status)
                 if (response.status === 200) {

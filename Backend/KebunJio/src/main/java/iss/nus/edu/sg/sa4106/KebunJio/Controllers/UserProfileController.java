@@ -14,8 +14,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
 @RequestMapping("/userProfile")
 public class UserProfileController {
@@ -63,32 +65,29 @@ public class UserProfileController {
 //        return "userProfile";
 //    }
 
-    @PostMapping("/update")
-    public ResponseEntity updateProfile(@RequestParam String username,
-    		                            @RequestParam String email,
-    		                            @RequestParam String phoneNumber,
-    		                            HttpSession sessionObj){
-    	User user = (User) sessionObj.getAttribute("loggedInUser");
-    	if(user == null) {
-    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    	}
-    	
-    	User updateUser = userService.UpdateUser(user, username, email, phoneNumber);
-    	sessionObj.setAttribute("loggedInUser", updateUser);
-    	return new ResponseEntity<>(HttpStatus.OK);
-    }
+	@PutMapping ("/update")
+	public ResponseEntity<?> updateProfile(@RequestBody Map<String, String> updateData, HttpSession sessionObj) {
+		try {
+			User user = (User) sessionObj.getAttribute("loggedInUser");
+			if (user == null) {
+				return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+			}
 
-	@GetMapping("/plants")
-	public ResponseEntity<?> getUserPlantHistory(HttpSession sessionObj) {
-		User user = (User) sessionObj.getAttribute("loggedInUser");
-		if (user == null) {
-			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+			String username = updateData.get("username");
+			String email = updateData.get("email");
+			String phoneNumber = updateData.get("phoneNumber");
+
+			User updatedUser = userService.UpdateUser(user, username, email, phoneNumber);
+			sessionObj.setAttribute("loggedInUser", updatedUser);
+
+			return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>("Error updating profile: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
-		List<Plant> history = plantHistoryService.getPlantsByUserId(user.getId());
-
-		return new ResponseEntity<>(history, HttpStatus.OK);
 	}
+
+
 
 //    public String updateProfile(
 //            @RequestParam String username,
