@@ -99,7 +99,7 @@ jobs:
 
       - name: Pull Docker image
         run: |
-          ssh -i ~/.ssh/google_cloud_key team02@34.124.209.141 << EOF
+          ssh -vvv -i ~/.ssh/google_cloud_key team02@34.124.209.141 << EOF
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
             docker pull ${{ secrets.DOCKERHUB_NAME }}/kebunjio:${{ github.sha }}
             docker stop kebunjioBE || true && docker rm kebunjioBE || true
