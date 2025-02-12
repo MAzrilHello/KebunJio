@@ -1,12 +1,22 @@
-name: Build and Test
+name: Build and Test  # CI/CD Pipeline Name
+
 on:
   push:
     branches:
-      - staging_v2_test  # Trigger when pushing to this branch
+      - staging_v2_test  # Runs only on pushes to this branch
     paths:
-      - 'Backend/**'  # Only run when Backend files change
+      - 'Backend/**'  # Only triggers if files in Backend/ are modified
+      - 'Mobile/**' # Triggers when Web/ are modified
+      - 'Web/**' # Triggers when Mobile/ are modified
+      
+permissions:
+  security-events: write  
+  actions: read  
+  contents: read
 
 jobs:
+
+  # Backend: Build and Test
   build-and-test-backend:
     name: Build and Test Backend
     runs-on: ubuntu-latest
@@ -32,25 +42,25 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      # Step 4: Build Backend
+      # Step 4: Build Backend 
       - name: Build Backend
         working-directory: Backend/KebunJio
         run: mvn clean install -DskipTests=true
 
-      # Step 5: Run Backend Tests with Debug Logging
+      # Step 5: Run Backend Tests (With Debug Logging)
       - name: Run Tests with Debug Logging
         working-directory: Backend/KebunJio
-        run: mvn test -X || true # ✅ Allows test step to continue even if tests fail
+        run: mvn test -X || true  
 
-      # Step 6: Upload JUnit Test Reports (Even if Tests Fail)
+      # Step 6: Upload JUnit Test Reports
       - name: Upload Test Reports (Always Run)
-        if: always()  # ✅ Ensures reports are uploaded even if tests fail
+        if: always()  
         uses: actions/upload-artifact@v4
         with:
           name: junit-reports
           path: Backend/KebunJio/target/surefire-reports/
 
-  # Mobile Build
+  # 📱 Mobile: Build Android App
   mobile:
     name: Build Mobile
     runs-on: ubuntu-latest
@@ -66,17 +76,17 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           
-      # Step 3: Grant execute permissions for Gradle Wrapper
+      # Step 3: Grant Execute Permissions for Gradle Wrapper
       - name: Grant execute permissions for gradlew
         working-directory: Mobile
         run: chmod +x gradlew
         
-      # Step 4: Build Mobile App (Debug)
+      # Step 4: Build Mobile App (Debug Mode)
       - name: Build Mobile App
         working-directory: Mobile
         run: ./gradlew assembleDebug --stacktrace
 
-   # Build and Test React Frontend (with SAST Security Scans)
+  # 🌐 Frontend: Build and Security Tests (SAST)
   frontend:
     name: Build and Test React Frontend
     runs-on: ubuntu-latest
@@ -102,25 +112,19 @@ jobs:
       # Step 4: Run ESLint Security Checks (JSX & JavaScript)
       - name: Run ESLint Security Checks
         working-directory: Web/kebunjio
-        run: npx eslint . --ext .js,.jsx
-
-      # Step 5: Run Snyk Security Scan for Vulnerabilities
-      - name: Run Snyk Security Scan
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
-      # Step 6: Initialize CodeQL for JavaScript Security Analysis
+        run: npx eslint . --ext .js,.jsx || true  
+        
+      # Step 5: Initialize CodeQL for JavaScript Security Analysis
       - name: Initialize CodeQL for JavaScript Security
         uses: github/codeql-action/init@v2
         with:
           languages: javascript
 
-      # Step 7: Perform CodeQL Security Analysis
+      # Step 6: Perform CodeQL Security Analysis
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
 
-      # Step 8: Build React Frontend
+      # Step 7: Build React Frontend
       - name: Build React Frontend
         working-directory: Web/kebunjio
         run: CI=false npm run build

@@ -56,7 +56,7 @@ public class EventController {
     public ResponseEntity<?> deleteEvent(@PathVariable String eventId) {
         try {
         	if (eventService.deleteByEventId(eventId)) {
-        		return ResponseEntity.notFound().build();
+        		return ResponseEntity.ok().build();
         	} else {
         		return ResponseEntity.notFound().build();
         	}
