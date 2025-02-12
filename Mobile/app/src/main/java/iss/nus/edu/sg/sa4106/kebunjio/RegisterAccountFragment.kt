@@ -11,6 +11,7 @@ import androidx.navigation.findNavController
 import iss.nus.edu.sg.sa4106.kebunjio.data.DAO.RegisterDAO
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentLoginOrRegisterBinding
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentRegisterAccountBinding
+import iss.nus.edu.sg.sa4106.kebunjio.service.PlantSpeciesLogService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -66,7 +67,7 @@ class RegisterAccountFragment : Fragment() {
     private fun doRegistration(registerDAO: RegisterDAO) {
         Thread{
             Log.d("RegisterAccountFragment","Making the connection")
-            val fullUrl = "http://10.0.2.2:8080/api/Users/signup"
+            val fullUrl = "${PlantSpeciesLogService.startUrl}/users/signup"
             val url = URL(fullUrl)
             val connection = url.openConnection() as HttpURLConnection
             try {
