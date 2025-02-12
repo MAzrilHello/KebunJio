@@ -113,16 +113,26 @@ jobs:
       # Step 4: Run ESLint Security Checks (JSX & JavaScript)
       - name: Run ESLint Security Checks
         working-directory: Web/kebunjio
-        run: npx eslint . --ext .js,.jsx || true  
+        run: npx eslint . --ext .js,.jsx -f json -o eslint-report.json
+
+      - name: Upload ESLint Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: eslint-reports
+          path: Web/kebunjio/eslint-report.json
 
       # Step 5: Run Snyk Security Scan for Vulnerabilities
       - name: Run Snyk Security Scan
         run: |
-          cd Web/kebunjio  # ✅ Manually change directory
+          cd Web/kebunjio  
           snyk test  # ✅ Run Snyk scan in the correct directory
         env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}  # ✅ Add Snyk API Token
-
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}  
+      - name: Upload Snyk Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: snyk-reports
+          path: Web/kebunjio/snyk-report.json
       # Step 6: Build React Frontend
       - name: Build React Frontend
         working-directory: Web/kebunjio
