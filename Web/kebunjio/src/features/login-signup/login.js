@@ -3,7 +3,7 @@ import axios from 'axios';
 import './login-signup.css';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from "react-router-dom";
-import { sanitizeInput } from '../service/sanitizeService';
+import { sanitizeInput } from '../../service/sanitizeService';
 
 const LoginPage = () => {
 

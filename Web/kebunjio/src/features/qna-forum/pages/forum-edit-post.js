@@ -5,7 +5,7 @@ import '../styling/forum-page.css'
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useLocation } from "react-router-dom";
-import { sanitizeInput } from '../../service/sanitizeService';
+import { sanitizeInput } from '../../../service/sanitizeService';
 
 function ForumEditPost() {
 

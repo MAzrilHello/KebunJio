@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './login-signup.css';
 import { useNavigate } from "react-router-dom";
-import { sanitizeInput } from '../service/sanitizeService';
+import { sanitizeInput } from '../../service/sanitizeService';
 
 const SignUpPage = () => {
     const [email, setEmail] = useState('');

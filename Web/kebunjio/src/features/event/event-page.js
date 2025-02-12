@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import EventCard from './components/EventCard';
 import { getAllEvents } from './services/eventService';
 import Appbar from '../../components/Appbar';
-import { sanitizeInput } from '../service/sanitizeService';
+import { sanitizeInput } from '../../service/sanitizeService';
 
 export const EventList = () => {
     const [events, setEvents] = useState([]);

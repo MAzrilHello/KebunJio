@@ -5,7 +5,7 @@ import ReplyHeader from "./reply-header";
 import ReplyInsight from "./reply-insight";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { sanitizeInput } from "../../service/sanitizeService";
+import { sanitizeInput } from '../../../service/sanitizeService';
 
 const Reply = ({userReply}) => {
 
