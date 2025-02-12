@@ -130,7 +130,7 @@ jobs:
             docker run --network host --name kebunjiobe -d ${{ secrets.DOCKERHUB_NAME }}/kebunjiobe:${{ github.sha }}
 
             docker pull ${{ secrets.DOCKERHUB_NAME }}/kebunjiofe:${{ github.sha }}
-            docker stop kebunjiobe || true && docker rm kebunjiobe || true
+            docker stop kebunjiofe || true && docker rm kebunjiofe || true
             docker run --network host --name kebunjiofe -d ${{ secrets.DOCKERHUB_NAME }}/kebunjiofe:${{ github.sha }}
           EOF
         env:
