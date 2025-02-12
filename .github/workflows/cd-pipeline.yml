@@ -1,37 +1,35 @@
-name: Manual Deploy
+name: Deploy
 
 on:
   push:
     branches:
-      -staging_v2
-  workflow_dispatch: #
+      - staging_v2  # 修正YAML格式（短横线后加空格）
+  pull_request:     # 添加PR触发
+    branches:
+      - staging_v2
+  workflow_dispatch:
     inputs:
       deploy_message:
         description: 'Optional deploy message'
         required: false
         default: 'Deploy triggered'
 
-
 jobs:
-  # Build Stage
   build:
-    runs-on: ubuntu-latest # build environment set as Ubuntu
+    runs-on: ubuntu-latest
     outputs:
       docker-image: ${{ steps.build-docker.outputs.image-tag}}
 
     steps:
-      # Checkout Project Code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Set the project JDK
       - name: Set up JDK 
         uses: actions/setup-java@v3
         with:
-          java-version: '17' # set JDK version
+          java-version: '17'
           distribution: 'temurin'
 
-      # Cache Mvn project Dependency
       - name: Cache Mvn dependencies
         uses: actions/cache@v3
         with:
@@ -40,12 +38,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      # Build Project
       - name: Build with Mvn
         run: mvn clean install -DskipTests=true
         working-directory: Backend/KebunJio
 
-      # Run test (Junit)
       - name: Run tests with Mvn
         run: mvn test
         working-directory: Backend/KebunJio
@@ -55,43 +51,41 @@ jobs:
         with:
           name: junit-reports
           path: Backend/KebunJio/target/surefire-reports/*.xml
-      
 
-      # Generate JAR file
+      # 以下步骤仅在非PR事件时执行
       - name: Build JAR
+        if: github.event_name != 'pull_request'  # 添加条件
         run: mvn clean package -DskipTests=true
         working-directory: Backend/KebunJio
-      
-      # If we use Docker
-      # Build Docker Iamge
+
       - name: Build Docker image
+        if: github.event_name != 'pull_request'  # 添加条件
         run: |
           docker build -t ${{ secrets.DOCKERHUB_NAME }}/kebunjio:${{ github.sha }} .
         working-directory: Backend/KebunJio
 
-      # Login Dockerhub
       - name: Login to Docker Hub
+        if: github.event_name != 'pull_request'  # 添加条件
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKERHUB_NAME }} # Write in Github Secrets
-          password: ${{ secrets.DOCKERHUB_PASSWORD }} # Write in Github Secrets 
+          username: ${{ secrets.DOCKERHUB_NAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      # Push image to Dockerhub
       - name: Push Docker image
-        # if: ${{ github.event.inputs.build_docker == 'true' }}
+        if: github.event_name != 'pull_request'  # 添加条件
         working-directory: Backend/KebunJio
         run: |
           docker push ${{ secrets.DOCKERHUB_NAME }}/kebunjio:${{ github.sha }}
 
   deploy:
+    needs: build
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'  # 添加执行条件
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout Project Code
       - name: Checkout code
         uses: actions/checkout@v3
       
-      # Setup SSH key
       - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
@@ -99,12 +93,10 @@ jobs:
           chmod 600 ~/.ssh/google_cloud_key
           ssh-keyscan -H 34.124.209.141 >> ~/.ssh/known_hosts
 
-      # Connect to Target Server
       - name: Connect Server
         run: |
           ssh -i ~/.ssh/google_cloud_key team02@34.124.209.141 "echo 'SSH connection successful!'"
 
-      # Pull Docker image
       - name: Pull Docker image
         run: |
           ssh -i ~/.ssh/google_cloud_key team02@34.124.209.141 << EOF
@@ -115,4 +107,3 @@ jobs:
           EOF
         env:
           SSH_KEY: ${{ secrets.SSH_KEY }}
-
