@@ -5,9 +5,9 @@ on:
     branches:
       - staging_v2_test  # Runs only on pushes to this branch
     paths:
-      - 'Backend/**'  # Only triggers if files in Backend/ are modified
-      - 'Mobile/**' # Triggers when Web/ are modified
-      - 'Web/**' # Triggers when Mobile/ are modified
+      - 'Backend/**'  # Backend changes trigger CI
+      - 'Mobile/**'   # Mobile changes trigger CI
+      - 'Web/**'      # Web changes trigger CI
       
 permissions:
   security-events: write  
@@ -60,7 +60,7 @@ jobs:
           name: junit-reports
           path: Backend/KebunJio/target/surefire-reports/
 
-  # 📱 Mobile: Build Android App
+  # Mobile: Build Android App
   mobile:
     name: Build Mobile
     runs-on: ubuntu-latest
@@ -86,10 +86,13 @@ jobs:
         working-directory: Mobile
         run: ./gradlew assembleDebug --stacktrace
 
-  # 🌐 Frontend: Build and Security Tests (SAST)
+# Frontend: Build and Security Tests (SAST)
   frontend:
     name: Build and Test React Frontend
     runs-on: ubuntu-latest
+
+    permissions:
+      security-events: write  # Required for CodeQL Security Reports
 
     steps:
       # Step 1: Checkout Code
@@ -113,16 +116,19 @@ jobs:
       - name: Run ESLint Security Checks
         working-directory: Web/kebunjio
         run: npx eslint . --ext .js,.jsx || true  
-        
-      # Step 5: Initialize CodeQL for JavaScript Security Analysis
-      - name: Initialize CodeQL for JavaScript Security
-        uses: github/codeql-action/init@v2
+
+      # Step 5: Initialize Advanced CodeQL for JavaScript Security Analysis
+      - name: Initialize Advanced CodeQL
+        uses: github/codeql-action/init@v3
         with:
           languages: javascript
+          queries: security-extended,security-and-quality
 
       # Step 6: Perform CodeQL Security Analysis
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+      - name: Perform Advanced CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:javascript"
 
       # Step 7: Build React Frontend
       - name: Build React Frontend
