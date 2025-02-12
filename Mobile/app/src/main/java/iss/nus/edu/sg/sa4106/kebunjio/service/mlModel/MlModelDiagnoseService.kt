@@ -28,7 +28,8 @@ class MlModelDiagnoseService : MlModelService() {
 
     override fun diagnosePlant(imageFile: File): String? {
 
-        val urlString = "http://10.0.2.2:5000/api/diagnose"
+        //val urlString = "http://10.0.2.2:5000/api/diagnose"
+        val urlString = "http://34.124.209.141:5000/api/diagnose"
         var connection: HttpURLConnection? = null
 
         return try {

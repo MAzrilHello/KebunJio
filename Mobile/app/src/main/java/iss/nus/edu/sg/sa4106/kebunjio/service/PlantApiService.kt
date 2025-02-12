@@ -18,7 +18,8 @@ import java.net.URL
 
 object PlantApiService  {
 
-    private const val BASE_URL = "https://localhost.com/api/"
+    //private const val BASE_URL = "https://localhost.com/api/"
+    private const val BASE_URL = "http://34.124.209.141:8080/api"
 
     // Use Coroutine to make network request
     suspend fun getPlantsByUser(userId: String, sessionCookie: String): List<Plant> {

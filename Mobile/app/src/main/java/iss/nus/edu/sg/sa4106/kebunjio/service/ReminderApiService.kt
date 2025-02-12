@@ -11,7 +11,8 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 object ReminderApiService {
-    private const val BASE_URL = "http://10.0.2.2:8080/api/Reminders"
+    //private const val BASE_URL = "http://10.0.2.2:8080/api/Reminders"
+    private const val BASE_URL = "http://34.124.209.141:8080/api/Reminders"
 
     suspend fun getRemindersByPlant(plantId: String): String? {
         val fullUrl = "$BASE_URL/Plant/$plantId"
