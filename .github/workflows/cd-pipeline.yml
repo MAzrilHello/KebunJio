@@ -1,6 +1,9 @@
 name: Manual Deploy
 
 on:
+  push:
+    branches:
+      -staging_v2
   workflow_dispatch: #
     inputs:
       deploy_message:
