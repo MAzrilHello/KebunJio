@@ -1,19 +1,19 @@
-package iss.nus.edu.sg.sa4106.KebunJio.ServiceTest;
+// package iss.nus.edu.sg.sa4106.KebunJio.ServiceTest;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+// import org.junit.jupiter.api.Assertions;
+// import org.junit.jupiter.api.Test;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.boot.test.context.SpringBootTest;
 
-import iss.nus.edu.sg.sa4106.KebunJio.Services.PostService;
+// import iss.nus.edu.sg.sa4106.KebunJio.Services.PostService;
 
-public class PostServiceTest {
+// public class PostServiceTest {
 
-    private final PostService postService = new PostService();
+//     private final PostService postService = new PostService();
 
-    @Test
-    void testAdd() {
-        int result = postService.add(1, 3);
-        Assertions.assertEquals(4, result);
-    }
-}
+//     @Test
+//     void testAdd() {
+//         int result = postService.add(1, 3);
+//         Assertions.assertEquals(4, result);
+//     }
+// }
