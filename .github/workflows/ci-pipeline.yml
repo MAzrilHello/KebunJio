@@ -108,7 +108,7 @@ jobs:
       # Step 3: Install Frontend Dependencies
       - name: Install Frontend Dependencies
         working-directory: Web/kebunjio
-        run: npm ci
+        run: npm ci && npm install -g snyk
 
       # Step 4: Run ESLint Security Checks (JSX & JavaScript)
       - name: Run ESLint Security Checks
