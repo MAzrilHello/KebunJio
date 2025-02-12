@@ -59,29 +59,34 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      # Step 2: Set up Java 17 for Android
       - name: Set up JDK 17 for Mobile
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-
+          
+      # Step 3: Grant execute permissions for Gradle Wrapper
       - name: Grant execute permissions for gradlew
         working-directory: Mobile
         run: chmod +x gradlew
-
+        
+      # Step 4: Build Mobile App (Debug)
       - name: Build Mobile App
         working-directory: Mobile
         run: ./gradlew assembleDebug --stacktrace
 
-  # Frontend Build
+   # Build and Test React Frontend (with SAST Security Scans)
   frontend:
-    name: Build React Frontend
+    name: Build and Test React Frontend
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout Code
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      # Step 2: Set up Node.js for Frontend
       - name: Set up Node.js for Frontend
         uses: actions/setup-node@v4
         with:
@@ -89,10 +94,33 @@ jobs:
           cache: 'npm'
           cache-dependency-path: Web/kebunjio/package-lock.json
 
+      # Step 3: Install Frontend Dependencies
       - name: Install Frontend Dependencies
         working-directory: Web/kebunjio
         run: npm ci
 
+      # Step 4: Run ESLint Security Checks (JSX & JavaScript)
+      - name: Run ESLint Security Checks
+        working-directory: Web/kebunjio
+        run: npx eslint . --ext .js,.jsx
+
+      # Step 5: Run Snyk Security Scan for Vulnerabilities
+      - name: Run Snyk Security Scan
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      # Step 6: Initialize CodeQL for JavaScript Security Analysis
+      - name: Initialize CodeQL for JavaScript Security
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript
+
+      # Step 7: Perform CodeQL Security Analysis
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+
+      # Step 8: Build React Frontend
       - name: Build React Frontend
         working-directory: Web/kebunjio
         run: CI=false npm run build
