@@ -69,10 +69,12 @@ public class ForumController {
 	// URL:/Forum/Post/Create
 	// User info store in Session
 	@PostMapping("/Post/Create")
-	public ResponseEntity createNewPost(@RequestBody @Valid PostDAO postData,BindingResult bindingResult,HttpSession SessionObj){
+	public ResponseEntity createNewPost(@RequestBody @Valid PostDAO postData,BindingResult bindingResult,HttpSession sessionObj){
 		// wait for user Create 
-//		String userId = (String) SessionObj.getAttribute("userId");
-		String userId = "679b022388afce6495e8dbca";
+		User currentUser = (User) sessionObj.getAttribute("loggedInUser");
+		
+		String userId = currentUser.getId();
+		
 		if(bindingResult.hasErrors()) {
 			return new ResponseEntity<>(bindingResult.getAllErrors(),HttpStatus.BAD_REQUEST);
 		}
@@ -112,8 +114,10 @@ public class ForumController {
 	// URL: /Forum/Post/{id}
 	@PutMapping("/Post/{id}")
 	public ResponseEntity updatePostById(@PathVariable String id,@RequestBody PostDAO newPost,HttpSession sessionObj) {
-//		String userId = (String) sessionObj.getAttribute("userId");
-		String userId = "679b022388afce6495e8dbca";
+		User currentUser = (User) sessionObj.getAttribute("loggedInUser");
+		
+		String userId = currentUser.getId();
+		
 		Post editPost = postService.getPostByPostId(id);
 		if(!editPost.getUserId().equals(userId)) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -129,8 +133,10 @@ public class ForumController {
 	// URL: /Forum/User/Posts
 	@GetMapping("/User/Posts")
 	public ResponseEntity getPostsByUserId(HttpSession sessionObj) {
-//		String userId = (String) sessionObj.getAttribute("userId");
-		String userId = "679b022388afce6495e8dbca";
+		User currentUser = (User) sessionObj.getAttribute("loggedInUser");
+		
+		String userId = currentUser.getId();
+		
 		List<Post> postList = postService.getPostsByUserId(userId);
 		return new ResponseEntity<>(postList,HttpStatus.OK);
 	}
@@ -138,9 +144,11 @@ public class ForumController {
 	// URL: /Forum/Post/{id}/Upvote
 	@PutMapping("/Post/{id}/Upvote")
 	public ResponseEntity upvotePost(@PathVariable String id,boolean hasUpvoted,HttpSession sessionObj) {
-//		String userId = (String) sessionObj.getAttribute("userId");
-		String userId = "679b022388afce6495e8dbca";
-		if(upvoteService.calculateUpvote(id,userId, hasUpvoted)) {
+		User currentUser = (User) sessionObj.getAttribute("loggedInUser");
+		
+		String userId = currentUser.getId();
+		
+		if(upvoteService.calculateUpvote(id,userId)) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -149,8 +157,9 @@ public class ForumController {
 	// URL: /Forum/Post/{id}/CreateComment
 	@PostMapping("/Post/{id}/CreateComment")
 	public ResponseEntity createComment(HttpSession sessionObj,@PathVariable String id,@RequestBody CommentDAO commentDAO) {
-//		String userId = (String) sessionObj.getAttribute("userId");
-		String userId = "679b022388afce6495e8dbca";
+		User currentUser = (User) sessionObj.getAttribute("loggedInUser");
+		
+		String userId = currentUser.getId();
 		String postId = id;
 		if(commentService.createComment(commentDAO,postId,userId)) {
 			return new ResponseEntity<>(HttpStatus.CREATED);
@@ -226,8 +235,9 @@ public class ForumController {
 	
 	@PutMapping("/Post/Comment/{commentId}/Edit")
 	public ResponseEntity editComment(@PathVariable String commentId,@RequestBody CommentDAO updateComment,HttpSession sessionObj) {
-//		String userId = (String) sessionObj.getAttribute("userId");
-		String userId = "679b022388afce6495e8dbca";
+		User currentUser = (User) sessionObj.getAttribute("loggedInUser");
+		
+		String userId = currentUser.getId();
 		Comment editComment = commentService.getCommentByCommentId(commentId);
 		if(!editComment.getUserId().equals(userId)) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -243,13 +253,14 @@ public class ForumController {
 	@DeleteMapping("/User/Post/{id}")
 	public ResponseEntity deletePost(@PathVariable String id,HttpSession sessionObj) {
 		// check the post whether belongs to user?
-//		String userId = (String) sessionObj.getAttribute("userId");
-		String userId = "679b022388afce6495e8dbca";
-		User user = (User) sessionObj.getAttribute("user");
+		User currentUser = (User) sessionObj.getAttribute("loggedInUser");
+		
+		String userId = currentUser.getId();
+
 		
 		Post deletePost = postService.getPostByPostId(id);
 
-		if(!user.isAdmin()) {
+		if(!currentUser.isAdmin()) {
 			if(deletePost.getUserId().equals(userId)) {
 				postService.deletePostByPostId(id);
 				return new ResponseEntity<>(HttpStatus.OK);
@@ -264,13 +275,13 @@ public class ForumController {
 	
 	@DeleteMapping("/Post/Comment/{commentId}")
 	public ResponseEntity deleteComment(@PathVariable String commentId,HttpSession sessionObj) {
-//		String userId = (String) sessionObj.getAttribute("userId");
-		String userId = "679b022388afce6495e8dbca";
-		User user = (User) sessionObj.getAttribute("user");
+		User currentUser = (User) sessionObj.getAttribute("loggedInUser");
+		
+		String userId = currentUser.getId();
 		
 		Comment deleteComment = commentService.getCommentByCommentId(commentId); 
 
-		if(!user.isAdmin()) {
+		if(!currentUser.isAdmin()) {
 			if(deleteComment.getUserId().equals(userId)) {
 				commentService.deleteCommentByCommentId(commentId);
 				return new ResponseEntity<>(HttpStatus.OK);
