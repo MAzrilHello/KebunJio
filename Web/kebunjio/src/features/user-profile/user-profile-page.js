@@ -7,10 +7,13 @@ import Table  from "react-bootstrap/Table";
 import Appbar from '../../components/Appbar';
 import "./user-profile-style.css"
 import Card from 'react-bootstrap/Card';
+import { useNavigate } from 'react-router-dom';
 
 const UserProfilePage = () => {
 
-    const {authUser} = useAuth()
+    const { authUser, setAuthUser } = useAuth();
+
+    const navigate = useNavigate();
 
     const [username, setUsername] = useState(authUser.Username)
     const [email, setEmail] = useState(authUser.Email)
@@ -20,9 +23,9 @@ const UserProfilePage = () => {
     const [plants,setPlants] = useState([])
 
     const [userInfo,setUserInfo] = useState({
-        totalPlant:authUser.totalPlant,
-        totalHarvested:authUser.totalHarvested,
-        totalType:authUser.totalType
+        totalPlant:authUser.totalPlant || 0,
+        totalHarvested:authUser.totalHarvested || 0,
+        totalType:authUser.totalType || 0
     });
 
     const onEdit = async () => {
@@ -104,7 +107,7 @@ const UserProfilePage = () => {
         }
 
         fetchData();
-    }, []);
+    }, [authUser]);
 
         /*Ruihan's code, do not delete
         axios.get('/userProfile')
