@@ -12,6 +12,8 @@ public class Upvote {
 	
 	private String userId;
 	
+	private boolean hasUpvoted = false;
+	
 	public Upvote() {}
 
 	public String getId() {
@@ -36,6 +38,15 @@ public class Upvote {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+
+	public boolean isHasUpvoted() {
+		return hasUpvoted;
+	}
+
+	public void setHasUpvoted(boolean hasUpvoted) {
+		this.hasUpvoted = hasUpvoted;
 	}
 	
 	
