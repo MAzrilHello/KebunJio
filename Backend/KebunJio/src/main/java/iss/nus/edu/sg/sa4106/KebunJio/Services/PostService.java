@@ -91,6 +91,9 @@ public class PostService {
 	//Function5: GetPostByUserId
 	public List<Post> getPostsByUserId(String userId){
 		List<Post> postList = postRepository.findByUserId(userId);
+		if (postList == null) {
+	            return null;
+	        }
 		Collections.sort(postList,(p1,p2)-> p2.getPublishedDateTime().compareTo(p1.getPublishedDateTime()));
 		return postList;
 	}
