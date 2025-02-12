@@ -27,9 +27,6 @@ import iss.nus.edu.sg.sa4106.kebunjio.data.Reminder
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentChoosePlantToViewBinding
 import iss.nus.edu.sg.sa4106.kebunjio.features.addplant.AddPlantActivity
 
-interface PlantSelectionListener {
-    fun onPlantSelected(plantId: String)
-}
 
 class ChoosePlantToViewFragment : Fragment() {
 
