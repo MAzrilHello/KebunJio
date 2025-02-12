@@ -12,6 +12,7 @@ import androidx.navigation.findNavController
 import iss.nus.edu.sg.sa4106.kebunjio.data.User
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentLoginBinding
 import iss.nus.edu.sg.sa4106.kebunjio.service.CookieHandling
+import iss.nus.edu.sg.sa4106.kebunjio.service.PlantSpeciesLogService
 import org.json.JSONObject
 import java.io.DataOutputStream
 import java.net.HttpURLConnection
@@ -93,7 +94,7 @@ class LoginFragment : Fragment() {
 
     private fun attemptLogin(username: String, password: String) {
         Thread{
-            val partUrl = "http://10.0.2.2:8080/api/users/login"
+            val partUrl = "${PlantSpeciesLogService.startUrl}/users/login"
             val encodedUsername = URLEncoder.encode(username, StandardCharsets.UTF_8.toString())
             val encodedPassword = URLEncoder.encode(password, StandardCharsets.UTF_8.toString())
             //val fullUrl = "$partUrl?emailOrUsername=$encodedUsername&password=$encodedPassword"

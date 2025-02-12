@@ -14,6 +14,7 @@ import iss.nus.edu.sg.sa4106.kebunjio.R
 import iss.nus.edu.sg.sa4106.kebunjio.data.User
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentSettingsBinding
 import iss.nus.edu.sg.sa4106.kebunjio.service.CookieHandling
+import iss.nus.edu.sg.sa4106.kebunjio.service.PlantSpeciesLogService
 import java.io.DataOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
@@ -97,7 +98,7 @@ class SettingsFragment : Fragment() {
 
 
     private fun callLogoutApi(): Int {
-        val partUrl = "http://10.0.2.2:8080/api/users/logout"
+        val partUrl = "${PlantSpeciesLogService.startUrl}/users/logout"
         val fullUrl = partUrl
         val url = URL(fullUrl)
         val connection = url.openConnection() as HttpURLConnection
