@@ -71,5 +71,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:listitem="@layout/item_tracker" />
+        tools:listitem="@layout/item_reminder_group" />
 </androidx.constraintlayout.widget.ConstraintLayout>
