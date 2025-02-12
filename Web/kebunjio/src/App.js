@@ -61,13 +61,10 @@ function App() {
           <Route path="/admin/events" element={<ProtectedRoute element={<Events />} />} />
           <Route path="/admin/events/:id" element={<ProtectedRoute element={<AdminEventDetail />} />} />
           <Route path="/admin/events/edit/:id" element={<EditEvent/>}/>
-<<<<<<< Updated upstream
 
           <Route path="/events" element={<EventList />} />
           <Route path="/events/:id" element={<EventDetail />} />
           <Route path="/events/oauth2/callback" element={<GoogleAuthCallback />} />
-=======
->>>>>>> Stashed changes
 
         </Routes>
       </BrowserRouter>
