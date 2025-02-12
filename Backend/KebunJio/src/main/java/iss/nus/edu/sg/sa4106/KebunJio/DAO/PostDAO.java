@@ -9,5 +9,7 @@ public class PostDAO {
 	public String title;
 	@NotNull(message="Title can not be null")
 	public String content;
+	@NotNull
+	public String postCategory;
 	
 }
