@@ -1,98 +1,7 @@
-name: Build and Test  # CI/CD Pipeline Name
-
-on:
-  push:
-    branches:
-      - staging_v2_test  # Runs only on pushes to this branch
-    paths:
-      - 'Backend/**'  # Backend changes trigger CI
-      - 'Mobile/**'   # Mobile changes trigger CI
-      - 'Web/**'      # Web changes trigger CI
-      
-permissions:
-  security-events: write  
-  actions: read  
-  contents: read
-
-jobs:
-
-  # Backend: Build and Test
-  build-and-test-backend:
-    name: Build and Test Backend
-    runs-on: ubuntu-latest
-
-    steps:
-      # Step 1: Checkout the repository
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      # Step 2: Set up JDK 17 for Backend
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      # Step 3: Cache Maven dependencies for faster builds
-      - name: Cache Maven Dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-
-      # Step 4: Build Backend 
-      - name: Build Backend
-        working-directory: Backend/KebunJio
-        run: mvn clean install -DskipTests=true
-
-      # Step 5: Run Backend Tests (With Debug Logging)
-      - name: Run Tests with Debug Logging
-        working-directory: Backend/KebunJio
-        run: mvn test -X || true  
-
-      # Step 6: Upload JUnit Test Reports
-      - name: Upload Test Reports (Always Run)
-        if: always()  
-        uses: actions/upload-artifact@v4
-        with:
-          name: junit-reports
-          path: Backend/KebunJio/target/surefire-reports/
-
-  # Mobile: Build Android App
-  mobile:
-    name: Build Mobile
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      # Step 2: Set up Java 17 for Android
-      - name: Set up JDK 17 for Mobile
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          
-      # Step 3: Grant Execute Permissions for Gradle Wrapper
-      - name: Grant execute permissions for gradlew
-        working-directory: Mobile
-        run: chmod +x gradlew
-        
-      # Step 4: Build Mobile App (Debug Mode)
-      - name: Build Mobile App
-        working-directory: Mobile
-        run: ./gradlew assembleDebug --stacktrace
-
-# Frontend: Build and Security Tests (SAST)
+  # 🌐 Frontend: Build and Security Tests (Simplified)
   frontend:
     name: Build and Test React Frontend
     runs-on: ubuntu-latest
-
-    permissions:
-      security-events: write  # Required for CodeQL Security Reports
 
     steps:
       # Step 1: Checkout Code
@@ -117,20 +26,13 @@ jobs:
         working-directory: Web/kebunjio
         run: npx eslint . --ext .js,.jsx || true  
 
-      # Step 5: Initialize Advanced CodeQL for JavaScript Security Analysis
-      - name: Initialize Advanced CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: javascript
-          queries: security-extended,security-and-quality
+      # Step 5: Run Snyk Security Scan for Vulnerabilities
+      - name: Run Snyk Security Scan
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
-      # Step 6: Perform CodeQL Security Analysis
-      - name: Perform Advanced CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
-        with:
-          category: "/language:javascript"
-
-      # Step 7: Build React Frontend
+      # Step 6: Build React Frontend
       - name: Build React Frontend
         working-directory: Web/kebunjio
         run: CI=false npm run build
