@@ -8,7 +8,10 @@ on:
       - 'Backend/**'  # Only triggers if files in Backend/ are modified
       - 'Mobile/**' # Triggers when Web/ are modified
       - 'Web/**' # Triggers when Mobile/ are modified
-
+      
+permissions:
+  security-events: write  
+  actions: read  
 jobs:
 
   # Backend: Build and Test
