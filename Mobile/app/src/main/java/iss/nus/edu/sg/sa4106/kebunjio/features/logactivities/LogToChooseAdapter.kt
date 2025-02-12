@@ -81,6 +81,8 @@ class LogToChooseAdapter(private val context: Context,
         if (position >= userActLogList.size) {
             _view.visibility = View.GONE
             return _view
+        } else {
+            _view.visibility = View.VISIBLE
         }
 
         val positionId = userActLogList[position].id
@@ -95,6 +97,13 @@ class LogToChooseAdapter(private val context: Context,
         val viewLogBtn = binding.viewLogBtn
         val editLogBtn = binding.editLogBtn
         val deleteLogBtn = binding.deleteLogBtn
+
+        if (plantIdToNameDict.size < loggedInFragment.usersPlantList.size) {
+            plantIdToNameDict.clear()
+            for (i in 0..loggedInFragment.usersPlantList.size-1) {
+                plantIdToNameDict[loggedInFragment.usersPlantList[i].id] = loggedInFragment.usersPlantList[i].name
+            }
+        }
 
         if (plantId != null) {
             whichPlantText.text = plantIdToNameDict[plantId]
@@ -116,6 +125,12 @@ class LogToChooseAdapter(private val context: Context,
             val thisId = positionId
             val intent = Intent(getContext(), LogActivitiesActivity::class.java)
             intent.putExtra("userId",userId)
+            if (plantIdToNameDict.size < loggedInFragment.usersPlantList.size) {
+                plantIdToNameDict.clear()
+                for (i in 0..loggedInFragment.usersPlantList.size-1) {
+                    plantIdToNameDict[loggedInFragment.usersPlantList[i].id] = loggedInFragment.usersPlantList[i].name
+                }
+            }
             intent.putExtra("plantIdToNameDict",plantIdToNameDict)
             intent.putExtra("sessionCookie",sessionCookie)
             intent.putExtra("currentActivityLog",currentActivityLog)

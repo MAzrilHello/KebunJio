@@ -83,6 +83,8 @@ class PlantToChooseAdapter(private val context: Context,
         if (position >= usersPlantList.size) {
             _view.visibility = View.GONE
             return _view
+        } else {
+            _view.visibility = View.VISIBLE
         }
 
         var currentPlant = usersPlantList[position]
@@ -96,6 +98,12 @@ class PlantToChooseAdapter(private val context: Context,
             val intent = Intent(getContext(), ViewPlantDetailsActivity::class.java)
             intent.putExtra("haveData", true)
             intent.putExtra("currentPlant", currentPlant)
+            if (speciesIdToNameDict.size < this.loggedInFragment.speciesList.size) {
+                speciesIdToNameDict.clear()
+                for (i in 0..this.loggedInFragment.speciesList.size-1) {
+                    speciesIdToNameDict[this.loggedInFragment.speciesList[i].id] = this.loggedInFragment.speciesList[i].getBothSpeciesName()
+                }
+            }
             intent.putExtra("speciesIdToNameDict",speciesIdToNameDict)
             val thisActLog: ArrayList<ActivityLog> = arrayListOf()
             for (i in 0..this.usersActivityLogList.size-1) {
@@ -110,6 +118,12 @@ class PlantToChooseAdapter(private val context: Context,
         editPlantBtn.setOnClickListener{
             val intent = Intent(getContext(), AddPlantActivity::class.java)
             intent.putExtra("userId",userId)
+            if (speciesIdToNameDict.size < this.loggedInFragment.speciesList.size) {
+                speciesIdToNameDict.clear()
+                for (i in 0..this.loggedInFragment.speciesList.size-1) {
+                    speciesIdToNameDict[this.loggedInFragment.speciesList[i].id] = this.loggedInFragment.speciesList[i].getBothSpeciesName()
+                }
+            }
             intent.putExtra("speciesIdToNameDict",speciesIdToNameDict)
             intent.putExtra("sessionCookie",sessionCookie)
             intent.putExtra("currentPlant",currentPlant)
