@@ -97,5 +97,9 @@ public class Reminder {
 	public void setCreatedDateTime(LocalDateTime createdDateTime) {
 		this.createdDateTime = createdDateTime;
 	} 
-
+	
+	@Override
+	public String toString() {
+	    return "Reminder{id='" + id + "', type='" + reminderType + "', date='" + reminderDateTime + "', status='" + status + "'}";
+	}	
 }

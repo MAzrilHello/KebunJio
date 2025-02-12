@@ -2,10 +2,9 @@ name: Build and Test
 on:
   push:
     branches:
-      - stgv2_event  # Trigger when pushing to this branch
+      - staging_v2_test  # Trigger when pushing to this branch
     paths:
       - 'Backend/**'  # Only run when Backend files change
-
 
 jobs:
   build-and-test-backend:
@@ -48,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: junit-reports
-          path: Backend/KebunJio/target/surefire-reports/*.xml
+          path: Backend/KebunJio/target/surefire-reports/
 
   # Mobile Build
   mobile:
