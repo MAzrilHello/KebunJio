@@ -120,6 +120,8 @@ jobs:
         run: |
           cd Web/kebunjio  # ✅ Manually change directory
           snyk test  # ✅ Run Snyk scan in the correct directory
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}  # ✅ Add Snyk API Token
 
       # Step 6: Build React Frontend
       - name: Build React Frontend
