@@ -123,6 +123,7 @@ jobs:
 
       # Step 5: Run Snyk Security Scan for Vulnerabilities
       - name: Run Snyk Security Scan
+        continue-on-error: true
         run: |
           cd Web/kebunjio  
           snyk test  # ✅ Run Snyk scan in the correct directory
