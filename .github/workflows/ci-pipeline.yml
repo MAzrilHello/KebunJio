@@ -117,11 +117,9 @@ jobs:
 
       # Step 5: Run Snyk Security Scan for Vulnerabilities
       - name: Run Snyk Security Scan
-        uses: snyk/actions/node@master
-        with:
-          args: test
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          cd Web/kebunjio  # ✅ Manually change directory
+          snyk test  # ✅ Run Snyk scan in the correct directory
 
       # Step 6: Build React Frontend
       - name: Build React Frontend
