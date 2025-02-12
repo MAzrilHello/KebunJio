@@ -30,9 +30,9 @@ import java.util.List;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/Forum")
+@RequestMapping("/Reminders")
 @CrossOrigin(origins = "*")
-public class ForumController {
+public class ReminderController {
 	@Autowired
 	private PostService postService;
 	
