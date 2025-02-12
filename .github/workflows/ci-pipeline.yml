@@ -126,7 +126,7 @@ jobs:
         continue-on-error: true
         run: |
           cd Web/kebunjio  
-          snyk test  # ✅ Run Snyk scan in the correct directory
+          snyk test  
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}  
       - name: Upload Snyk Report
