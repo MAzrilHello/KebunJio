@@ -3,6 +3,7 @@ import axios from 'axios';
 import './login-signup.css';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from "react-router-dom";
+import { sanitizeInput } from '../service/sanitizeService';
 
 const LoginPage = () => {
 
@@ -23,8 +24,8 @@ const LoginPage = () => {
         e.preventDefault();
 
         axios.post(getLoginEndpoint, {
-            emailOrUsername,
-            password
+            emailOrUsername: sanitizeInput(emailOrUsername),
+            password: sanitizeInput(password)
         })
             .then(response => {
                 console.log(response.status)

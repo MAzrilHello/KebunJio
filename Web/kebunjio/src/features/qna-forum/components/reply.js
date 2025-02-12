@@ -5,6 +5,7 @@ import ReplyHeader from "./reply-header";
 import ReplyInsight from "./reply-insight";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import { sanitizeInput } from "../../service/sanitizeService";
 
 const Reply = ({userReply}) => {
 
@@ -49,7 +50,7 @@ const Reply = ({userReply}) => {
 
         const requestData = {
             Id: reply.id,
-            Content: reply.content,
+            Content: sanitizeInput(reply.content),
             PublishedDateTime: new Date(),
           }
           console.log(JSON.stringify(requestData))

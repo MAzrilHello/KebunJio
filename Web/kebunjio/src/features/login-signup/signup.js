@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './login-signup.css';
 import { useNavigate } from "react-router-dom";
+import { sanitizeInput } from '../service/sanitizeService';
 
 const SignUpPage = () => {
     const [email, setEmail] = useState('');
@@ -26,11 +27,11 @@ const SignUpPage = () => {
         }
 
         axios.post(getSignupEndpoint, {
-            email,
-            username,
-            password,
-            confirmPassword,
-            contactPhone
+            email: sanitizeInput(email),
+            username: sanitizeInput(username),
+            password: sanitizeInput(password),
+            confirmPassword: sanitizeInput(confirmPassword),
+            contactPhone: sanitizeInput(contactPhone)
         })
             .then(response => {
                 if (response.status === 201) {

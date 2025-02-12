@@ -4,6 +4,7 @@ import MenuSidebar from '../components/menu-sidebar'
 import '../styling/forum-page.css'
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import { sanitizeInput } from '../../service/sanitizeService';
 
 function ForumNewPost() {
 
@@ -28,8 +29,8 @@ function ForumNewPost() {
     //if all are filled
     if(formData.category!==''&&formData.title!==''&&formData.question!==''){
       const requestData = {
-        Title: formData.title,
-        Content: formData.question,
+        Title: sanitizeInput(formData.title),
+        Content: sanitizeInput(formData.question),
         PostCategory: formData.category,
         PublishedDateTime: new Date(),
         UserId: 1 //need to update later, temporary value
