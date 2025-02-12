@@ -6,6 +6,8 @@ on:
       - staging_v2_test  # Runs only on pushes to this branch
     paths:
       - 'Backend/**'  # Only triggers if files in Backend/ are modified
+      - 'Mobile/**' # Triggers when Web/ are modified
+      - 'Web/**' # Triggers when Mobile/ are modified
 
 jobs:
 
