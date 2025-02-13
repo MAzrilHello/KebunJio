@@ -1,6 +1,5 @@
 package iss.nus.edu.sg.sa4106.kebunjio.service
 
-import android.util.Log
 import java.net.HttpURLConnection
 
 class CookieHandling {

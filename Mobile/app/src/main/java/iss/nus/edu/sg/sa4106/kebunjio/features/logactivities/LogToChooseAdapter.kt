@@ -1,31 +1,19 @@
 package iss.nus.edu.sg.sa4106.kebunjio.features.logactivities;
 
 import android.app.Activity
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.graphics.BitmapFactory
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.registerReceiver
 import iss.nus.edu.sg.sa4106.kebunjio.LoggedInFragment
 import iss.nus.edu.sg.sa4106.kebunjio.R
 import iss.nus.edu.sg.sa4106.kebunjio.data.ActivityLog
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ViewActLogToChooseBinding
-import iss.nus.edu.sg.sa4106.kebunjio.databinding.ViewPlantToChooseBinding
-import iss.nus.edu.sg.sa4106.kebunjio.features.addplant.AddPlantActivity
-import iss.nus.edu.sg.sa4106.kebunjio.service.DownloadImageService
 import iss.nus.edu.sg.sa4106.kebunjio.service.PlantSpeciesLogService
-import java.io.File
 
 
 class LogToChooseAdapter(private val context: Context,

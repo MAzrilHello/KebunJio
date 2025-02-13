@@ -8,18 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentChooseLogToViewBinding
 
 // for testing
-import iss.nus.edu.sg.sa4106.kebunjio.DummyData
 import iss.nus.edu.sg.sa4106.kebunjio.LoggedInFragment
 import iss.nus.edu.sg.sa4106.kebunjio.data.ActivityLog
-import iss.nus.edu.sg.sa4106.kebunjio.features.addplant.AddPlantActivity
 
 class ChooseLogToViewFragment : Fragment() {
 

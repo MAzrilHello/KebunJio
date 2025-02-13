@@ -9,12 +9,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.findNavController
 import iss.nus.edu.sg.sa4106.kebunjio.data.DAO.RegisterDAO
-import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentLoginOrRegisterBinding
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentRegisterAccountBinding
 import iss.nus.edu.sg.sa4106.kebunjio.service.PlantSpeciesLogService
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.io.DataOutputStream
 import java.net.HttpURLConnection

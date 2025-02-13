@@ -1,6 +1,5 @@
 package iss.nus.edu.sg.sa4106.kebunjio
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,8 +16,6 @@ import org.json.JSONObject
 import java.io.DataOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 
 class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
@@ -95,8 +92,8 @@ class LoginFragment : Fragment() {
     private fun attemptLogin(username: String, password: String) {
         Thread{
             val partUrl = "${PlantSpeciesLogService.startUrl}/users/login"
-            val encodedUsername = URLEncoder.encode(username, StandardCharsets.UTF_8.toString())
-            val encodedPassword = URLEncoder.encode(password, StandardCharsets.UTF_8.toString())
+            //val encodedUsername = URLEncoder.encode(username, StandardCharsets.UTF_8.toString())
+            //val encodedPassword = URLEncoder.encode(password, StandardCharsets.UTF_8.toString())
             //val fullUrl = "$partUrl?emailOrUsername=$encodedUsername&password=$encodedPassword"
             val fullUrl = partUrl
             val url = URL(fullUrl)

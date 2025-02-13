@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.TextView
 import iss.nus.edu.sg.sa4106.kebunjio.R
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ViewPlantLogInDetailsBinding
 
