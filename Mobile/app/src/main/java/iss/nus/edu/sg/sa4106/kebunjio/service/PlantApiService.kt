@@ -18,7 +18,7 @@ import java.net.URL
 
 object PlantApiService  {
 
-    private const val BASE_URL = "https://localhost.com/api/"
+    private const val BASE_URL = "http://10.0.2.2:8080/api"
 
     // Use Coroutine to make network request
     suspend fun getPlantsByUser(userId: String, sessionCookie: String): List<Plant> {
@@ -79,5 +79,43 @@ object PlantApiService  {
             e.printStackTrace()
         }
         return plantList
+    }
+
+    suspend fun getPlantNameById(plantId: String): String? {
+        return withContext(Dispatchers.IO) {
+            try {
+                Log.d("PlantApiService", "Fetching plant name for Plant ID: $plantId")
+
+                val url = URL("$BASE_URL/Plants/$plantId") // Corrected endpoint
+                val connection = url.openConnection() as HttpURLConnection
+                connection.requestMethod = "GET"
+                connection.connectTimeout = 5000
+                connection.readTimeout = 5000
+
+                Log.d("PlantApiService", "Sending GET request to: $url")
+
+                val responseCode = connection.responseCode
+                Log.d("PlantApiService", "HTTP Response Code: $responseCode")
+
+                if (responseCode == 404) {
+                    Log.e("PlantApiService", "Plant not found for ID: $plantId")
+                    return@withContext null
+                }
+
+                val response = getResponse(connection)
+                connection.disconnect()
+
+                Log.d("PlantApiService", "Raw Response: $response")
+
+                val jsonObject = JSONObject(response)
+                val plantName = jsonObject.optString("name", null)
+
+                Log.d("PlantApiService", "Extracted Plant Name: $plantName")
+                return@withContext plantName
+            } catch (e: Exception) {
+                Log.e("PlantApiService", "Error fetching plant name", e)
+                return@withContext null
+            }
+        }
     }
 }

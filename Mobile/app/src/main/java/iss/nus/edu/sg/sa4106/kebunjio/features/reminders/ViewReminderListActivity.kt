@@ -26,6 +26,8 @@ class ViewReminderListActivity : AppCompatActivity() {
     private lateinit var reminderAdapter: ReminderGroupAdapter
     private var groupedReminders: MutableMap<String, List<Reminder>> = mutableMapOf()
     private var plantId: String? = null
+    private var plantName: String? = null
+    private var sessionCookie: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +41,14 @@ class ViewReminderListActivity : AppCompatActivity() {
             insets
         }
 
+
+        sessionCookie = intent.getStringExtra("SESSION_COOKIE")
+        if (sessionCookie == null) {
+            Log.e("ViewReminderListActivity", "SESSION_COOKIE is missing!")
+        } else {
+            Log.d("ViewReminderListActivity", "Received SESSION_COOKIE: $sessionCookie")
+        }
+
         plantId = intent.getStringExtra("plantId")
         Log.d("ViewReminderListActivity", "Received plantId: $plantId")
 
@@ -50,6 +60,8 @@ class ViewReminderListActivity : AppCompatActivity() {
             setupRecyclerView()
             fetchReminders(plantId!!)
         }
+
+        plantName = intent.getStringExtra("plantName")
 
         initButtons()
     }
@@ -66,18 +78,37 @@ class ViewReminderListActivity : AppCompatActivity() {
     }
 
     private fun initButtons() {
-        binding.createReminderButton.setOnClickListener {
-            val intent = Intent(this, ReminderActivity::class.java)
-            intent.putExtra("plantId", plantId)
-            startActivity(intent)
+
+        binding.selectPlantButton.setOnClickListener {
+            finish()
         }
+        binding.createReminderButton.setOnClickListener {
+            Log.d("ViewReminderListActivity", "Attempting to pass sessionCookie: $sessionCookie to ReminderActivity")
+            Log.d("ViewReminderListActivity", "Attempting to pass plantId: $plantId to ReminderActivity")
+            Log.d("ViewReminderListActivity", "Attempting to pass plantName: $plantName to ReminderActivity")
+
+            binding.createReminderButton.setOnClickListener {
+                Log.d(
+                    "ViewReminderListActivity",
+                    "Passing sessionCookie: $sessionCookie to ReminderActivity"
+                )
+
+                val intent = Intent(this, ReminderActivity::class.java)
+                intent.putExtra("SESSION_COOKIE", sessionCookie)
+                intent.putExtra("plantId", plantId)
+                intent.putExtra("plantName", plantName)
+                startActivity(intent)
+            }
+        }
+
     }
 
     private fun fetchReminders(plantId: String) {
         lifecycleScope.launch {
-            Log.d("ViewReminderListActivity", "Fetching reminders for plantId: $plantId")
+            Log.d("ViewReminderListActivity", "Fetch reminders for plantId: $plantId")
             try {
                 val response = ReminderApiService.getRemindersByPlant(plantId)
+                Log.d("ViewReminderListActivity", "Response from API: $response")
 
                 if (response.isNullOrEmpty()) {
                     showEmptyState()
@@ -140,21 +171,42 @@ class ViewReminderListActivity : AppCompatActivity() {
         val tomorrow = today.plusDays(1)
         val weekEnd = today.plusDays(6)
 
-        Log.d("ViewReminderListActivity", "Today's date: $today")
-        Log.d("ViewReminderListActivity", "Reminders received: $reminders")
-
         val todayReminders = mutableListOf<Reminder>()
         val tomorrowReminders = mutableListOf<Reminder>()
         val remainingWeekReminders = mutableListOf<Reminder>()
 
-        for (reminder in reminders) {
-            val reminderDate = reminder.reminderDateTime.toLocalDate()
-            Log.d("ViewReminderListActivity", "Reminder Date: $reminderDate")
+        Log.d("ViewReminderListActivity", "Today's date: $today")
+        Log.d("ViewReminderListActivity", "Reminders received: $reminders")
 
-            when {
-                reminderDate == today -> todayReminders.add(reminder)
-                reminderDate == tomorrow -> tomorrowReminders.add(reminder)
-                reminderDate.isAfter(today) && reminderDate.isBefore(weekEnd.plusDays(1)) -> remainingWeekReminders.add(reminder)
+        for (reminder in reminders) {
+            if (reminder.isRecurring) {
+                val reminderDate = reminder.reminderDateTime.toLocalDate()
+                val recurrenceInterval = reminder.recurrenceInterval
+
+                Log.d("ViewReminderListActivity", "Processing Reminder: $reminder")
+
+                if (!recurrenceInterval.isNullOrEmpty()) {
+                    val parts = recurrenceInterval.split(" ")
+                    val recurrenceValue = parts[0].toIntOrNull()
+                    val recurrenceUnit = parts[1]
+
+                    if (recurrenceValue != null) {
+                        val nextReminderDate = when (recurrenceUnit) {
+                            "Day", "Days" -> reminderDate.plusDays(recurrenceValue.toLong())
+                            "Week", "Weeks" -> reminderDate.plusWeeks(recurrenceValue.toLong())
+                            "Month", "Months" -> reminderDate.plusMonths(recurrenceValue.toLong())
+                            else -> reminderDate
+                        }
+
+                        Log.d("ViewReminderListActivity", "Next Reminder Date: $nextReminderDate")
+
+                        when {
+                            nextReminderDate.isEqual(today) -> todayReminders.add(reminder)
+                            nextReminderDate.isEqual(tomorrow) -> tomorrowReminders.add(reminder)
+                            nextReminderDate.isAfter(today) && nextReminderDate.isBefore(weekEnd.plusDays(1)) -> remainingWeekReminders.add(reminder)
+                        }
+                    }
+                }
             }
         }
 
@@ -164,7 +216,6 @@ class ViewReminderListActivity : AppCompatActivity() {
             if (remainingWeekReminders.isNotEmpty()) put("This Week", remainingWeekReminders)
         }
     }
-
 
     private fun showEmptyState() {
         runOnUiThread {
