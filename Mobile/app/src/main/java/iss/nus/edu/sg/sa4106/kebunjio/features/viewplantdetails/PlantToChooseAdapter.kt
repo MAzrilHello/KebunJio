@@ -37,6 +37,10 @@ class PlantToChooseAdapter(private val context: Context,
                          usersPlantList: ArrayList<Plant>,
                          speciesIdToNameDict: HashMap<String, String>,
                          usersActivityLogList: ArrayList<ActivityLog>){
+        // to help ensure appropriate number of data rows
+        if (this.count < usersPlantList.size) {
+            addAll(*arrayOfNulls<Any>(usersPlantList.size-this.count))
+        }
         this.userId = userId
         //this.usersPlantList = usersPlantList
         this.usersPlantList.clear()
