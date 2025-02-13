@@ -130,8 +130,8 @@ public class PostService {
 	public List<PostES> searchES(String query){
 		return postESRepository.findByTitleContainingOrContentContaining(query, query);
 	}
-	//Function for Junit and GithubActions
-	public int add(int a,int b) {
-		return a+b;
-	}
+	// //Function for Junit and GithubActions
+	// public int add(int a,int b) {
+	// 	return a+b;
+	// }
 }
