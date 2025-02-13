@@ -1,15 +1,11 @@
 package iss.nus.edu.sg.sa4106.kebunjio.service
 
-import android.util.Log
 import iss.nus.edu.sg.sa4106.kebunjio.data.Plant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
-import org.json.JSONObject
 import java.io.BufferedReader
-import java.io.BufferedWriter
 import java.io.InputStreamReader
-import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
 
