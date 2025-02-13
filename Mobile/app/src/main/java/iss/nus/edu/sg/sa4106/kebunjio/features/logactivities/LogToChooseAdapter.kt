@@ -34,6 +34,10 @@ class LogToChooseAdapter(private val context: Context,
                          userActLogList: ArrayList<ActivityLog>,
                          plantIdToNameDict: HashMap<String, String>){
         Log.d("ChooseLogToViewFragment","Reset data begins ${userId}, ${userActLogList.size}, ${plantIdToNameDict.size}")
+        // to help ensure appropriate number of data rows
+        if (this.count < userActLogList.size) {
+            addAll(*arrayOfNulls<Any>(userActLogList.size-this.count))
+        }
         this.userId = userId
         this.userActLogList.clear()
         this.userActLogList.addAll(userActLogList)
