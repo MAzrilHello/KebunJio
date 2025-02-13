@@ -7,17 +7,22 @@ import Table  from "react-bootstrap/Table";
 import Appbar from '../../components/Appbar';
 import "./user-profile-style.css"
 import Card from 'react-bootstrap/Card';
+import { sanitizeInput } from '../../service/sanitizeService';
 
 const UserProfilePage = () => {
 
     const {authUser} = useAuth()
 
-    const [username, setUsername] = useState(authUser.Username)
-    const [email, setEmail] = useState(authUser.Email)
-    const [phone, setPhoneNumber] = useState(authUser.PhoneNumber)
+    const [username, setUsername] = useState(authUser.username)
+    const [email, setEmail] = useState(authUser.email)
+    const [phone, setPhoneNumber] = useState(authUser.phoneNumber)
     const [isEdit, setIsEdit] = useState(false)
 
     const [plants,setPlants] = useState([])
+
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+    const getUpdateEndpoint = `${API_BASE_URL}/userProfile/update`;
 
     const userInfo = {
         totalPlant:authUser.totalPlant,
@@ -30,8 +35,20 @@ const UserProfilePage = () => {
             setIsEdit(true)
         }
         else{
-            setIsEdit(false)
-            //send data to API
+            axios.put(getUpdateEndpoint, {
+                uersname: sanitizeInput(username),
+                email: sanitizeInput(email),
+                phoneNumber: sanitizeInput(phone)
+            })
+                .then(response => {
+                    console.log(response.status)
+                    if (response.status === 200) {
+                        setIsEdit(false)
+                    }
+                })
+                .catch(err => {
+                    alert("Unable to update user data");
+                });
         }    
         }
 
