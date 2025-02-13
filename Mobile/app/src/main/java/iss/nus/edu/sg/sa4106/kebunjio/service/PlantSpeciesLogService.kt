@@ -21,8 +21,8 @@ class PlantSpeciesLogService : Service() {
     companion object {
         //const val startUrl = "http://10.0.2.2:8080/api"
         const val startUrl = "http://34.124.209.141:8080/api"
-        //const val predictSpeciesUrl = "http://10.0.2.2:5000/predictSpecies"
-        const val predictSpeciesUrl = "http://34.124.209.141:5000/predictSpecies"
+        const val predictSpeciesUrl = "http://10.0.2.2:5000/predictSpecies"
+        //const val predictSpeciesUrl = "http://34.124.209.141:5000/predictSpecies"
         const val timeoutTime = 15000
 
 
