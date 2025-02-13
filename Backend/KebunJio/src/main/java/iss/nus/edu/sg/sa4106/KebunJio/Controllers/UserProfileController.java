@@ -18,7 +18,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/userProfile")
-@CrossOrigin(origins = "*")
 public class UserProfileController {
 
     @Autowired
