@@ -101,7 +101,7 @@ class LoginFragment : Fragment() {
             val fullUrl = partUrl
             val url = URL(fullUrl)
             val connection = url.openConnection() as HttpURLConnection
-
+            Log.d("LoginFragment","Login URL: ${fullUrl}")
             try {
 
                 connection.requestMethod = "POST"
