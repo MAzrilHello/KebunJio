@@ -52,10 +52,11 @@ function App() {
           <Route path="/forum/search" element={<ProtectedRoute element={<ForumSearchPage />} />} />
           <Route path="/forum/new" element={<ProtectedRoute element={<ForumNewPost />} />} />
           <Route path="/forum/my" element={<ProtectedRoute element={<ForumMyPage />} />} />
-          <Route path="/forum/post" element={<ProtectedRoute element={<ViewPost />} />} />
+          <Route path="/forum/post/:id" element={<ProtectedRoute element={<ViewPost />} />} />
+          <Route path="/forum/post/edit/:id" element={<ProtectedRoute element={<ForumEditPost />} />} />
 
+]
           {<Route path="/user-profile" element={<ProtectedRoute element={<UserProfilePage />} />} />}
-          <Route path="/forum/:id/edit" element={<ProtectedRoute element={<ForumEditPost />} />} />
 
           <Route path="/admin/dashboard" element={<ProtectedRoute element={<Dashboard />} />} />
           <Route path="/admin/events" element={<ProtectedRoute element={<Events />} />} />

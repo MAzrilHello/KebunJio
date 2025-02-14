@@ -5,57 +5,13 @@ import '../styling/forum-page.css'
 import PostSneakPeak from '../components/post-sneak-peek';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 function ForumSearchPage() {
-  let navigate = useNavigate();
- 
-  const routeChange = (post) =>{ 
-     navigate(`/forum/post/?id=${post.Id}`, {state: {post : post}});
-   }
 
-  const [posts, setPosts] = useState([])
+  const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL;
+
   const [search_results, setSearchResults] = useState([])
-
-    useEffect(() => {
-      async function fetchData() {
-          const postsRes = await fetch("/dummy-data/post.json");
-          const upvotesRes = await fetch("/dummy-data/upvote.json");
-          const usersRes = await fetch("/dummy-data/user.json");
-          const commentRes = await fetch("/dummy-data/reply.json");
-  
-          const posts = await postsRes.json();
-          const upvotes = await upvotesRes.json();
-          const users = await usersRes.json();
-          const comment = await commentRes.json();
-  
-          // Count upvotes per post
-          const upvoteCount = upvotes.reduce((acc, { postId }) => {
-              acc[postId] = (acc[postId] || 0) + 1;
-              return acc;
-          }, {});
-  
-          // Count replies per post
-          const commentCount = comment.reduce((acc, { postId }) => {
-              acc[postId] = (acc[postId] || 0) + 1;
-              return acc;
-          }, {});
-  
-          // Merge data
-          const mergedPosts = posts.map(post => ({
-              ...post,
-              username: users.find(user => user.id === post.UserId)?.username || "Unknown",
-              upvote: upvoteCount[post.Id] || 0,
-              comment: commentCount[post.Id] || 0
-          }));
-  
-          console.log(mergedPosts)
-          setPosts(mergedPosts)
-          setSearchResults(mergedPosts)
-      }
-  
-      fetchData();
-  }, []);
 
   const [searchInput, setSearchInput] = useState('')
 
@@ -64,31 +20,14 @@ function ForumSearchPage() {
   };
 
   const handleSearchSubmit = () => {
-    console.log(searchInput)
-    const filteredPosts = posts.filter(post => post.Title.includes(searchInput.toLowerCase()))
-    setSearchResults(filteredPosts)
-
-    /*For call to API function */
-    /* const strLength = getLength(searchInput)
-    if (strLength >= 2) {
-      try {
-        const response = await fetch(api);
-        const data = await response.json();
-        setPosts(data.books);
-      } catch (error) {
-        console.error('Error searching books:', error);
-      }
-    }
-    else{
-      alert("Please input more than two characters");
-    }
-    
-    */
-  }
-
-  function getCleanLength(str) {
-    var cleanStr = str.replace(/[^\w]/gi, '');
-    return cleanStr.length;
+    const getSearchEndpoint = `${API_BASE_URL}/Forum/Search?query=${searchInput}`;
+    axios.get(getSearchEndpoint)
+    .then(response=>{
+      setSearchResults(response.data)
+    })
+    .catch(err=>{
+      console.log("No search result")
+    })
   }
 
   return (
@@ -114,7 +53,7 @@ function ForumSearchPage() {
           <div>
             <p style={{marginTop:"10px", marginLeft:"8px"}} className="page-header">Search result:</p>
             {search_results.length!==0?(search_results.map((post,index)=>(
-                <PostSneakPeak key={index} post={post} onClick={() => routeChange(post)}/>
+                <PostSneakPeak key={index} post={post} upvoteCount={0}/>
             ))):(<p style={{marginTop:"10px", marginLeft:"8px"}}>No result</p>)}
           </div>
         </div>

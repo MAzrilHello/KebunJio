@@ -3,58 +3,37 @@ import FullPost from "../components/full-post";
 import Reply from "../components/reply";
 import Form from "react-bootstrap/Form";
 import { Button } from "react-bootstrap";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 import Appbar from "../../../components/Appbar";
 import MenuSidebar from "../components/menu-sidebar";
 import "../styling/forum-page.css";
+import { sanitizeInput } from "../../../service/sanitizeService";
 
 const Post = () => {
-    const location = useLocation()
+    const { id } = useParams();
     const [post, setPost] = useState(null);
     const [comments, setComments] = useState([]);
+
+    const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL;
+
+    const getPostEndpoint = `${API_BASE_URL}/Forum/Post/${id}`;
+
+    const createReplyEndpoint = `${API_BASE_URL}/Forum/Post/${id}/CreateComment`;
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                //fetch post
-                const fetchedPost = location.state.post
-                setPost(fetchedPost)
-
-                const usersRes = await fetch("/dummy-data/user.json")
-                const commentsRes = await fetch("/dummy-data/reply.json")
-                const replyLikeRes = await fetch("/dummy-data/reply_like.json")
-                const replyDislikeRes = await fetch("/dummy-data/reply_dislike.json")
-    
-                const usersData = await usersRes.json()
-                const commentsData = await commentsRes.json()
-                const replyLikes = await replyLikeRes.json()
-                const replyDislikes = await replyDislikeRes.json()
-
-
-                //filtered comment
-                const filteredComments = commentsData.filter((comment) => comment.postId === fetchedPost.Id) || [];
-
-                // Count likes per reply
-                const likeCount = replyLikes.reduce((like, { replyId }) => {
-                    like[replyId] = (like[replyId] || 0) + 1
-                    return like;
-                }, {})
-    
-                // Count dislikes per reply
-                const dislikeCount = replyDislikes.reduce((dislike, { replyId }) => {
-                    dislike[replyId] = (dislike[replyId] || 0) + 1
-                    return dislike;
-                }, {})
-    
-                const mergedComments = (filteredComments || []).map((comment) => ({
-                    ...comment,
-                    username: usersData.find(user => user.id === comment.userId)?.username || "Unknown",
-                    like: likeCount[comment.replyId] || 0,
-                    dislike: dislikeCount[comment.replyId] || 0,
-                }));
-    
-                setComments(mergedComments)
+                axios.get(getPostEndpoint)
+                .then(response=>{
+                    console.log(response.data);
+                    setPost(response.data.post);
+                    setComments(response.data.commentList);
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error)
+                })
     
             } catch (error) {
                 console.error("Error fetching data", error)
@@ -63,45 +42,31 @@ const Post = () => {
         fetchData();
     }, []);
 
-    /* Check if post is received
-    useEffect(() => {
-        console.log("Fetched Post: ", post);
-    }, [post]);*/
-
     const [replyInput, setReplyInput] = useState("");
 
     const handleReplyInputChange = (event) => {
         setReplyInput(event.target.value);
     };
 
-    const handleSubmitReply = () => {
-        const requestData = {
-            reply: replyInput
+    const handleSubmitReply = async () => {
+        if (!replyInput.trim()) return
+    
+        try {
+            const response = await axios.post(createReplyEndpoint, {
+                commentContent: sanitizeInput(replyInput)
+            });
+    
+            if (response.status === 201) { 
+                const newComment = response.data
+                setComments(prevComments => [newComment, ...prevComments])
+                setReplyInput("")
+            } else {
+                console.error("Failed to submit reply")
+            }
+        } catch (error) {
+            console.error("Error submitting reply:", error)
         }
-        console.log(JSON.stringify(requestData))
-        setReplyInput("")
-        alert("Reply sent!")
-
-        //
-        /**
-         * 
-        API implementation
-        fetch('https://', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestData),
-        })
-        .then(response => response.json())  // Parse the response to JSON
-        .then(data => {
-            console.log('Success:', data)
-        })
-        .catch((error) => {
-            console.error('Error:', error)
-        })
-        */
-    };
+    }
 
     const handleClear = () => {
         setReplyInput("")

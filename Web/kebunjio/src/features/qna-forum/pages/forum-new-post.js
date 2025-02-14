@@ -5,8 +5,13 @@ import '../styling/forum-page.css'
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { sanitizeInput } from '../../../service/sanitizeService';
+import { useAuth } from '../../../context/AuthContext';
+import axios from 'axios';
 
 function ForumNewPost() {
+  const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL;
+
+  const createPostEndpoint = `${API_BASE_URL}/Forum/Post/Create`
 
   const [formData, setFormData] = useState({
     category: '',
@@ -24,37 +29,26 @@ function ForumNewPost() {
     setFormData({ ...formData, image: e.target.files[0] });
   };
 
+  const {authUser} = useAuth()
+
   const handleSubmit = (e) => {
     e.preventDefault()
-    //if all are filled
-    if(formData.category!==''&&formData.title!==''&&formData.question!==''){
-      const requestData = {
-        Title: sanitizeInput(formData.title),
-        Content: sanitizeInput(formData.question),
-        PostCategory: formData.category,
-        PublishedDateTime: new Date(),
-        UserId: 1 //need to update later, temporary value
+    axios.post((createPostEndpoint),{
+      title: sanitizeInput(formData.title),
+      content: sanitizeInput(formData.question),
+      postCategory: formData.category})
+    .then(response=>{
+      if(response==201){
+        console.log("Create post successfully")
       }
-      console.log(requestData)
-      alert("Created post!")
-      /*API Implementation
-      fetch('https://', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestData),
-        })
-        .then(response => response.json())  // Parse the response to JSON
-        .then(data => {
-            console.log('Success:', data)
-        })
-        .catch((error) => {
-            console.error('Error:', error)
-        })
-      
-      */
-  }
+      else{
+        console.log("Failed to create post")
+      }
+    })
+    .catch(err=>{
+      console.log(err)
+    })
+
 }
 
   const resetPost = (e) => {
