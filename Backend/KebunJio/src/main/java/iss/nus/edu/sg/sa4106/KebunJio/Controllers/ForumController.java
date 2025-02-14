@@ -77,6 +77,7 @@ public class ForumController {
 			result.setPost(post);
 			result.setUpvoteCount(upvoteCount);
 			result.setCommentCount(commentCount);
+			result.setUsername(username);
 			resultList.add(result);
 		}
 		return new ResponseEntity<>(resultList,HttpStatus.OK);
