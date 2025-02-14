@@ -10,20 +10,20 @@ import { useNavigate } from 'react-router-dom';
 
 
 const UserProfilePage = () => {
-
+    // set the auth user
     const { authUser, setAuthUser } = useAuth();
 
-    const navigate = useNavigate();
+    // set the user profile info
+    const [username, setUsername] = useState(authUser?.username || "");
+    const [email, setEmail] = useState(authUser?.email || "");
+    const [phone, setPhoneNumber] = useState(authUser?.phoneNumber || "");
 
-    const [username, setUsername] = useState(authUser?.Username || "");
-    const [email, setEmail] = useState(authUser?.Email || "");
-    const [phone, setPhoneNumber] = useState(authUser?.PhoneNumber || "");
-
+    // set if edit
     const [isEdit, setIsEdit] = useState(false);
     const [plants, setPlants] = useState([]);
 
     const hasFetched = useRef(false);
-
+    const [loading, setLoading] = useState(true);
 
     const [userInfo,setUserInfo] = useState({
         totalPlant:authUser?.totalPlant || 0,
@@ -31,12 +31,57 @@ const UserProfilePage = () => {
         totalType:authUser?.totalType || 0
     });
 
+    useEffect(() => {
+        async function fetchUserProfile() {
+            try {
+                console.log("Fetching user profile...");
+                // need change to 34.124.209.141
+                const response = await axios.get("http://localhost:8080/api/userProfile", { withCredentials: true });
+
+                if (response.data) {
+                    console.log("User Profile Fetched:", response.data);
+                    // to store the user data, make the structure more clear.
+                    const userData = {
+                        id: response.data.user.id,
+                        username: response.data.user.username,
+                        email: response.data.user.email,
+                        phoneNumber: response.data.user.phoneNumber,
+                        totalPlant: response.data.totalPlant || 0,
+                        totalHarvested: response.data.totalHarvested || 0,
+                        totalType: response.data.totalType || 0
+                    };
+
+                    localStorage.setItem("authUser", JSON.stringify(userData));
+
+                    setAuthUser(userData);
+
+                    setUserInfo({
+                        totalPlant: response.data.totalPlant || 0,
+                        totalHarvested: response.data.totalHarvested || 0,
+                        totalType: response.data.totalType || 0
+                    });
+
+                    setUsername(response.data.user.username);
+                    setEmail(response.data.user.email);
+                    setPhoneNumber(response.data.user.phoneNumber);
+                }
+            } catch (error) {
+                console.error("Error fetching user profile:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchUserProfile();
+    }, [setAuthUser]);
+
     const onEdit = async () => {
         if (isEdit) {
             try {
+                // need change to 34.124.209.141
                 const response = await axios.put(
-                    "http://localhost:8080/api/userProfile/update",
-                    JSON.stringify({ username, email, phoneNumber: phone }),
+                    "http://localhost:8080/api/userProfile/update", // need change to remote ip
+                    { username, email, phoneNumber: phone },
                     {
                         withCredentials: true,
                         headers: { "Content-Type": "application/json" }
@@ -46,13 +91,14 @@ const UserProfilePage = () => {
 
                 if (response.status === 200) {
                     const updatedUser = response.data;
-
+                    // need confirm the response.data.structure
                     setAuthUser(prevUser => ({
                         ...prevUser,
-                        Username: updatedUser.username,
-                        Email: updatedUser.email,
-                        PhoneNumber: updatedUser.phoneNumber
+                        username: updatedUser.username,
+                        email: updatedUser.email,
+                        phoneNumber: updatedUser.phoneNumber
                     }));
+                    localStorage.setItem("authUser",authUser);
                     alert("Profile updated successfully!");
                 }
             } catch (error) {
@@ -74,97 +120,13 @@ const UserProfilePage = () => {
         }
     };
 
-    /*
-    const [userProfile, setUserProfile] = useState(null);
-    const [error, setError] = useState(null);
-    const {authUser} = useAuth()
-    */
-
-    useEffect(() => {
-        if (hasFetched.current) return;
-        hasFetched.current = true;
-
-        const storedUser = JSON.parse(localStorage.getItem("authUser"));
-        if (authUser) {
-            setUsername(authUser.Username || "");
-            setEmail(authUser.Email || "");
-            setPhoneNumber(authUser.PhoneNumber || "");
-        }
-        if (!storedUser) {
-            console.log("No stored user, redirecting...");
-            navigate("/login");
-            return;
-        }
-
-        if (!authUser) {
-            setAuthUser(storedUser);
-        }
-
-        async function fetchUserProfile() {
-            try {
-                console.log("Fetching user profile...");
-                const response = await axios.get("http://localhost:8080/api/userProfile", { withCredentials: true });
-
-                if (response.data) {
-                    console.log("User Profile Fetched:", response.data);
-
-                    setAuthUser(prevUser => ({
-                        ...prevUser,
-                        Username: response.data.username,
-                        Email: response.data.email,
-                        PhoneNumber: response.data.phone,
-                        totalPlant: response.data.totalPlant || 0,
-                        totalHarvested: response.data.totalHarvested || 0,
-                        totalType: response.data.totalType || 0
-                    }));
-
-                    setUsername(response.data.username || "");
-                    setEmail(response.data.email || "");
-                    setPhoneNumber(response.data.phone || "");
-
-                    setUserInfo({
-                        totalPlant: response.data.totalPlant || 0,
-                        totalHarvested: response.data.totalHarvested || 0,
-                        totalType: response.data.totalType || 0
-                    });
-
-                    if (response.data.history) {
-                        setPlants(response.data.history);
-                    }
-                }
-            } catch (error) {
-                console.error("Error fetching user profile:", error);
-            }
-        }
-
-        // **只在 `authUser` 为空时调用 fetchUserProfile**
-        if (!authUser || !authUser.Username) {
-            fetchUserProfile();
-        }
-    }, [authUser,setAuthUser,navigate]);
-
-
-    /*Ruihan's code, do not delete
-    axios.get('/userProfile')
-        .then(response => {
-            setUserProfile(response.data);
-        })
-        .catch(err => {
-            setError("Error fetching user profile.");
-        });*/
-
-
-    /*Ruihan's code, do not delete
-    if (error) return <div>{error}</div>;
-
-    if (!userProfile) {
+    if (loading) {
         return <div>Loading...</div>;
-    }*/
-
-
+    }
 
     return (
         <div className="user-profile-page">
+            {console.log("Rendering - AuthUser State:", authUser)}
             <Appbar/>
             <div className="user-profile">
                 <div className="page-header">
@@ -185,7 +147,7 @@ const UserProfilePage = () => {
                                     />
                                 </div>
                             ):(
-                                <p>Username: {username}</p>
+                                <p>Username: {authUser?.username || "N/A"}</p>
                             )}
                         </div>
                         <div>
@@ -202,7 +164,7 @@ const UserProfilePage = () => {
                                     />
                                 </div>
                             ):(
-                                <p>Email: {email}</p>
+                                <p>Email:{authUser?.email || "N/A"}</p>
                             )}
                         </div>
                         <div>
@@ -221,7 +183,7 @@ const UserProfilePage = () => {
                                     </div>
                                 </div>
                             ):(
-                                <p>Phone: {phone}</p>
+                                <p>Phone: {authUser?.phoneNumber || "N/A"}</p>
                             )}
                         </div>
                         <Button onClick={onEdit} style={{backgroundColor:"white",color:"#002E14"}}>{isEdit ? "Save" : "Edit"}</Button>
