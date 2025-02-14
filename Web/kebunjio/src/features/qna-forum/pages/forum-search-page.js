@@ -23,10 +23,11 @@ function ForumSearchPage() {
     const getSearchEndpoint = `${API_BASE_URL}/Forum/Search?query=${searchInput}`;
     axios.get(getSearchEndpoint)
     .then(response=>{
+      console.log(response.data)
       setSearchResults(response.data)
     })
     .catch(err=>{
-      console.log("No search result")
+      console.log(err)
     })
   }
 
@@ -52,9 +53,9 @@ function ForumSearchPage() {
           </div>
           <div>
             <p style={{marginTop:"10px", marginLeft:"8px"}} className="page-header">Search result:</p>
-            {search_results.length!==0?(search_results.map((post,index)=>(
-              <PostSneakPeak key={index} post={post}/>
-          ))):(<p style={{marginTop:"10px", marginLeft:"8px"}}>No result</p>)}
+            {search_results.length!==0?(search_results.map(({post,upvoteCount,commentCount},index)=>(
+              <PostSneakPeak key={index} post={post} upvoteCount={upvoteCount} commentCount={commentCount}/>
+            ))):(<p style={{marginTop:"10px", marginLeft:"8px"}}>No result</p>)}
           </div>
         </div>
       </div>
