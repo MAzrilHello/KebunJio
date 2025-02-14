@@ -13,7 +13,6 @@ import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
 
-
 //Singleton object that can be used throughout the app, doesn't need to be instantiated
 
 object PlantApiService  {

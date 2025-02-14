@@ -2,9 +2,12 @@ package iss.nus.edu.sg.sa4106.kebunjio.features.reminders
 
 
 import android.app.TimePickerDialog
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -56,6 +59,14 @@ class ReminderActivity : AppCompatActivity() {
             Log.d("ReminderActivity", "Received SESSION_COOKIE: $sessionCookie")
         }
 
+        val userId = intent.getStringExtra("userId")
+        if (userId.isNullOrEmpty()) {
+            Log.e("ReminderActivity", "userId is NULL in Intent extras!")
+            showToast("Error: User ID not found")
+            finish()
+            return
+        }
+        Log.d("ReminderActivity", "Received userId: $userId")
         // Store plantId and plantName as well
         plantId = intent.getStringExtra("plantId")
         if (plantId.isNullOrEmpty()) {
@@ -129,13 +140,25 @@ class ReminderActivity : AppCompatActivity() {
     private fun initFrequencyPickers() {
         binding.frequencyNumberPicker.apply {
             minValue = 1
-            maxValue = 60
+            maxValue = 60  // Default to 60 days
             wrapSelectorWheel = true
         }
 
         val intervalOptions = listOf("Days", "Weeks", "Months")
         val intervalAdapter = ReminderAdapter(this, intervalOptions)
         binding.frequencyIntervalPicker.adapter = intervalAdapter
+
+        binding.frequencyIntervalPicker.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                when (intervalOptions[position]) {
+                    "Days" -> binding.frequencyNumberPicker.maxValue = 60
+                    "Weeks" -> binding.frequencyNumberPicker.maxValue = 52
+                    "Months" -> binding.frequencyNumberPicker.maxValue = 12
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {} // Just keep this empty
+        }
     }
 
     private fun fetchPlantName(plantId: String) {
