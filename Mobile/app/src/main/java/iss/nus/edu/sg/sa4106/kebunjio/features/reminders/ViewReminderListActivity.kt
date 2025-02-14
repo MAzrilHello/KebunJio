@@ -28,6 +28,7 @@ class ViewReminderListActivity : AppCompatActivity() {
     private var plantId: String? = null
     private var plantName: String? = null
     private var sessionCookie: String? = null
+    private var userId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +48,13 @@ class ViewReminderListActivity : AppCompatActivity() {
             Log.e("ViewReminderListActivity", "SESSION_COOKIE is missing!")
         } else {
             Log.d("ViewReminderListActivity", "Received SESSION_COOKIE: $sessionCookie")
+        }
+
+        userId = intent.getStringExtra("userId")
+        if (userId.isNullOrEmpty()) {
+            Log.e("ViewReminderListActivity", "userId is missing!")
+        } else {
+            Log.d("ViewReminderListActivity", "Received userId: $userId")
         }
 
         plantId = intent.getStringExtra("plantId")
@@ -95,6 +103,7 @@ class ViewReminderListActivity : AppCompatActivity() {
 
                 val intent = Intent(this, ReminderActivity::class.java)
                 intent.putExtra("SESSION_COOKIE", sessionCookie)
+                intent.putExtra("userId", userId)
                 intent.putExtra("plantId", plantId)
                 intent.putExtra("plantName", plantName)
                 startActivity(intent)
@@ -147,14 +156,20 @@ class ViewReminderListActivity : AppCompatActivity() {
                 val createdDateTime = jsonObject.optString("createdDateTime", "").takeIf { it.isNotEmpty() }
                     ?.let { LocalDateTime.parse(it, formatter) } ?: LocalDateTime.now()
 
+                // Ensure `isRecurring` is properly retrieved as a Boolean
+                val isRecurring = jsonObject.optBoolean("isRecurring", false)
+
+                // Ensure `recurrenceInterval` is a String (default to "1 Days" if missing)
+                val recurrenceInterval = jsonObject.optString("recurrenceInterval", "1 Days")
+
                 val reminder = Reminder(
                     id = jsonObject.getString("id"),
                     userId = jsonObject.getString("userId"),
                     plantId = jsonObject.getString("plantId"),
                     reminderType = jsonObject.getString("reminderType"),
                     reminderDateTime = reminderDateTime,
-                    isRecurring = jsonObject.getBoolean("isRecurring"),
-                    recurrenceInterval = jsonObject.optString("recurrenceInterval", ""),
+                    isRecurring = isRecurring,
+                    recurrenceInterval = recurrenceInterval,
                     status = jsonObject.getString("status"),
                     createdDateTime = createdDateTime
                 )
@@ -179,33 +194,21 @@ class ViewReminderListActivity : AppCompatActivity() {
         Log.d("ViewReminderListActivity", "Reminders received: $reminders")
 
         for (reminder in reminders) {
-            if (reminder.isRecurring) {
-                val reminderDate = reminder.reminderDateTime.toLocalDate()
-                val recurrenceInterval = reminder.recurrenceInterval
+            val nextReminderDate = calculateNextReminderDate(reminder)
+            Log.d("ViewReminderListActivity", "Next Reminder Date: $nextReminderDate")
 
-                Log.d("ViewReminderListActivity", "Processing Reminder: $reminder")
-
-                if (!recurrenceInterval.isNullOrEmpty()) {
-                    val parts = recurrenceInterval.split(" ")
-                    val recurrenceValue = parts[0].toIntOrNull()
-                    val recurrenceUnit = parts[1]
-
-                    if (recurrenceValue != null) {
-                        val nextReminderDate = when (recurrenceUnit) {
-                            "Day", "Days" -> reminderDate.plusDays(recurrenceValue.toLong())
-                            "Week", "Weeks" -> reminderDate.plusWeeks(recurrenceValue.toLong())
-                            "Month", "Months" -> reminderDate.plusMonths(recurrenceValue.toLong())
-                            else -> reminderDate
-                        }
-
-                        Log.d("ViewReminderListActivity", "Next Reminder Date: $nextReminderDate")
-
-                        when {
-                            nextReminderDate.isEqual(today) -> todayReminders.add(reminder)
-                            nextReminderDate.isEqual(tomorrow) -> tomorrowReminders.add(reminder)
-                            nextReminderDate.isAfter(today) && nextReminderDate.isBefore(weekEnd.plusDays(1)) -> remainingWeekReminders.add(reminder)
-                        }
-                    }
+            when {
+                nextReminderDate.isEqual(today) -> {
+                    todayReminders.add(reminder)
+                    Log.d("ViewReminderListActivity", "Added to Today: $reminder")
+                }
+                nextReminderDate.isEqual(tomorrow) -> {
+                    tomorrowReminders.add(reminder)
+                    Log.d("ViewReminderListActivity", "Added to Tomorrow: $reminder")
+                }
+                nextReminderDate.isAfter(today) && nextReminderDate.isBefore(weekEnd.plusDays(1)) -> {
+                    remainingWeekReminders.add(reminder)
+                    Log.d("ViewReminderListActivity", "Added to This Week: $reminder")
                 }
             }
         }
@@ -215,6 +218,34 @@ class ViewReminderListActivity : AppCompatActivity() {
             if (tomorrowReminders.isNotEmpty()) put("Tomorrow", tomorrowReminders)
             if (remainingWeekReminders.isNotEmpty()) put("This Week", remainingWeekReminders)
         }
+    }
+
+
+    private fun calculateNextReminderDate(reminder: Reminder): LocalDate {
+        var nextReminderDate = reminder.reminderDateTime.toLocalDate()
+
+        // If it's recurring, adjust nextReminderDate based on recurrenceInterval
+        if (reminder.isRecurring) {
+            val intervalParts = reminder.recurrenceInterval.split(" ")
+
+            if (intervalParts.size == 2) {
+                val intervalValue = intervalParts[0].toIntOrNull()
+                val intervalUnit = intervalParts[1].lowercase()
+
+                if (intervalValue != null) {
+                    while (nextReminderDate.isBefore(LocalDate.now())) {
+                        nextReminderDate = when {
+                            intervalUnit.contains("day") -> nextReminderDate.plusDays(intervalValue.toLong())
+                            intervalUnit.contains("week") -> nextReminderDate.plusWeeks(intervalValue.toLong())
+                            intervalUnit.contains("month") -> nextReminderDate.plusMonths(intervalValue.toLong())
+                            else -> nextReminderDate
+                        }
+                    }
+                }
+            }
+        }
+
+        return nextReminderDate
     }
 
     private fun showEmptyState() {

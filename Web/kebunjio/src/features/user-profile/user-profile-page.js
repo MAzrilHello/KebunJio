@@ -12,9 +12,9 @@ const UserProfilePage = () => {
 
     const {authUser} = useAuth()
 
-    const [username, setUsername] = useState(authUser.Username)
-    const [email, setEmail] = useState(authUser.Email)
-    const [phone, setPhoneNumber] = useState(authUser.PhoneNumber)
+    const [username, setUsername] = useState(authUser.username)
+    const [email, setEmail] = useState(authUser.email)
+    const [phone, setPhoneNumber] = useState(authUser.phoneNumber)
     const [isEdit, setIsEdit] = useState(false)
 
     const [plants,setPlants] = useState([])

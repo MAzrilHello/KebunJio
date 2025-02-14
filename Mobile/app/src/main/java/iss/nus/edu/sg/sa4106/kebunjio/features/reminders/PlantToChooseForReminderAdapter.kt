@@ -82,6 +82,7 @@ class PlantToChooseForReminderAdapter(private val context: Context,
         selectPlantBtn.setOnClickListener{
             val intent = Intent(getContext(), ViewReminderListActivity::class.java)
             intent.putExtra("SESSION_COOKIE", sessionCookie)
+            intent.putExtra("userId", userId)
             intent.putExtra("plantId", currentPlant?.id)
             intent.putExtra("plantName", currentPlant?.name)
             getContext().startActivity(intent)

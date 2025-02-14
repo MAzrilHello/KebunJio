@@ -34,12 +34,12 @@ object ReminderApiService {
     }
 
 
-    suspend fun editReminder(context: Context, reminderId: String, updatedData: JSONObject): String? {
-        return sendPutRequest(context, "$BASE_URL/$reminderId", updatedData)
+    suspend fun editReminder(reminderId: String, updatedData: JSONObject, sessionCookie: String?): String? {
+        return sendRequestWithBody("PUT", "$BASE_URL/$reminderId", updatedData, sessionCookie)
     }
 
-    suspend fun deleteReminder(context: Context, reminderId: String): Boolean {
-        return sendDeleteRequest(context, "$BASE_URL/$reminderId")
+    suspend fun deleteReminder(reminderId: String, sessionCookie: String?): Boolean {
+        return sendDeleteRequest("$BASE_URL/$reminderId", sessionCookie)
     }
 
     private suspend fun sendGetRequest(urlString: String): String? {
@@ -66,10 +66,8 @@ object ReminderApiService {
                 connection.requestMethod = "POST"
                 connection.setRequestProperty("Content-Type", "application/json")
 
-                if (!sessionCookie.isNullOrEmpty()) {
-                    connection.setRequestProperty("Cookie", sessionCookie)
-                } else {
-                    Log.e("ReminderApiService", "Session cookie is missing!")
+                if (!CookieHandling.setSessionCookie(connection, sessionCookie)) {
+                    Log.e("ReminderApiService", "Failed to attach session cookie!")
                     return@withContext null
                 }
 
@@ -80,7 +78,7 @@ object ReminderApiService {
                 }
 
                 val responseCode = connection.responseCode
-                val responseText = if (responseCode == HttpURLConnection.HTTP_OK) {
+                val responseText = if (responseCode in 200..299) {
                     connection.inputStream.bufferedReader().use { it.readText() }
                 } else {
                     connection.errorStream?.bufferedReader()?.use { it.readText() }
@@ -95,22 +93,26 @@ object ReminderApiService {
                 Log.e("ReminderApiService", "POST request failed: $urlString", e)
                 null
             }
-
         }
     }
 
-    private suspend fun sendPutRequest(context: Context, urlString: String, jsonInput: JSONObject): String? {
-        return sendRequestWithBody(context, "PUT", urlString, jsonInput)
+    private suspend fun sendPutRequest(urlString: String, jsonInput: JSONObject, sessionCookie: String?): String? {
+        return sendRequestWithBody("PUT", urlString, jsonInput, sessionCookie)
     }
 
     /** Generic DELETE request */
-    private suspend fun sendDeleteRequest(context: Context, urlString: String): Boolean {
+    private suspend fun sendDeleteRequest(urlString: String, sessionCookie: String?): Boolean {
         return withContext(Dispatchers.IO) {
             runCatching {
                 val connection = (URL(urlString).openConnection() as HttpURLConnection).apply {
                     requestMethod = "DELETE"
-                    attachSessionCookie(context)
                 }
+
+                if (!CookieHandling.setSessionCookie(connection, sessionCookie)) {
+                    Log.e("ReminderApiService", "Failed to attach session cookie!")
+                    return@withContext false
+                }
+
                 connection.responseCode == HttpURLConnection.HTTP_OK
             }.getOrElse {
                 Log.e("ReminderApiService", "DELETE request failed: ${it.message}")
@@ -119,14 +121,18 @@ object ReminderApiService {
         }
     }
 
-    private suspend fun sendRequestWithBody(context: Context, method: String, urlString: String, jsonInput: JSONObject): String? {
+    private suspend fun sendRequestWithBody(method: String, urlString: String, jsonInput: JSONObject, sessionCookie: String?): String? {
         return withContext(Dispatchers.IO) {
             runCatching {
                 val connection = (URL(urlString).openConnection() as HttpURLConnection).apply {
                     requestMethod = method
                     setRequestProperty("Content-Type", "application/json")
                     doOutput = true
-                    attachSessionCookie(context)
+                }
+
+                if (!CookieHandling.setSessionCookie(connection, sessionCookie)) {
+                    Log.e("ReminderApiService", "Failed to attach session cookie!")
+                    return@withContext null
                 }
 
                 connection.outputStream.use { os ->

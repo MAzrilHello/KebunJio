@@ -1,6 +1,7 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/Dashboard")
+@CrossOrigin("*")
 public class DashboardController {
 
 	@Autowired
@@ -66,7 +68,7 @@ public class DashboardController {
     	
     	for (int i = 0; i < plantList.size(); i++) {
     		Plant currentPlant = plantList.get(i);
-    		String plantId = currentPlant.getId();
+    		String plantId = currentPlant.getEdiblePlantSpeciesId();
     		int thisCount = 0;
     		if (plantTypeCount.containsKey(plantId)) {
     			thisCount = (int) plantTypeCount.get(plantId);
