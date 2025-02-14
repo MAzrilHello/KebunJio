@@ -2,12 +2,10 @@ package iss.nus.edu.sg.sa4106.kebunjio.features.reminders
 
 
 import android.app.TimePickerDialog
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -18,7 +16,6 @@ import iss.nus.edu.sg.sa4106.kebunjio.R
 import iss.nus.edu.sg.sa4106.kebunjio.adapter.ReminderAdapter
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityReminderBinding
 import iss.nus.edu.sg.sa4106.kebunjio.service.PlantApiService
-import iss.nus.edu.sg.sa4106.kebunjio.service.ReminderApiService
 import iss.nus.edu.sg.sa4106.kebunjio.service.ReminderApiService.addReminder
 import kotlinx.coroutines.launch
 import org.json.JSONObject
@@ -80,12 +77,9 @@ class ReminderActivity : AppCompatActivity() {
         Log.d("ReminderActivity", "Received Plant Name: $plantName")
 
         initButtons()
-//        initReminderTypeSpinner()
         initFrequencyPickers()
 
         fetchPlantName(plantId!!)
-
-//        fetchReminders(userId, plantId)
     }
 
     private fun initButtons() {
@@ -106,13 +100,6 @@ class ReminderActivity : AppCompatActivity() {
             }
         }
     }
-
-//    private fun initReminderTypeSpinner() {
-//        val reminderTypeOptions = listOf("Water", "Fertilizer")
-//        val typeAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, reminderTypeOptions)
-//        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//        binding.reminderType.adapter = typeAdapter
-//    }
 
     private fun showHourPicker() {
         val myCalendar = Calendar.getInstance()
@@ -185,21 +172,8 @@ class ReminderActivity : AppCompatActivity() {
         }
     }
 
-//    private fun fetchReminders(userId: String, plantId: String) {
-//        lifecycleScope.launch {
-//            val response = ReminderApiService.getRemindersByUser(userId)
-//            if (response != null) {
-//                Log.d("ReminderActivity", "Fetched reminders: $response")
-//                // Optionally parse response and populate UI fields
-//            } else {
-//                Log.e("ReminderActivity", "Failed to fetch reminders.")
-//            }
-//        }
-//    }
-
     private fun addReminder(sessionCookie: String) {
-        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
-        val userId = sharedPreferences.getString("USER_ID", null) ?: return showToast("Error: User ID not found")
+        val userId = intent.getStringExtra("userId") ?: return showToast("Error: User ID not found")
         val plantId = intent.getStringExtra("plantId") ?: return showToast("Error: Plant ID not found")
         val plantName = binding.plantName.text.toString().takeIf { it.isNotBlank() } ?: "Unknown Plant"
 
