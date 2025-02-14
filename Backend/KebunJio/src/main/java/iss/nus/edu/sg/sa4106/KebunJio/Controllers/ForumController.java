@@ -31,9 +31,12 @@ import iss.nus.edu.sg.sa4106.KebunJio.Services.PostService;
 import iss.nus.edu.sg.sa4106.KebunJio.Services.UpvoteService;
 import jakarta.servlet.http.HttpSession;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.Optional;
 
 import jakarta.validation.Valid;
 
@@ -52,7 +55,8 @@ public class ForumController {
 	
 	@Autowired
 	private CommentLikeService clService;
-	
+	@Autowired
+	private UserService userService;
 	//URL: /Forum
 	@GetMapping
 	public ResponseEntity getAllPosts() {
