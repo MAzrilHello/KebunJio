@@ -1,7 +1,9 @@
 package iss.nus.edu.sg.sa4106.kebunjio.features.reminders
 
 
+import android.app.Activity
 import android.app.TimePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -16,7 +18,7 @@ import iss.nus.edu.sg.sa4106.kebunjio.R
 import iss.nus.edu.sg.sa4106.kebunjio.adapter.ReminderAdapter
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityReminderBinding
 import iss.nus.edu.sg.sa4106.kebunjio.service.PlantApiService
-import iss.nus.edu.sg.sa4106.kebunjio.service.ReminderApiService.addReminder
+import iss.nus.edu.sg.sa4106.kebunjio.service.ReminderApiService
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.util.Calendar
@@ -96,7 +98,18 @@ class ReminderActivity : AppCompatActivity() {
                 showToast("Error: Session not passed correctly to add reminder")
                 Log.e("ReminderActivity", "Cannot add reminder: Session cookie is null")
             } else {
-                addReminder(sessionCookie!!)
+                lifecycleScope.launch {
+                    val success = addReminder(sessionCookie!!)
+                    if (success) {
+                        val intent = Intent()
+                        intent.putExtra("REMINDER_ADDED", true)
+                        setResult(Activity.RESULT_OK, intent)
+                        finish() // Close ReminderActivity and return to ViewReminderListActivity
+                    } else {
+                        showToast("Failed to add reminder. Please try again.")
+                        Log.e("ReminderActivity", "Reminder API call failed.")
+                    }
+                }
             }
         }
     }
@@ -172,24 +185,16 @@ class ReminderActivity : AppCompatActivity() {
         }
     }
 
-    private fun addReminder(sessionCookie: String) {
-        val userId = intent.getStringExtra("userId") ?: return showToast("Error: User ID not found")
-        val plantId = intent.getStringExtra("plantId") ?: return showToast("Error: Plant ID not found")
-        val plantName = binding.plantName.text.toString().takeIf { it.isNotBlank() } ?: "Unknown Plant"
-
-        val reminderType = binding.reminderType.text.toString().trim()
-        val reminderTime = binding.timeButton.text.toString()
-        val frequencyValue = binding.frequencyNumberPicker.value
-        val frequencyInterval = binding.frequencyIntervalPicker.selectedItem?.toString() ?: "Days"
-
+    private fun validateReminder(reminderTime: String): Boolean {
         if (!reminderTime.matches(Regex("\\d{2}:\\d{2}"))) {
             showToast("Invalid reminder time. Please select a valid time.")
-            return
+            return false
         }
+        return true
+    }
 
-        Log.d("ReminderActivity", "Adding new reminder: User ID: $userId, Plant ID: $plantId, Type: $reminderType, Time: $reminderTime, Frequency: $frequencyValue $frequencyInterval")
-
-        val reminderJson = JSONObject().apply {
+    private fun createReminderJson(userId: String, plantId: String, reminderType: String, reminderTime: String, frequencyValue: Int, frequencyInterval: String): JSONObject {
+        return JSONObject().apply {
             put("userId", userId)
             put("plantId", plantId)
             put("reminderType", reminderType)
@@ -198,17 +203,55 @@ class ReminderActivity : AppCompatActivity() {
             put("recurrenceInterval", "$frequencyValue $frequencyInterval")
             put("status", "Active")
         }
+    }
+
+    private suspend fun sendReminderToApi(reminderJson: JSONObject, sessionCookie: String): Boolean {
+        return try {
+            val response = ReminderApiService.addReminder(this@ReminderActivity, reminderJson, sessionCookie)
+            if (response != null) {
+                Log.d("ReminderActivity", "Reminder successfully added: $response")
+                true
+            } else {
+                Log.e("ReminderActivity", "Failed to add reminder to backend.")
+                false
+            }
+        } catch (e: Exception) {
+            Log.e("ReminderActivity", "Error adding reminder: ${e.message}")
+            false
+        }
+    }
+
+    private fun addReminder(sessionCookie: String): Boolean {
+        val userId = intent.getStringExtra("userId") ?: return false.also { showToast("Error: User ID not found") }
+        val plantId = intent.getStringExtra("plantId") ?: return false.also { showToast("Error: Plant ID not found") }
+        val plantName = binding.plantName.text.toString().takeIf { it.isNotBlank() } ?: "Unknown Plant"
+
+        val reminderType = binding.reminderType.text.toString().trim()
+        val reminderTime = binding.timeButton.text.toString()
+        val frequencyValue = binding.frequencyNumberPicker.value
+        val frequencyInterval = binding.frequencyIntervalPicker.selectedItem?.toString() ?: "Days"
+
+        if (!validateReminder(reminderTime)) return false
+
+        Log.d("ReminderActivity", "Adding new reminder: User ID: $userId, Plant ID: $plantId, Type: $reminderType, Time: $reminderTime, Frequency: $frequencyValue $frequencyInterval")
+
+        val reminderJson = createReminderJson(userId, plantId, reminderType, reminderTime, frequencyValue, frequencyInterval)
 
         lifecycleScope.launch {
-            val response = addReminder(this@ReminderActivity, reminderJson, sessionCookie)
-            if (response != null) {
+            val success = sendReminderToApi(reminderJson, sessionCookie)
+            if (success) {
                 showToast("Reminder set for $plantName at $reminderTime, every $frequencyValue $frequencyInterval.")
-                Log.d("ReminderActivity", "Reminder successfully added: $response")
+
+                val intent = Intent().apply { putExtra("REMINDER_ADDED", true) }
+                setResult(Activity.RESULT_OK, intent)
+
+                finish() // Close ReminderActivity and return to ViewReminderListActivity
             } else {
                 showToast("Failed to add reminder.")
-                Log.e("ReminderActivity", "Failed to add reminder to backend.")
             }
         }
+
+        return true
     }
 
     private fun showToast(message: String) {
