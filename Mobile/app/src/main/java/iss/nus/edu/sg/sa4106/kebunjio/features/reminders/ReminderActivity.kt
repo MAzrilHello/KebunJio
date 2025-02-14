@@ -2,7 +2,6 @@ package iss.nus.edu.sg.sa4106.kebunjio.features.reminders
 
 
 import android.app.TimePickerDialog
-import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -67,6 +66,7 @@ class ReminderActivity : AppCompatActivity() {
             return
         }
         Log.d("ReminderActivity", "Received userId: $userId")
+
         // Store plantId and plantName as well
         plantId = intent.getStringExtra("plantId")
         if (plantId.isNullOrEmpty()) {

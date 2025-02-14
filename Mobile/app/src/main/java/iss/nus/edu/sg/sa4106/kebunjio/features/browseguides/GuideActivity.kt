@@ -38,6 +38,9 @@ class GuideActivity : AppCompatActivity() {
         binding.backBtn.setOnClickListener {
             finish()
         }
+        binding.backArrow.setOnClickListener {
+            finish()
+        }
     }
 
     private fun downloadImage(imgUrl: String) {

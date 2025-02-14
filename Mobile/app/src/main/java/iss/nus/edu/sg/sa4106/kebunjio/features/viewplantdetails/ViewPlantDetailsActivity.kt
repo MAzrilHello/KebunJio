@@ -1,30 +1,20 @@
 package iss.nus.edu.sg.sa4106.kebunjio.features.viewplantdetails
 
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import iss.nus.edu.sg.sa4106.kebunjio.DummyData
 import iss.nus.edu.sg.sa4106.kebunjio.R
 import iss.nus.edu.sg.sa4106.kebunjio.data.ActivityLog
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityViewPlantDetailsBinding
-import iss.nus.edu.sg.sa4106.kebunjio.data.EdiblePlantSpecies
 import iss.nus.edu.sg.sa4106.kebunjio.data.Plant
 import iss.nus.edu.sg.sa4106.kebunjio.features.planthealthcheck.PlantHealthCheckActivity
 import iss.nus.edu.sg.sa4106.kebunjio.features.reminders.ReminderActivity
-import iss.nus.edu.sg.sa4106.kebunjio.service.DownloadImageService
-import java.io.File
 
 class ViewPlantDetailsActivity : AppCompatActivity() {
 
@@ -96,6 +86,10 @@ class ViewPlantDetailsActivity : AppCompatActivity() {
         reminderBtn = binding.reminderBtn
 
         backBtn.setOnClickListener {
+            finish()
+        }
+
+        binding.backArrow.setOnClickListener {
             finish()
         }
 

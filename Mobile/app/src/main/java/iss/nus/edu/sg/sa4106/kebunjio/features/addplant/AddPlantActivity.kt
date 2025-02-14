@@ -24,13 +24,9 @@ import androidx.core.view.WindowInsetsCompat
 import iss.nus.edu.sg.sa4106.kebunjio.R
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityAddPlantBinding
 import iss.nus.edu.sg.sa4106.kebunjio.data.Plant
-import iss.nus.edu.sg.sa4106.kebunjio.DummyData
 import iss.nus.edu.sg.sa4106.kebunjio.HandleNulls
 import iss.nus.edu.sg.sa4106.kebunjio.TimeClassHandler
-import iss.nus.edu.sg.sa4106.kebunjio.data.ActivityLog
-import iss.nus.edu.sg.sa4106.kebunjio.data.EdiblePlantSpecies
 import iss.nus.edu.sg.sa4106.kebunjio.service.PlantSpeciesLogService
-import iss.nus.edu.sg.sa4106.kebunjio.service.mlModel.MlModelService
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
@@ -177,6 +173,10 @@ class AddPlantActivity : AppCompatActivity() {
             goBack(false)
         }
 
+        binding.backArrow.setOnClickListener{
+            goBack(false)
+        }
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -320,7 +320,8 @@ class AddPlantActivity : AppCompatActivity() {
         //val use_as_ip = "127.0.0.1"
         //val use_as_ip = "192.168.1.3"
         //val use_as_ip = "192.168.1.254"
-        val flaskUrl = "http://$use_as_ip:5000/predictSpecies"
+        //val flaskUrl = "http://$use_as_ip:5000/predictSpecies"
+        val flaskUrl = PlantSpeciesLogService.predictSpeciesUrl
         Log.d("predictImage","flaskUrl: $flaskUrl")
 
         val url = URL(flaskUrl)

@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
 import iss.nus.edu.sg.sa4106.kebunjio.LoggedInFragment
-import iss.nus.edu.sg.sa4106.kebunjio.R
 import iss.nus.edu.sg.sa4106.kebunjio.data.EdiblePlantSpecies
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentChooseGuideToViewBinding
 
