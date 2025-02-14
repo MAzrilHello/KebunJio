@@ -18,7 +18,7 @@ const LoginPage = () => {
         axios.post('http://localhost:8080/api/users/login', {
             emailOrUsername,
             password
-        })
+        },{ withCredentials: true })
             .then(response => {
                 console.log(response.status)
                 if (response.status === 200) {
@@ -49,13 +49,13 @@ const LoginPage = () => {
                 <h2>Log in</h2>
                 <form onSubmit={handleSubmit}>
                     <input
-                            id="username"
-                            type="text"
-                            placeholder="Enter email or user name"
-                            value={emailOrUsername}
-                            onChange={(e) => setEmailOrUsername(e.target.value)}
-                            required
-                        />
+                        id="username"
+                        type="text"
+                        placeholder="Enter email or user name"
+                        value={emailOrUsername}
+                        onChange={(e) => setEmailOrUsername(e.target.value)}
+                        required
+                    />
                     <input
                         id="password"
                         type="password"
@@ -63,7 +63,7 @@ const LoginPage = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
-                        />
+                    />
 
                     <button type="submit" className="login-btn">Log in</button>
                 </form>
