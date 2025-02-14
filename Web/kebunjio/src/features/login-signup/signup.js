@@ -21,7 +21,7 @@ const SignUpPage = () => {
             return;
         }
 
-        axios.post('http://localhost:8080/api/users/signup', {
+        axios.post('http://34.124.209.141:8080/api/users/signup', {
             email,
             username,
             password,
