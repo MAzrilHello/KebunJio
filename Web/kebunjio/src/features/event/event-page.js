@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import EventCard from './components/EventCard';
 import { getAllEvents } from './services/eventService';
 import Appbar from '../../components/Appbar';
+import { sanitizeInput } from '../../service/sanitizeService';
 
 export const EventList = () => {
     const [events, setEvents] = useState([]);
@@ -34,7 +35,7 @@ export const EventList = () => {
     
 
     const filteredEvents = events.filter((event) => {
-        const matchesName = event.name.toLowerCase().includes(searchName.toLowerCase());
+        const matchesName = sanitizeInput(event?.name.toLowerCase().includes(searchName.toLowerCase()));
         const matchesDate = event.startDateTime
             ? event.startDateTime.includes(searchDate)
             : true;

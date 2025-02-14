@@ -12,7 +12,7 @@ object NotificationHelper {
     private const val CHANNEL_ID = "reminder_channel"
     private const val CHANNEL_NAME = "Reminders"
 
-    fun showNotification(context: Context, title: String, message: String) {
+    fun showNotification(context: Context) {
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -29,8 +29,8 @@ object NotificationHelper {
         // Build and display the notification
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.app_icon)
-            .setContentTitle(title)
-            .setContentText(message)
+            .setContentTitle("Reminder")
+            .setContentText("Hey, it's time to care for your plant!")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .build()

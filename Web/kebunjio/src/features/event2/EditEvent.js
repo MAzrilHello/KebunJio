@@ -7,6 +7,7 @@ import eventService from '../service/eventService';
 import './EditEvent.css';
 import axios from 'axios';
 import Appbar from '../../components/Appbar';
+import { sanitizeInput } from '../../service/sanitizeService';
 
 const { Content } = Layout;
 
@@ -58,9 +59,12 @@ const EditEvent = () => {
     try {
       setLoading(true);
       const formData = {
-        ...eventData,
-        startDateTime: eventData.startDateTime ? eventData.startDateTime.format('YYYY-MM-DDTHH:mm:ss') : null,
-        endDateTime: eventData.endDateTime ? eventData.endDateTime.format('YYYY-MM-DDTHH:mm:ss') : null
+        ...Object.keys(eventData).reduce((acc, key) => {
+          acc[key] = sanitizeInput(eventData[key]);
+          return acc;
+        }, {}),
+        startDateTime: eventData.startDateTime ? sanitizeInput(eventData.startDateTime.format('YYYY-MM-DDTHH:mm:ss')) : null,
+        endDateTime: eventData.endDateTime ? sanitizeInput(eventData.endDateTime.format('YYYY-MM-DDTHH:mm:ss')) : null
       };
       
       console.log('Submitting event data:', formData);

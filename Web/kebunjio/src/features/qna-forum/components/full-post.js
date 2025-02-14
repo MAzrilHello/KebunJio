@@ -7,27 +7,27 @@ import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
 import placeholderPostImage from '../../../media/plant.jpg';
 
-const FullPost = ({post}) => {
+const FullPost = ({post,upvote, comment}) => {
     return(
         <div>
             <div>
                 <Container>
                     <Row><PostHeader post={post}/></Row>
                     <Row>
-                        <b>{post.Title}</b>
+                        <b>{post.title}</b>
                         <div>
-                            <span className="tag-class">{post.PostCategory}</span>
+                            <span className="tag-class">{post.postCategory}</span>
                         </div>
                         {post.hasImage?(
                             <Image src={placeholderPostImage} className="post-image"></Image>
                         ):(
                             <div></div>
                         )}
-                        <p>{post.Content}</p>
+                        <p>{post.content}</p>
                     </Row>
                     <Row>
                         <Col>
-                            <PostInsight upvote={post.upvote} comment={post.comment} hasLiked={post.hasLiked}/>
+                            <PostInsight upvote={upvote} comment={comment} hasLiked={post.hasLiked}/>
                         </Col>
                     </Row>
 

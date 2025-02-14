@@ -2,13 +2,18 @@ package iss.nus.edu.sg.sa4106.kebunjio.features.viewplantdetails
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import iss.nus.edu.sg.sa4106.kebunjio.HandleNulls
 import iss.nus.edu.sg.sa4106.kebunjio.R
 import iss.nus.edu.sg.sa4106.kebunjio.data.ActivityLog
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityViewPlantDetailsBinding
@@ -34,6 +39,27 @@ class ViewPlantDetailsActivity : AppCompatActivity() {
     lateinit var backBtn: Button
     lateinit var healthBtn: Button
     lateinit var reminderBtn: Button
+    lateinit var currentPlant: Plant
+    private var haveUpdate = false
+    private var newDiagnosis = ""
+    private var sessionCookie: String = ""
+    public lateinit var haveUpdateLauncher: ActivityResultLauncher<Intent>
+
+
+    private fun initHaveUpdateLauncher() {
+        haveUpdateLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                result: ActivityResult ->
+            if (result.resultCode== RESULT_OK) {
+                val haveUpdate = result.data?.getBooleanExtra("haveUpdate",false)
+                if (haveUpdate==true) {
+                    this.haveUpdate = true
+                    this.newDiagnosis = HandleNulls.ifNullString(result.data?.getStringExtra("newDiagnosis"))
+                    healthText.text = this.newDiagnosis
+                }
+            }
+        }
+    }
+
 
     //private val dummy = DummyData()
 
@@ -85,13 +111,29 @@ class ViewPlantDetailsActivity : AppCompatActivity() {
         healthBtn = binding.healthBtn
         reminderBtn = binding.reminderBtn
 
+        initHaveUpdateLauncher()
+
         backBtn.setOnClickListener {
+            val response = Intent()
+            setResult(RESULT_OK, response)
+            response.putExtra("haveUpdate",haveUpdate)
+            finish()
+        }
+
+        binding.backArrow.setOnClickListener {
+            val response = Intent()
+            setResult(RESULT_OK, response)
+            response.putExtra("haveUpdate",haveUpdate)
             finish()
         }
 
         healthBtn.setOnClickListener {
             val intent = Intent(this, PlantHealthCheckActivity::class.java)
-            startActivity(intent)
+            intent.putExtra("currentPlant",currentPlant)
+            intent.putExtra("sessionCookie",sessionCookie)
+            intent.putExtra("isUpdate",true)
+            haveUpdateLauncher.launch(intent)
+        //startActivity(intent)
         }
 
         reminderBtn.setOnClickListener {
@@ -111,9 +153,10 @@ class ViewPlantDetailsActivity : AppCompatActivity() {
         // get the id to show
         //val plantId = intent.getStringExtra("plantId")
         if (intent.getBooleanExtra("haveData",false)) {
-            val plant = intent.getSerializableExtra("currentPlant") as Plant
+            currentPlant = intent.getSerializableExtra("currentPlant") as Plant
+            sessionCookie = intent.getStringExtra("sessionCookie")!!
             val speciesIdToNameDict = (intent.getSerializableExtra("speciesIdToNameDict") as HashMap<String, String>)!!
-            showPlant(plant, speciesIdToNameDict)
+            showPlant(currentPlant, speciesIdToNameDict)
             val thisActLog = (intent.getSerializableExtra("thisActivityLog") as ArrayList<ActivityLog>)!!
             showActLog(thisActLog)
         }

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './login-signup.css';
 import { useNavigate } from "react-router-dom";
+import { sanitizeInput } from '../../service/sanitizeService';
 
 const SignUpPage = () => {
     const [email, setEmail] = useState('');
@@ -10,6 +11,10 @@ const SignUpPage = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [contactPhone, setContactPhone] = useState('');
     const [error, setError] = useState('');
+
+    const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL;
+
+    const getSignupEndpoint = `${API_BASE_URL}/users/signup`;
 
     const navigate = useNavigate()
 
@@ -21,12 +26,14 @@ const SignUpPage = () => {
             return;
         }
 
-        axios.post('http://34.124.209.141:8080/api/users/signup', {
-            email,
-            username,
-            password,
-            confirmPassword,
-            contactPhone
+
+        axios.post(getSignupEndpoint, {
+            email: sanitizeInput(email),
+            username: sanitizeInput(username),
+            password: sanitizeInput(password),
+            confirmPassword: sanitizeInput(confirmPassword),
+            contactPhone: sanitizeInput(contactPhone)
+
         })
             .then(response => {
                 if (response.status === 201) {

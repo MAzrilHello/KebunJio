@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/events")
@@ -18,6 +21,19 @@ public class EventController {
     @GetMapping
     public List<Event> getAllEvents() {
         return eventService.findAll();
+    }
+    
+    @GetMapping("/eventPage")
+    public Page<Event> getEventsPerPage(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size,
+            @RequestParam(value = "name", required = false) String name, @RequestParam(value = "date", required = false) String date){
+    	if (page == null) {
+            page = 0;
+        }
+        if (size == null) {
+            size = 10;
+        }
+        Pageable pageable = PageRequest.of(page, size);
+        return eventService.findByPages(name, date, pageable);
     }
     
     //Change the id to String

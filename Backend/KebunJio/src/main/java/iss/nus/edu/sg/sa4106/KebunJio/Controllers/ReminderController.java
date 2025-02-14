@@ -126,10 +126,10 @@ public class ReminderController {
     	// first validate that we have permission
     	User currentUser = (User) sessionObj.getAttribute("loggedInUser");
     	// Must restrict to owner only
-    	HttpStatus editStatus = Reusables.editStatusType(currentUser, reminder.getUserId());
-    	if (editStatus != HttpStatus.OK) {
-    		return new ResponseEntity<Reminder>(editStatus);
-    	}
+//    	HttpStatus editStatus = Reusables.editStatusType(currentUser, reminder.getUserId());
+//    	if (editStatus != HttpStatus.OK) {
+//    		return new ResponseEntity<Reminder>(editStatus);
+//    	}
     	try {
     		Reminder newReminder = new Reminder();
     		newReminder.setUserId(reminder.getUserId());

@@ -16,23 +16,23 @@ function trimContent(content) {
     }
 }
 
-const PostSneakPeak = ({post}) => {    
+const PostSneakPeak = ({post, upvoteCount, commentCount}) => {    
     return(
         <div className="post-sneak-peak-class">
             <Container>
                 <Row><PostHeader post={post}/></Row>
                 <Row>
-                    <Link to={`/forum/post/?id=${post.Id}`} state={{ post: post }}>
-                        <b>{post.Title}</b>
+                    <Link to={`/forum/post/${post.id}`} state={{ post: post, upvoteCount:upvoteCount, commentCount:commentCount }}>
+                        <b>{post.title}</b>
                     </Link>                    
                     <div>
-                        <span className="tag-class">{post.PostCategory}</span>
+                        <span className="tag-class">{post.postCategory}</span>
                     </div>
                     <div>
-                        <p>{trimContent(post.Content)}</p>
+                        <p>{trimContent(post.content)}</p>
                     </div>
                 </Row>
-                <Row><PostInsight upvote={post.upvote} comment={post.comment}/></Row>
+                <Row><PostInsight upvote={upvoteCount} comment={commentCount}/></Row>
             </Container>
         </div>
     )

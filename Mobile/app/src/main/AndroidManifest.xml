@@ -42,6 +42,8 @@
             android:enabled="true"
             android:exported="true" />
 
+        <receiver android:name=".features.reminders.NotificationReceiver" />
+
         <activity
             android:name=".features.logactivities.LogActivitiesActivity"
             android:exported="false" />
@@ -55,15 +57,14 @@
             android:name=".features.browseguides.GuideActivity"
             android:exported="false" />
 
-        <service
-            android:name=".service.reminders.ReminderService"
-            android:enabled="true"
-            android:exported="true" />
+<!--        <service-->
+<!--            android:name=".service.reminders.ReminderService"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="true" />-->
 
         <activity
             android:name=".features.addplant.AddPlantActivity"
-            android:exported="false"
-            android:noHistory="true" />
+            android:exported="false" />
         <activity android:name=".features.reminders.ViewReminderListActivity"
             android:exported="false" />
         <activity android:name=".features.reminders.ReminderActivity" />
