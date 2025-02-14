@@ -28,7 +28,7 @@ import { EventList } from './features/event/event-page';
 import EventDetail from './features/event/components/EventDetail';
 import GoogleAuthCallback from './features/event/components/GoogleAuthCallback';
 
-//import './index.css';
+import './index.css';
 
 function App() {
   useEffect(() => {
