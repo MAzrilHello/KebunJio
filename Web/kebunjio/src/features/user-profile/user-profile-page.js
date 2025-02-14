@@ -1,87 +1,132 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState , useRef} from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
-import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button'
 import Table  from "react-bootstrap/Table";
 import Appbar from '../../components/Appbar';
 import "./user-profile-style.css"
 import Card from 'react-bootstrap/Card';
+import { useNavigate } from 'react-router-dom';
+
 
 const UserProfilePage = () => {
+    // set the auth user
+    const { authUser, setAuthUser } = useAuth();
 
-    const {authUser} = useAuth()
+    // set the user profile info
+    const [username, setUsername] = useState(authUser?.username || "");
+    const [email, setEmail] = useState(authUser?.email || "");
+    const [phone, setPhoneNumber] = useState(authUser?.phoneNumber || "");
 
-    const [username, setUsername] = useState(authUser.username)
-    const [email, setEmail] = useState(authUser.email)
-    const [phone, setPhoneNumber] = useState(authUser.phoneNumber)
-    const [isEdit, setIsEdit] = useState(false)
+    // set if edit
+    const [isEdit, setIsEdit] = useState(false);
+    const [plants, setPlants] = useState([]);
 
-    const [plants,setPlants] = useState([])
+    const hasFetched = useRef(false);
+    const [loading, setLoading] = useState(true);
 
-    const userInfo = {
-        totalPlant:authUser.totalPlant,
-        totalHarvested:authUser.totalHarvested,
-        totalType:authUser.totalType
-    }
-
-    const onEdit = () => {
-        if(!isEdit){
-            setIsEdit(true)
-        }
-        else{
-            setIsEdit(false)
-            //send data to API
-        }    
-        }
-
-    const handleInputChange = (event) => {
-            const { id, value } = event.target; 
-            if (id === "username") {
-                setUsername(value);
-            } else if (id === "email") {
-                setEmail(value);
-            } else if (id === "phone") {
-                setPhoneNumber(value);
-            }
-    };
-
-    /*
-    const [userProfile, setUserProfile] = useState(null);
-    const [error, setError] = useState(null);
-    const {authUser} = useAuth()
-    */
+    const [userInfo,setUserInfo] = useState({
+        totalPlant:authUser?.totalPlant || 0,
+        totalHarvested:authUser?.totalHarvested || 0,
+        totalType:authUser?.totalType || 0
+    });
 
     useEffect(() => {
-        //Kelly's code, can remove later
-        async function fetchData(){
-            const plantsRes = await fetch("/dummy-data/plant.json")
-            const plantsData = await plantsRes.json()
-            setPlants(plantsData)
+        async function fetchUserProfile() {
+            try {
+                console.log("Fetching user profile...");
+                // need change to 34.124.209.141
+                const response = await axios.get("http://localhost:8080/api/userProfile", { withCredentials: true });
+
+                if (response.data) {
+                    console.log("User Profile Fetched:", response.data);
+                    // to store the user data, make the structure more clear.
+                    const userData = {
+                        id: response.data.user.id,
+                        username: response.data.user.username,
+                        email: response.data.user.email,
+                        phoneNumber: response.data.user.phoneNumber,
+                        totalPlant: response.data.totalPlant || 0,
+                        totalHarvested: response.data.totalHarvested || 0,
+                        totalType: response.data.totalType || 0
+                    };
+
+                    localStorage.setItem("authUser", JSON.stringify(userData));
+
+                    setAuthUser(userData);
+
+                    setUserInfo({
+                        totalPlant: response.data.totalPlant || 0,
+                        totalHarvested: response.data.totalHarvested || 0,
+                        totalType: response.data.totalType || 0
+                    });
+
+                    setUsername(response.data.user.username);
+                    setEmail(response.data.user.email);
+                    setPhoneNumber(response.data.user.phoneNumber);
+                }
+            } catch (error) {
+                console.error("Error fetching user profile:", error);
+            } finally {
+                setLoading(false);
+            }
         }
-        fetchData()
 
-        /*Ruihan's code, do not delete
-        axios.get('/userProfile')
-            .then(response => {
-                setUserProfile(response.data);
-            })
-            .catch(err => {
-                setError("Error fetching user profile.");
-            });*/
-    }, []);
+        fetchUserProfile();
+    }, [setAuthUser]);
 
-    /*Ruihan's code, do not delete
-    if (error) return <div>{error}</div>;
+    const onEdit = async () => {
+        if (isEdit) {
+            try {
+                // need change to 34.124.209.141
+                const response = await axios.put(
+                    "http://localhost:8080/api/userProfile/update", // need change to remote ip
+                    { username, email, phoneNumber: phone },
+                    {
+                        withCredentials: true,
+                        headers: { "Content-Type": "application/json" }
+                    }
+                );
 
-    if (!userProfile) {
+
+                if (response.status === 200) {
+                    const updatedUser = response.data;
+                    // need confirm the response.data.structure
+                    setAuthUser(prevUser => ({
+                        ...prevUser,
+                        username: updatedUser.username,
+                        email: updatedUser.email,
+                        phoneNumber: updatedUser.phoneNumber
+                    }));
+                    localStorage.setItem("authUser",authUser);
+                    alert("Profile updated successfully!");
+                }
+            } catch (error) {
+                console.error("Failed to update profile:", error);
+                alert("Profile update failed.");
+            }
+        }
+        setIsEdit(prevState => !prevState);
+    };
+
+    const handleInputChange = (event) => {
+        const { id, value } = event.target;
+        if (id === "username") {
+            setUsername(value);
+        } else if (id === "email") {
+            setEmail(value);
+        } else if (id === "phone") {
+            setPhoneNumber(value);
+        }
+    };
+
+    if (loading) {
         return <div>Loading...</div>;
-    }*/
-
-    
+    }
 
     return (
-        <div className="user-profile-page"> 
+        <div className="user-profile-page">
+            {console.log("Rendering - AuthUser State:", authUser)}
             <Appbar/>
             <div className="user-profile">
                 <div className="page-header">
@@ -91,7 +136,7 @@ const UserProfilePage = () => {
                     <Card className="user-profile-card">
                         <div>
                             {isEdit?(
-                                <div>                          
+                                <div>
                                     <label htmlFor='username'>Username:</label>
                                     <input
                                         type="text"
@@ -102,12 +147,12 @@ const UserProfilePage = () => {
                                     />
                                 </div>
                             ):(
-                                <p>Username: {username}</p>
+                                <p>Username: {authUser?.username || "N/A"}</p>
                             )}
                         </div>
                         <div>
                             {isEdit?(
-                                <div>                          
+                                <div>
                                     <label htmlFor='email'>Email:</label>
                                     <input
                                         type="email"
@@ -119,13 +164,13 @@ const UserProfilePage = () => {
                                     />
                                 </div>
                             ):(
-                                <p>Email: {email}</p>
+                                <p>Email:{authUser?.email || "N/A"}</p>
                             )}
                         </div>
                         <div>
                             {isEdit?(
-                                <div>                          
-                                        <div>                          
+                                <div>
+                                    <div>
                                         <label htmlFor='phone'>Phone:</label>
                                         <input
                                             type="tel"
@@ -138,10 +183,10 @@ const UserProfilePage = () => {
                                     </div>
                                 </div>
                             ):(
-                                <p>Phone: {phone}</p>
+                                <p>Phone: {authUser?.phoneNumber || "N/A"}</p>
                             )}
                         </div>
-                        <Button onClick={onEdit} style={{backgroundColor:"white",color:"#002E14"}}>Edit</Button>
+                        <Button onClick={onEdit} style={{backgroundColor:"white",color:"#002E14"}}>{isEdit ? "Save" : "Edit"}</Button>
                     </Card>
                 </div>
             </div>
@@ -180,7 +225,7 @@ const UserProfilePage = () => {
                         </div>
                         <div>
                             <p className="summary-title">Total number of plants harvested</p>
-                            <p className="summary-number">{userInfo.totalHarvested}</p>                           
+                            <p className="summary-number">{userInfo.totalHarvested}</p>
                         </div>
                     </Card>
                 </div>
@@ -192,7 +237,7 @@ const UserProfilePage = () => {
                 <div>
                     <Table striped bordered hover>
                         <thead>
-                            <tr>
+                        <tr>
                             <th>#</th>
                             <th>Plant species</th>
                             <th>Plant type</th>
@@ -200,11 +245,11 @@ const UserProfilePage = () => {
                             <th>Status</th>
                             <th>Disease</th>
                             <th>Harvested</th>
-                            </tr>
+                        </tr>
                         </thead>
                         <tbody>
-                            {plants.map((plant) => (
-                                <tr key={plant.Id}>
+                        {plants.map((plant) => (
+                            <tr key={plant.Id}>
                                 <td>{plant.Id}</td>
                                 <td>{plant.Name}</td>
                                 <td>{plant.EdiblePlantSpecies}</td>
@@ -212,8 +257,8 @@ const UserProfilePage = () => {
                                 <td>{plant.PlantHealth}</td>
                                 <td>{plant.Disease || "None"}</td>
                                 <td>{plant.Harvested ? "Yes" : "No"}</td>
-                                </tr>
-                            ))}
+                            </tr>
+                        ))}
                         </tbody>
                     </Table>
                 </div>
