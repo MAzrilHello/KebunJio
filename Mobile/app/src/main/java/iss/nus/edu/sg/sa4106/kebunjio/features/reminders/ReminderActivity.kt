@@ -2,7 +2,6 @@ package iss.nus.edu.sg.sa4106.kebunjio.features.reminders
 
 
 import android.app.TimePickerDialog
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter

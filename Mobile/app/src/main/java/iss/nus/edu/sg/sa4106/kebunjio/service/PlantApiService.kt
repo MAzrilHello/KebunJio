@@ -1,15 +1,11 @@
 package iss.nus.edu.sg.sa4106.kebunjio.service
 
-import android.util.Log
 import iss.nus.edu.sg.sa4106.kebunjio.data.Plant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
-import org.json.JSONObject
 import java.io.BufferedReader
-import java.io.BufferedWriter
 import java.io.InputStreamReader
-import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -18,7 +14,8 @@ import java.net.URL
 
 object PlantApiService  {
 
-    private const val BASE_URL = "http://10.0.2.2:8080/api"
+//     private const val BASE_URL = "http://10.0.2.2:8080/api"
+    private const val BASE_URL = "http://34.124.209.141:8080/api"
 
     // Use Coroutine to make network request
     suspend fun getPlantsByUser(userId: String, sessionCookie: String): List<Plant> {
