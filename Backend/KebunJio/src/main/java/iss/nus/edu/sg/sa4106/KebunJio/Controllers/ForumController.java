@@ -65,6 +65,7 @@ public class ForumController {
 		List<PostWithUpvoteDAO> resultList = new ArrayList<>();
 		for(Post post : postList) {
 			int upvoteCount = upvoteService.getUpvoteCountByPost(post.getId());
+			
 			Optional<User> postUserOp = userService.getUserById(post.getId());
 			String username = "";
 			if(postUserOp.isPresent()) {
@@ -74,15 +75,9 @@ public class ForumController {
 			List<Comment> commentList = commentService.getCommentsByPostId(post.getId());
 			int commentCount = commentList.size();
 			PostWithUpvoteDAO result = new PostWithUpvoteDAO();
-			result.setId(post.getId());
-			result.setContent(post.getContent());
-			result.setCommentCount(commentCount);
-			result.setPostCategory(post.getPostCategory());
-			result.setPublishedDateTime(post.getPublishedDateTime());
-			result.setTitle(post.getTitle());
+			result.setPost(post);
 			result.setUpvoteCount(upvoteCount);
-			result.setUserId(post.getUserId());
-			result.setUsername(username);
+			result.setCommentCount(commentCount);
 			resultList.add(result);
 		}
 		return new ResponseEntity<>(resultList,HttpStatus.OK);
