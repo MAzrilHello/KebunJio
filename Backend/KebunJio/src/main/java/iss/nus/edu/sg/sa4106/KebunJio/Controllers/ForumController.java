@@ -60,7 +60,24 @@ public class ForumController {
 		List<PostWithUpvoteDAO> resultList = new ArrayList<>();
 		for(Post post : postList) {
 			int upvoteCount = upvoteService.getUpvoteCountByPost(post.getId());
-			PostWithUpvoteDAO result = new PostWithUpvoteDAO(post,upvoteCount);
+			Optional<User> postUserOp = userService.getUserById(post.getId());
+			String username = "";
+			if(postUserOp.isPresent()) {
+				User postUser = postUserOp.get();
+				username=postUser.getUsername();
+			}
+			List<Comment> commentList = commentService.getCommentsByPostId(post.getId());
+			int commentCount = commentList.size();
+			PostWithUpvoteDAO result = new PostWithUpvoteDAO();
+			result.setId(post.getId());
+			result.setContent(post.getContent());
+			result.setCommentCount(commentCount);
+			result.setPostCategory(post.getPostCategory());
+			result.setPublishedDateTime(post.getPublishedDateTime());
+			result.setTitle(post.getTitle());
+			result.setUpvoteCount(upvoteCount);
+			result.setUserId(post.getUserId());
+			result.setUsername(username);
 			resultList.add(result);
 		}
 		return new ResponseEntity<>(resultList,HttpStatus.OK);
@@ -298,7 +315,17 @@ public class ForumController {
 	@GetMapping("/Search")
 	public ResponseEntity searchPosts(@RequestParam String query) {
 		List<PostES> searchResult = postService.searchES(query);
-		return new ResponseEntity<>(searchResult,HttpStatus.OK);
+	    List<Map<String, Object>> responseList = new ArrayList<>();
+
+	    for (PostES postES : searchResult) {
+	        Map<String, Object> responseMap = new HashMap<>();
+	        responseMap.put("post", postES);
+	        responseMap.put("upvoteCount", upvoteService.getUpvoteCountByPost(postES.getId()));
+	        responseMap.put("commentCount", commentService.getCommentsByPostId(postES.getId()).size());
+
+	        responseList.add(responseMap);
+	    }
+		return new ResponseEntity<>(responseList,HttpStatus.OK);
 	}
 	
 	
