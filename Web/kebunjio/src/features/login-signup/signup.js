@@ -12,7 +12,7 @@ const SignUpPage = () => {
     const [contactPhone, setContactPhone] = useState('');
     const [error, setError] = useState('');
 
-    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+    const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL;
 
     const getSignupEndpoint = `${API_BASE_URL}/users/signup`;
 

@@ -33,6 +33,9 @@ function ForumNewPost() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    console.log(formData.title)
+    console.log(formData.question)
+    console.log(formData.category)
     axios.post((createPostEndpoint),{
       title: sanitizeInput(formData.title),
       content: sanitizeInput(formData.question),
