@@ -89,6 +89,10 @@ class ViewPlantDetailsActivity : AppCompatActivity() {
             finish()
         }
 
+        binding.backArrow.setOnClickListener {
+            finish()
+        }
+
         healthBtn.setOnClickListener {
             val intent = Intent(this, PlantHealthCheckActivity::class.java)
             startActivity(intent)

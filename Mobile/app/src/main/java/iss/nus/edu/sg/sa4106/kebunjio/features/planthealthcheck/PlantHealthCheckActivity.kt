@@ -284,12 +284,15 @@ class PlantHealthCheckActivity : AppCompatActivity() {
 
     //Diagnose plant using ML service
     private fun diagnosePlant(imageFile: File) {
+        binding.diagnoseText.text = "Diagnosing..."
         Thread {
             val diagnosis = MlModelDiagnoseService().diagnosePlant(imageFile)
             runOnUiThread {
                 if (diagnosis != null) {
+                    binding.diagnoseText.text = "Diagnosis: $diagnosis"
                     showToast("Diagnosis: $diagnosis")
                 } else {
+                    binding.diagnoseText.text = "Failed to diagnose plant"
                     showToast("Failed to diagnose plant")
                 }
             }
