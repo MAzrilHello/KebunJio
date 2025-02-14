@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 // changed to Rest API
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(origins = "http://34.124.209.141:3000",allowCredentials = "true")
+@CrossOrigin(origins = "http://34.124.209.141",allowCredentials = "true")
 public class UserController {
 
     @Autowired
