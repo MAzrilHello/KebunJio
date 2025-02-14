@@ -49,7 +49,7 @@ const PostHeader = ({post}) =>{
                 <Col xs="auto">
                 
                 {
-                    post.username===authUser.Username?(<Dropdown>
+                    post.username===authUser.username?(<Dropdown>
                         <Dropdown.Toggle className="three-dot">
                         </Dropdown.Toggle>
                             <Dropdown.Menu>

@@ -6,15 +6,12 @@ import { useNavigate } from "react-router-dom";
 import { sanitizeInput } from '../../service/sanitizeService';
 
 const LoginPage = () => {
-
-    //comment2322131908309
-
     const [emailOrUsername, setEmailOrUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const {setAuthUser, setIsLoggedIn, setIsAdmin} = useAuth();
 
-    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+    const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL;
 
     const getLoginEndpoint = `${API_BASE_URL}/users/login`;
 
@@ -24,8 +21,8 @@ const LoginPage = () => {
         e.preventDefault();
 
         axios.post(getLoginEndpoint, {
-            emailOrUsername: sanitizeInput(emailOrUsername),
-            password: sanitizeInput(password)
+            emailOrUsername: emailOrUsername,
+            password: password
         },{withCredentials:true})
             .then(response => {
                 console.log(response.status)
