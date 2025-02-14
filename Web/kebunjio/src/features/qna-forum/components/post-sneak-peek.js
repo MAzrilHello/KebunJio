@@ -22,7 +22,7 @@ const PostSneakPeak = ({post, upvoteCount, commentCount}) => {
             <Container>
                 <Row><PostHeader post={post}/></Row>
                 <Row>
-                    <Link to={`/forum/post/${post.id}`} state={{ post: post }}>
+                    <Link to={`/forum/post/${post.id}`} state={{ post: post, upvoteCount:upvoteCount, commentCount:commentCount }}>
                         <b>{post.title}</b>
                     </Link>                    
                     <div>

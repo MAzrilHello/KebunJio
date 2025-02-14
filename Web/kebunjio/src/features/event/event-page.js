@@ -35,7 +35,7 @@ export const EventList = () => {
     
 
     const filteredEvents = events.filter((event) => {
-        const matchesName = sanitizeInput(event.name.toLowerCase().includes(searchName.toLowerCase()));
+        const matchesName = sanitizeInput(event?.name.toLowerCase().includes(searchName.toLowerCase()));
         const matchesDate = event.startDateTime
             ? event.startDateTime.includes(searchDate)
             : true;
