@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 // changed to Rest API
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000",allowCredentials = "true")
 public class UserController {
 
     @Autowired
@@ -45,6 +45,7 @@ public class UserController {
     				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     			}else {
     				sessionObj.setAttribute("loggedInUser", user);
+    				System.out.println("Login"+sessionObj.getAttribute("loggedInUser"));
     				sessionObj.setAttribute("userId", user.getId());
     				return new ResponseEntity<User>(user,HttpStatus.OK);
     			}

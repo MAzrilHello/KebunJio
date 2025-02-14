@@ -26,7 +26,7 @@ const LoginPage = () => {
         axios.post(getLoginEndpoint, {
             emailOrUsername: sanitizeInput(emailOrUsername),
             password: sanitizeInput(password)
-        })
+        },{withCredentials:true})
             .then(response => {
                 console.log(response.status)
                 if (response.status === 200) {

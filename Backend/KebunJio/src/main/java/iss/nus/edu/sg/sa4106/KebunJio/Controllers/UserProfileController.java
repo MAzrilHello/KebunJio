@@ -67,7 +67,7 @@ public class UserProfileController {
 	@PutMapping("/update")
 	public ResponseEntity updateProfile(@RequestBody Map<String, String> requestData, HttpSession sessionObj) {
 		User user = (User) sessionObj.getAttribute("loggedInUser");
-		System.out.println(user);
+//		System.out.println(user);
 		if (user == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
