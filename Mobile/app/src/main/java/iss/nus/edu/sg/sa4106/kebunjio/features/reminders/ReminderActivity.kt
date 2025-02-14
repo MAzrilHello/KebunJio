@@ -104,6 +104,7 @@ class ReminderActivity : AppCompatActivity() {
                         val intent = Intent()
                         intent.putExtra("REMINDER_ADDED", true)
                         setResult(Activity.RESULT_OK, intent)
+                        Log.d("ReminderActivity", "ReminderActivity finished, sending result back")
                         finish() // Close ReminderActivity and return to ViewReminderListActivity
                     } else {
                         showToast("Failed to add reminder. Please try again.")

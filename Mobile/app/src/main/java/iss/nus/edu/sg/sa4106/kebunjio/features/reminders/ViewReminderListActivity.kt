@@ -108,7 +108,7 @@ class ViewReminderListActivity : AppCompatActivity() {
             intent.putExtra("plantId", plantId)
             intent.putExtra("plantName", plantName)
 
-            startActivity(intent) // No duplicate click listener needed!
+            reminderActivityLauncher.launch(intent)
         }
 
 
@@ -119,7 +119,7 @@ class ViewReminderListActivity : AppCompatActivity() {
             Log.d("ViewReminderListActivity", "Fetch reminders for plantId: $plantId")
             try {
                 val response = ReminderApiService.getRemindersByPlant(plantId)
-                Log.d("ViewReminderListActivity", "Response from API: $response")
+                Log.d("ViewReminderListActivity", "API Response after adding reminder: $response")
 
                 if (response.isNullOrEmpty()) {
                     showEmptyState()
@@ -131,7 +131,9 @@ class ViewReminderListActivity : AppCompatActivity() {
 
                     runOnUiThread {
                         if (!isDestroyed) {
+                            Log.d("ViewReminderListActivity", "Updating RecyclerView with new reminders: $groupedReminders")
                             reminderAdapter.updateData(groupedReminders)
+                            Log.d("ViewReminderListActivity", "Updating RecyclerView with new reminders: $groupedReminders")
                             binding.recyclerView.visibility = View.VISIBLE
                             binding.emptyStateText.visibility = View.GONE
                         }
