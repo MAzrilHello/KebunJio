@@ -102,6 +102,10 @@ class LogActivitiesActivity : AppCompatActivity() {
             goBack(false)
         }
 
+        binding.backArrow.setOnClickListener {
+            goBack(false)
+        }
+
         logActivitiesBtn.setOnClickListener {
             logNewActivity()
         }
