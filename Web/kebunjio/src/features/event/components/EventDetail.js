@@ -41,6 +41,7 @@ const EventDetail = () => {
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
+      timeZone: 'Asia/Shanghai'
     });
   };
   const description = event.description || "";
@@ -88,7 +89,7 @@ const EventDetail = () => {
 
         {/* 右侧内容 */}
         <div className="space-y-6">
-          <h1 className="text-3xl font-bold">Event number {event.id}</h1>
+          <h1 className="text-3xl font-bold"> {event.name}</h1>
           <div className="flex flex-col space-y-2">
             <div className="flex items-center space-x-2">
               <span className="text-gray-500">🕒</span>

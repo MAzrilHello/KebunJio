@@ -2,7 +2,6 @@ import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Dashboard from './features/dashboard2/index';  // Updated import
-// import { EventPage, EventDetail } from './features/event';
 import ForumTopPage from './features/qna-forum/pages/forum-top-page';
 import ForumMyPage from './features/qna-forum/pages/forum-my-post';
 import ForumNewPost from './features/qna-forum/pages/forum-new-post';
@@ -11,11 +10,10 @@ import UserProfilePage from './features/user-profile/user-profile-page';
 import ViewPost from './features/qna-forum/pages/forum-view-post'
 import LoginPage from './features/login-signup/login';
 import SignUpPage from './features/login-signup/signup';
-import Events from './features/event2/index'
+import EventPage from './features/event/event-page';
 
 import './index.css';
 import React, { useEffect } from 'react';
-import { GoogleOAuthProvider } from '@react-oauth/google';
 
 function App() {
   useEffect(() => {
@@ -27,15 +25,15 @@ function App() {
     document.body.appendChild(script);
   }, []);
   return (
-    
+
       <BrowserRouter>
-         
+
         <div className="min-h-screen bg-gray-50">
           <Routes>
             <Route path="/" element={<LoginPage/>}/>
             <Route path="/signup" element={<SignUpPage/>}/>
             <Route path="/dashboard2" element={<Dashboard />} />
-            <Route path="/events/*" element={<Events/>}/> {/* 使用/*来匹配子路由 */}
+            <Route path="/events/*" element={<EventPage/>}/>
             <Route path="/forum" element={<ForumTopPage/>}/>
             <Route path="/forum/search" element={<ForumSearchPage/>}/>
             <Route path="/forum/new" element={<ForumNewPost/>}/>
