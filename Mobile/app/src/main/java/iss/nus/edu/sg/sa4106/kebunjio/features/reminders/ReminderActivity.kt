@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import iss.nus.edu.sg.sa4106.kebunjio.R
 import iss.nus.edu.sg.sa4106.kebunjio.adapter.ReminderAdapter
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityReminderBinding
@@ -21,7 +23,11 @@ import iss.nus.edu.sg.sa4106.kebunjio.service.PlantApiService
 import iss.nus.edu.sg.sa4106.kebunjio.service.ReminderApiService
 import kotlinx.coroutines.launch
 import org.json.JSONObject
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
+import java.util.concurrent.TimeUnit
 
 class ReminderActivity : AppCompatActivity() {
     private lateinit var binding: ActivityReminderBinding
@@ -243,6 +249,12 @@ class ReminderActivity : AppCompatActivity() {
             if (success) {
                 showToast("Reminder set for $plantName at $reminderTime, every $frequencyValue $frequencyInterval.")
 
+                // Convert reminder time to LocalDateTime
+                val reminderDateTime = LocalDateTime.parse("2025-02-10T$reminderTime:00", DateTimeFormatter.ISO_DATE_TIME)
+
+                // Schedule WorkManager notification
+                scheduleReminderNotification(reminderDateTime)
+
                 val intent = Intent().apply { putExtra("REMINDER_ADDED", true) }
                 setResult(Activity.RESULT_OK, intent)
 
@@ -255,6 +267,16 @@ class ReminderActivity : AppCompatActivity() {
         return true
     }
 
+    private fun scheduleReminderNotification(reminderDateTime: LocalDateTime) {
+        val now = LocalDateTime.now()
+        val delay = ChronoUnit.MILLIS.between(now, reminderDateTime)
+
+        val workRequest = OneTimeWorkRequestBuilder<ReminderWorker>()
+            .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+            .build()
+
+        WorkManager.getInstance(this).enqueue(workRequest)
+    }
     private fun showToast(message: String) {
         Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()
     }

@@ -26,6 +26,9 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
+import androidx.work.*
+import java.util.concurrent.TimeUnit
 
 class ViewReminderListActivity : AppCompatActivity() {
     private lateinit var binding: ActivityViewReminderListBinding
@@ -153,28 +156,39 @@ class ViewReminderListActivity : AppCompatActivity() {
         for (reminder in reminders) {
             if (reminder.reminderDateTime.isAfter(now)) {
                 Log.d("ViewReminderListActivity", "Scheduling notification for reminder: ${reminder.id} at ${reminder.reminderDateTime}")
-                setReminderAlarm(this, reminder)
+                scheduleReminderNotification(reminder.reminderDateTime)
             }
         }
     }
 
-    private fun setReminderAlarm(context: Context, reminder: Reminder) {
-        val intent = Intent(context, NotificationReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            reminder.id.hashCode(),
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
+    private fun scheduleReminderNotification(reminderDateTime: LocalDateTime) {
+        val now = LocalDateTime.now()
+        val delay = ChronoUnit.MILLIS.between(now, reminderDateTime)
 
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val triggerTime = reminder.reminderDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        val workRequest = OneTimeWorkRequestBuilder<ReminderWorker>()
+            .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+            .build()
 
-        Log.d("ViewReminderListActivity", "Alarm set for reminder: ${reminder.id} at ${reminder.reminderDateTime} (Epoch: $triggerTime)")
-
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent)
-        Log.d("ViewReminderListActivity", "Scheduled notification for ${reminder.reminderDateTime}")
+        WorkManager.getInstance(this).enqueue(workRequest)
     }
+
+//    private fun setReminderAlarm(context: Context, reminder: Reminder) {
+//        val intent = Intent(context, NotificationReceiver::class.java)
+//        val pendingIntent = PendingIntent.getBroadcast(
+//            context,
+//            reminder.id.hashCode(),
+//            intent,
+//            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+//        )
+//
+//        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+//        val triggerTime = reminder.reminderDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+//
+//        Log.d("ViewReminderListActivity", "Alarm set for reminder: ${reminder.id} at ${reminder.reminderDateTime} (Epoch: $triggerTime)")
+//
+//        alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent)
+//        Log.d("ViewReminderListActivity", "Scheduled notification for ${reminder.reminderDateTime}")
+//    }
 
     private val reminderActivityLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
