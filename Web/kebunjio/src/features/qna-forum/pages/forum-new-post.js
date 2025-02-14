@@ -39,9 +39,10 @@ function ForumNewPost() {
     axios.post((createPostEndpoint),{
       title: sanitizeInput(formData.title),
       content: sanitizeInput(formData.question),
-      postCategory: formData.category})
+      postCategory: formData.category},
+               {withCredentials: true})
     .then(response=>{
-      if(response==201){
+      if(response.status==201){
         console.log("Create post successfully")
       }
       else{
