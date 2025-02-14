@@ -5,4 +5,7 @@
         <domain includeSubdomains="true">10.0.2.2</domain>
         <domain includeSubdomains="true">34.124.209.141</domain>
     </domain-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">kebunjio-flask-819110013955.asia-southeast1.run.app</domain>
+    </domain-config>
 </network-security-config>

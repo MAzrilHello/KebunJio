@@ -29,7 +29,8 @@ open class MlModelService : Service() {
     private fun makePredictPlantSpeciesConnection(requestMethod: String="GET"): HttpURLConnection {
         //val use_as_ip = "34.124.209.141"
         val use_as_ip = "10.0.2.2"
-        val flaskUrl = "http://$use_as_ip:5000/predictSpecies"
+        //val flaskUrl = "http://$use_as_ip:5000/predictSpecies"
+        val flaskUrl = "https://kebunjio-flask-819110013955.asia-southeast1.run.app/predictSpecies"
         Log.d("makePredictPlantSpeciesConnection","flaskUrl: $flaskUrl")
 
         val url = URL(flaskUrl)
