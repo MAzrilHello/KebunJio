@@ -65,7 +65,7 @@ public class ForumController {
 		for(Post post : postList) {
 			int upvoteCount = upvoteService.getUpvoteCountByPost(post.getId());
 			
-			Optional<User> postUserOp = userService.getUserById(post.getId());
+			Optional<User> postUserOp = userService.getUserById(post.getUserId());
 			String username = "";
 			if(postUserOp.isPresent()) {
 				User postUser = postUserOp.get();
