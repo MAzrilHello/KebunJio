@@ -37,8 +37,8 @@ function ForumTopPage() {
         </div>
         <div className="main-content">
         <p className="page-header">Top post</p>
-        {posts.length !== 0 ? (posts.map(({ post, upvoteCount }, index) => (
-          <PostSneakPeak key={index} post={post} upvoteCount={upvoteCount} />
+        {posts.length !== 0 ? (posts.map((post, index) => (
+          <PostSneakPeak key={index} post={post}/>
         ))
         ) : (<p>No result</p>)}
         </div>

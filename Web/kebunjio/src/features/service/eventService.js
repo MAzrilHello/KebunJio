@@ -16,6 +16,13 @@ const eventService = {
     return response.data;
   },
 
+  //temp function because pagination is not fixed
+  getAllEventTemp: async() =>{
+    const response = await axios.get(API_URL);
+    return response.data;
+  },
+
+
   // 获取单个事件详情
   getEventById: async (id) => {
     const response = await axios.get(`${API_URL}/${id}`);

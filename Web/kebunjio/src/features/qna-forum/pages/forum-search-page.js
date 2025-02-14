@@ -53,8 +53,8 @@ function ForumSearchPage() {
           <div>
             <p style={{marginTop:"10px", marginLeft:"8px"}} className="page-header">Search result:</p>
             {search_results.length!==0?(search_results.map((post,index)=>(
-                <PostSneakPeak key={index} post={post} upvoteCount={0}/>
-            ))):(<p style={{marginTop:"10px", marginLeft:"8px"}}>No result</p>)}
+              <PostSneakPeak key={index} post={post}/>
+          ))):(<p style={{marginTop:"10px", marginLeft:"8px"}}>No result</p>)}
           </div>
         </div>
       </div>

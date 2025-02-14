@@ -17,6 +17,7 @@ const Events = () => {
   const [filterDate, setFilterDate] = useState(null); // 用于存储搜索的 Date
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
+
   const [pageSize, setPageSize] = useState(10);
   const [totalElements, setTotalElements] = useState(0);
   const [currentImageIndexes, setCurrentImageIndexes] = useState({});
@@ -26,13 +27,16 @@ const Events = () => {
   const fetchEvents = async (page = currentPage, searchParams = {}) => {
     try {
       setLoading(true);
-
-      const response = await eventService.getAllEvents(page, pageSize, searchParams);
+      const response = await eventService.getAllEventTemp();
+      //const response = await eventService.getAllEvent(page, pageSize, searchParams);
       console.log(response);
-      setEvents(response.content);
-      setFilteredEvents(response.content);
-      setTotalElements(response.totalElements);
-      setCurrentPage(response.number);
+      setEvents(response);
+      setFilteredEvents(response);
+      //setEvents(response.content);
+      //setFilteredEvents(response.content);
+      //setTotalElements(response.totalElements);
+      //setCurrentPage(response.number);
+      //console.log(response.totalElements)
     } catch (error) {
       message.error('Failed to fetch events');
     } finally {
@@ -151,7 +155,7 @@ const Events = () => {
       }
     }
     fetchEvents(0, searchParams); // 从第一页开始搜索
-    setCurrentPage(0); // 重置当前页码
+    //setCurrentPage(0); // 重置当前页码
   };
 
   return (
@@ -195,6 +199,7 @@ const Events = () => {
               <Button style={{ backgroundColor: "#002E14", color: "white", height: "60px" }} onClick={onClickSearch}>Search</Button>
             </div>
             <div className="filter-item">
+              {/*
               <div className="filter-label">Result per page</div>
               <Select
                 defaultValue={10}
@@ -209,7 +214,7 @@ const Events = () => {
                   { value: 20, label: '20' },
                   { value: 50, label: '50' },
                 ]}
-              />
+              />*/}
             </div>
           </div>
         </div>
@@ -263,7 +268,7 @@ const Events = () => {
             </Card>
           ))}
         </div>
-
+          {/*
         <div className="events-pagination">
           <Pagination
             current={currentPage + 1}
@@ -272,7 +277,7 @@ const Events = () => {
             onChange={handlePageChange}
             showSizeChanger={false}
           />
-        </div>
+        </div>*/}
       </Content>
     </div>
   );
