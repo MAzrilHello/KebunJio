@@ -1,10 +1,15 @@
 package iss.nus.edu.sg.sa4106.kebunjio.features.reminders
 
+import android.app.Activity
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -19,6 +24,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONArray
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 class ViewReminderListActivity : AppCompatActivity() {
@@ -90,25 +96,21 @@ class ViewReminderListActivity : AppCompatActivity() {
         binding.selectPlantButton.setOnClickListener {
             finish()
         }
+
         binding.createReminderButton.setOnClickListener {
             Log.d("ViewReminderListActivity", "Attempting to pass sessionCookie: $sessionCookie to ReminderActivity")
             Log.d("ViewReminderListActivity", "Attempting to pass plantId: $plantId to ReminderActivity")
             Log.d("ViewReminderListActivity", "Attempting to pass plantName: $plantName to ReminderActivity")
 
-            binding.createReminderButton.setOnClickListener {
-                Log.d(
-                    "ViewReminderListActivity",
-                    "Passing sessionCookie: $sessionCookie to ReminderActivity"
-                )
+            val intent = Intent(this, ReminderActivity::class.java)
+            intent.putExtra("SESSION_COOKIE", sessionCookie)
+            intent.putExtra("userId", userId)
+            intent.putExtra("plantId", plantId)
+            intent.putExtra("plantName", plantName)
 
-                val intent = Intent(this, ReminderActivity::class.java)
-                intent.putExtra("SESSION_COOKIE", sessionCookie)
-                intent.putExtra("userId", userId)
-                intent.putExtra("plantId", plantId)
-                intent.putExtra("plantName", plantName)
-                startActivity(intent)
-            }
+            reminderActivityLauncher.launch(intent)
         }
+
 
     }
 
@@ -117,7 +119,7 @@ class ViewReminderListActivity : AppCompatActivity() {
             Log.d("ViewReminderListActivity", "Fetch reminders for plantId: $plantId")
             try {
                 val response = ReminderApiService.getRemindersByPlant(plantId)
-                Log.d("ViewReminderListActivity", "Response from API: $response")
+                Log.d("ViewReminderListActivity", "API Response after adding reminder: $response")
 
                 if (response.isNullOrEmpty()) {
                     showEmptyState()
@@ -129,11 +131,14 @@ class ViewReminderListActivity : AppCompatActivity() {
 
                     runOnUiThread {
                         if (!isDestroyed) {
+                            Log.d("ViewReminderListActivity", "Updating RecyclerView with new reminders: $groupedReminders")
                             reminderAdapter.updateData(groupedReminders)
+                            Log.d("ViewReminderListActivity", "Updating RecyclerView with new reminders: $groupedReminders")
                             binding.recyclerView.visibility = View.VISIBLE
                             binding.emptyStateText.visibility = View.GONE
                         }
                     }
+                    scheduleAllReminders(reminders)
                 }
             } catch (e: Exception) {
                 Log.e("ViewReminderListActivity", "Error fetching reminders: ${e.message}")
@@ -141,6 +146,47 @@ class ViewReminderListActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun scheduleAllReminders(reminders: List<Reminder>) {
+        val now = LocalDateTime.now()
+
+        for (reminder in reminders) {
+            if (reminder.reminderDateTime.isAfter(now)) {
+                Log.d("ViewReminderListActivity", "Scheduling notification for reminder: ${reminder.id} at ${reminder.reminderDateTime}")
+                setReminderAlarm(this, reminder)
+            }
+        }
+    }
+
+    private fun setReminderAlarm(context: Context, reminder: Reminder) {
+        val intent = Intent(context, NotificationReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            reminder.id.hashCode(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val triggerTime = reminder.reminderDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+
+        Log.d("ViewReminderListActivity", "Alarm set for reminder: ${reminder.id} at ${reminder.reminderDateTime} (Epoch: $triggerTime)")
+
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent)
+        Log.d("ViewReminderListActivity", "Scheduled notification for ${reminder.reminderDateTime}")
+    }
+
+    private val reminderActivityLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val reminderAdded = result.data?.getBooleanExtra("REMINDER_ADDED", false) ?: false
+            if (reminderAdded) {
+                fetchReminders(plantId!!) // Refresh reminder list
+            }
+        }
+    }
+
 
     private fun parseReminderList(response: String): List<Reminder> {
         val reminderList = mutableListOf<Reminder>()
