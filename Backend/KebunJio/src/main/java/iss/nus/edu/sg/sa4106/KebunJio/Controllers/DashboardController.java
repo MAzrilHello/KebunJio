@@ -45,7 +45,7 @@ public class DashboardController {
     	
     	dataSummary.put("totalUser",userService.count());
     	dataSummary.put("totalPlanted", plantService.count());
-    	dataSummary.put("totalPlanted", plantService.harvestedCount(true));
+    	dataSummary.put("totalHarvested", plantService.harvestedCount(true));
     	dataSummary.put("totalDisease", plantService.healthCount("Not Healthy"));
     	dataSummary.put("totalHealthy", plantService.healthCount("Healthy"));
     	
