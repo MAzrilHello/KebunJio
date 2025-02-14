@@ -8,6 +8,7 @@
     "@react-oauth/google": "^0.12.1",
     "@tailwindcss/postcss": "^4.0.6",
     "antd": "^5.23.4",
+    "autoprefixer": "^10.4.20",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
