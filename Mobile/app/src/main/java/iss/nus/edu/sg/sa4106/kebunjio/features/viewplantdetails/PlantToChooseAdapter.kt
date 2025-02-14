@@ -92,6 +92,7 @@ class PlantToChooseAdapter(private val context: Context,
             val intent = Intent(getContext(), ViewPlantDetailsActivity::class.java)
             intent.putExtra("haveData", true)
             intent.putExtra("currentPlant", currentPlant)
+            intent.putExtra("sessionCookie",sessionCookie)
             if (speciesIdToNameDict.size != this.loggedInFragment.speciesList.size) {
                 speciesIdToNameDict.clear()
                 for (i in 0..this.loggedInFragment.speciesList.size-1) {
@@ -106,7 +107,7 @@ class PlantToChooseAdapter(private val context: Context,
                 }
             }
             intent.putExtra("thisActivityLog",thisActLog)
-            getContext().startActivity(intent)
+            haveUpdateLauncher.launch(intent)
         }
 
         editPlantBtn.setOnClickListener{
