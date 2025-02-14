@@ -43,7 +43,6 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/Forum")
-@CrossOrigin(origins = "*")
 public class ForumController {
 	@Autowired
 	private PostService postService;
