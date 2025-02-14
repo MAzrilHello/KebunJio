@@ -5,6 +5,7 @@ import '../styling/forum-page.css'
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useLocation } from "react-router-dom";
+import { sanitizeInput } from '../../../service/sanitizeService';
 
 function ForumEditPost() {
 
@@ -42,8 +43,8 @@ function ForumEditPost() {
     if(formData.category!==''&&formData.title!==''&&formData.question!==''){
       const requestData = {
         Id: post.Id,
-        Title: formData.title,
-        Content: formData.question,
+        Title: sanitizeInput(formData.title),
+        Content: sanitizeInput(formData.question),
         PostCategory: formData.category,
         PublishedDateTime: new Date(),
         UserId: post.UserId
