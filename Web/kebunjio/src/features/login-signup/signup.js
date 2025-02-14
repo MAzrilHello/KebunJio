@@ -26,12 +26,14 @@ const SignUpPage = () => {
             return;
         }
 
+
         axios.post(getSignupEndpoint, {
             email: sanitizeInput(email),
             username: sanitizeInput(username),
             password: sanitizeInput(password),
             confirmPassword: sanitizeInput(confirmPassword),
             contactPhone: sanitizeInput(contactPhone)
+
         })
             .then(response => {
                 if (response.status === 201) {

@@ -1,0 +1,137 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - staging_v2  
+  pull_request:     
+    branches:
+      - staging_v2
+  workflow_dispatch:
+    inputs:
+      deploy_message:
+        description: 'Optional deploy message'
+        required: false
+        default: 'Deploy triggered'
+
+jobs:
+  build-backend:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache Mvn dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build with Mvn
+        run: mvn clean install -DskipTests=true
+        working-directory: Backend/KebunJio
+
+      - name: Run tests with Mvn
+        run: mvn test
+        working-directory: Backend/KebunJio
+
+      - name: Update test report
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-reports
+          path: Backend/KebunJio/target/surefire-reports/*.xml
+
+      - name: Build JAR
+        if: github.event_name != 'pull_request'  # 添加条件
+        run: mvn clean package -DskipTests=true
+        working-directory: Backend/KebunJio
+
+      - name: Build Backend Docker image
+        if: github.event_name != 'pull_request'  
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_NAME }}/kebunjiobe:${{ github.sha }} .
+        working-directory: Backend/KebunJio
+
+      - name: Login to Docker Hub
+        if: github.event_name != 'pull_request'  
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_NAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Push Backend Docker image
+        if: github.event_name != 'pull_request'  
+        working-directory: Backend/KebunJio
+        run: |
+          docker push ${{ secrets.DOCKERHUB_NAME }}/kebunjiobe:${{ github.sha }}
+
+  build-frontend:
+    runs-on: ubuntu-latest
+    outputs:
+      docker-image: ${{ secrets.DOCKERHUB_NAME }}/kebunjiofe:&{{ github.sha }}
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+  
+      - name: Build Frontend Docker Image
+        if: github.event_name != 'pull_request'  
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_NAME }}/kebunjiofe:${{ github.sha }} .
+        working-directory: Web/kebunjio
+
+      - name: Login to Docker Hub
+        if: github.event_name != 'pull_request'  
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_NAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Push Frontend Docker image
+        run: |
+          docker push ${{ secrets.DOCKERHUB_NAME }}/kebunjiofe:${{ github.sha }}
+
+  deploy:
+    needs: [build-backend,build-frontend]
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'  # 添加执行条件
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/google_cloud_key
+          chmod 600 ~/.ssh/google_cloud_key
+          ssh-keyscan -H 34.124.209.141 >> ~/.ssh/known_hosts
+
+      - name: Connect Server
+        run: |
+          ssh -i ~/.ssh/google_cloud_key team02@34.124.209.141 "echo 'SSH connection successful!'"
+
+      - name: Pull Docker image and Deploy
+        run: |
+          ssh -i ~/.ssh/google_cloud_key team02@34.124.209.141 << EOF
+            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+            
+            docker pull ${{ secrets.DOCKERHUB_NAME }}/kebunjiobe:${{ github.sha }}
+            docker stop kebunjiobe || true && docker rm kebunjiobe || true
+            docker run --network host --name kebunjiobe -d ${{ secrets.DOCKERHUB_NAME }}/kebunjiobe:${{ github.sha }}
+
+            docker pull ${{ secrets.DOCKERHUB_NAME }}/kebunjiofe:${{ github.sha }}
+            docker stop kebunjiofe || true && docker rm kebunjiofe || true
+            docker run --network host --name kebunjiofe -d ${{ secrets.DOCKERHUB_NAME }}/kebunjiofe:${{ github.sha }}
+          EOF
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}

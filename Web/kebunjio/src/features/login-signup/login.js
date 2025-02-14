@@ -24,6 +24,7 @@ const LoginPage = () => {
             emailOrUsername: emailOrUsername,
             password: password
         },{withCredentials:true})
+
             .then(response => {
                 console.log(response.status)
                 if (response.status === 200) {
