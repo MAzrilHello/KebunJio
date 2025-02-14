@@ -4,8 +4,15 @@ const API_URL = `${process.env.REACT_APP_API_BASE_URL}/events`;;
 
 const eventService = {
   // 获取所有事件
-  getAllEvents: async (page = 0, size = 10) => {
-    const response = await axios.get(API_URL);
+  getAllEvents: async (page = 0, size = 10, searchParams = {}) => {
+    let queryString = `?page=${page}&size=${size}`;
+    if (searchParams.name) {
+        queryString += `&name=${encodeURIComponent(searchParams.name)}`;
+    }
+    if (searchParams.date) {
+        queryString += `&date=${encodeURIComponent(searchParams.date)}`;
+    }
+    const response = await axios.get(`${API_URL}/eventPage${queryString}`);
     return response.data;
   },
 
