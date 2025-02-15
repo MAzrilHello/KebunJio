@@ -20,7 +20,7 @@ const PostSneakPeak = ({post, upvoteCount, commentCount, hasLiked}) => {
     return(
         <div className="post-sneak-peak-class">
             <Container>
-                <Row><PostHeader post={post} fetchData={fetchData}/></Row>
+                <Row><PostHeader post={post}/></Row>
                 <Row>
                     <Link to={`/forum/post/${post.id}`} state={{ post: post, upvoteCount:upvoteCount, commentCount:commentCount, hasLiked:hasLiked }}>
                         <b>{post.title}</b>
