@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/EdiblePlant")
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 public class EdiblePlantSpeciesController {
 	@Autowired
 	private EdiblePlantSpeciesService ediblePlantSpeciesService;
