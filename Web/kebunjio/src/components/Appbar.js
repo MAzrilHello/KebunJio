@@ -13,8 +13,12 @@ function Appbar() {
   const {isAdmin, setAuthUser, setIsLoggedIn} = useAuth()
   const navigate = useNavigate()
 
+  const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL;
+
+  const getLogoutEndpoint = `${API_BASE_URL}/users/logout`;
+
   const logout = () => {
-    axios.post('http://localhost:8080/api/users/logout', {}) 
+    axios.post(getLogoutEndpoint, {withCredentials:true}) 
         .then(() => {
             setAuthUser(null);
             setIsLoggedIn(false);
@@ -31,7 +35,7 @@ function Appbar() {
         isAdmin?(<Navbar expand="lg" className="custom-navbar">
           <Container>
           <Image src={AppbarLogo} style={{width:"50px"}}/>
-            <Navbar.Brand as={Link} to="/">KebunJio</Navbar.Brand>
+            <Navbar.Brand>KebunJio</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="me-auto">
