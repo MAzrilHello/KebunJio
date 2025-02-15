@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../../context/AuthContext";
 
-const PostHeader = ({post}) =>{
+const PostHeader = ({post, fetchData}) =>{
     const navigate = useNavigate()
 
     const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL;
@@ -21,10 +21,13 @@ const PostHeader = ({post}) =>{
     
     const {authUser,isAdmin} = useAuth()
 
+    const {fetchData} = fetchData
+
     const deletePost = () => {
         axios.delete(getDeletePostEndpoint,{withCredentials:true})
         .then(response=>{
             console.log(response)
+            fetchData()
         })
         .catch(err=>{
             console.log(err)

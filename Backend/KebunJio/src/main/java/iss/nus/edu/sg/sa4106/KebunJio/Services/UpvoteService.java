@@ -25,7 +25,7 @@ public class UpvoteService {
 		 return upvoteList.size();
 	}
 	
-	public List<Upvote> getHasUpvotedByUser(String userId) {
+	public List<Upvote> getUpvotesByUser(String userId) {
 		List<Upvote> upvoteListByUser = upvoteRepository.findByUserId(userId);
 		return upvoteListByUser;
 	}
