@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/events")
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 public class EventController {
 
     @Autowired
