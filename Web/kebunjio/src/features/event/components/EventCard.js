@@ -5,6 +5,7 @@ const EventCard = ({ event }) => {
     const navigate = useNavigate();
 
     const formatDate = (dateString) => {
+        if (!dateString) return { month: 'N/A', day: 'N/A' }; 
         const date = new Date(dateString);
         return {
             month: date.toLocaleString('default', { month: 'short' }).toUpperCase(),
@@ -23,7 +24,7 @@ const EventCard = ({ event }) => {
             <div className="flex-shrink-0 w-40 h-40">
                 <img
                     src={event.picture}
-                    alt={event.name}
+                    alt={event.name||"Unknown event"}
                     className="w-full h-full object-cover rounded-lg"
                 />
             </div>
