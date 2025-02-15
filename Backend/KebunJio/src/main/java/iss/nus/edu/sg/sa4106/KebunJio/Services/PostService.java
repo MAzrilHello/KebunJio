@@ -77,8 +77,10 @@ public class PostService {
 			newPost.setTitle(updatePost.title);
 			newPost.setContent(updatePost.content);
 			newPost.setPostCategory(updatePost.postCategory);
+			System.out.println(newPost.getTitle());
 			try {
 				postRepository.save(newPost);
+				
 				syncES(newPost);
 				result = true;
 			}catch(Exception e) {
