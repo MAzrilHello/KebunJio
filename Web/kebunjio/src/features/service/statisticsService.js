@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = `${process.env.REACT_APP_API_BASE_URL}/Dashboard/DataSummary`;;
+const API_URL = `${process.env.REACT_APP_API_LIVE_URL}/Dashboard/DataSummary`;;
 
 // 创建一个axios实例
 /*
