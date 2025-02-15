@@ -36,7 +36,7 @@ const UserProfilePage = () => {
             try {
                 console.log("Fetching user profile...");
                 // need change to 34.124.209.141
-                const response = await axios.get("http://localhost:8080/api/userProfile", { withCredentials: true });
+                const response = await axios.get("http://34.124.209.141:8080/api/userProfile", { withCredentials: true });
 
                 if (response.data) {
                     console.log("User Profile Fetched:", response.data);
@@ -80,7 +80,7 @@ const UserProfilePage = () => {
             try {
                 // need change to 34.124.209.141
                 const response = await axios.put(
-                    "http://localhost:8080/api/userProfile/update", // need change to remote ip
+                    "http://34.124.209.141:8080/api/userProfile/update", // need change to remote ip
                     { username, email, phoneNumber: phone },
                     {
                         withCredentials: true,
