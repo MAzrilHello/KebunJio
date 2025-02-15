@@ -167,7 +167,7 @@ public class ForumController {
 	}
 	
 	// URL: /Forum/Post/{id}/Upvote
-	@PutMapping("/Post/{id}/Upvote")
+	@PostMapping("/Post/{id}/Upvote")
 	public ResponseEntity upvotePost(@PathVariable String id,HttpSession sessionObj) {
 		User currentUser = (User) sessionObj.getAttribute("loggedInUser");
 		
