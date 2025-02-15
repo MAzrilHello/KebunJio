@@ -147,20 +147,17 @@ public class ReminderController {
     	}
     }
 
-
-	@PutMapping("/{id}")
-	public ResponseEntity<Reminder> updateReminder(@PathVariable String id,
-	                                               @RequestBody Reminder updatedReminder) {
+    @PutMapping("/{id}")
+    public ResponseEntity<Reminder> updateReminder(@PathVariable String id, @RequestBody Reminder updatedReminder) {
 	    return reminderService.updateReminder(id, updatedReminder)
 	            .map(ResponseEntity::ok)
 	            .orElse(ResponseEntity.notFound().build());
-	}
+    }
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deleteReminder(@PathVariable String id) {
-	public ResponseEntity<String> deleteReminder(@PathVariable String id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteReminder(@PathVariable String id) {
 	    return reminderService.deleteReminder(id)
 	            ? ResponseEntity.ok("Reminder deleted successfully.")
 	            : ResponseEntity.status(404).body("Reminder not found.");
-		}
+    }
 }
