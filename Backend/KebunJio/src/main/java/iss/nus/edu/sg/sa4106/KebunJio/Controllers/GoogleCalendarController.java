@@ -10,7 +10,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/google/calendar")
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 public class GoogleCalendarController {
 
     @Autowired
