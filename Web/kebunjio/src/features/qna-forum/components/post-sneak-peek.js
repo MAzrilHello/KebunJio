@@ -16,7 +16,7 @@ function trimContent(content) {
     }
 }
 
-const PostSneakPeak = ({post, upvoteCount, commentCount, hasLiked, fetchData}) => {    
+const PostSneakPeak = ({post, upvoteCount, commentCount, hasLiked}) => {    
     return(
         <div className="post-sneak-peak-class">
             <Container>
@@ -32,7 +32,7 @@ const PostSneakPeak = ({post, upvoteCount, commentCount, hasLiked, fetchData}) =
                         <p>{trimContent(post.content)}</p>
                     </div>
                 </Row>
-                <Row><PostInsight upvote={upvoteCount} comment={commentCount} id={post.id} hasLiked={hasLiked}/></Row>
+                <Row><PostInsight upvote={upvoteCount} comment={commentCount} id={post.id}/></Row>
             </Container>
         </div>
     )

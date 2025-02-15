@@ -19,7 +19,7 @@ function ForumSearchPage() {
       setSearchInput(event.target.value);
   };
 
-  const handleSearchSubmit = () => {
+  const getSearchData = () => {
     const getSearchEndpoint = `${API_BASE_URL}/Forum/Search?query=${searchInput}`;
     axios.get(getSearchEndpoint,{withCredentials:true})
     .then(response=>{
@@ -29,6 +29,10 @@ function ForumSearchPage() {
     .catch(err=>{
       console.log(err)
     })
+  }
+
+  const handleSearchSubmit = () => {
+    getSearchData()
   }
 
   return (
@@ -54,7 +58,7 @@ function ForumSearchPage() {
           <div>
             <p style={{marginTop:"10px", marginLeft:"8px"}} className="page-header">Search result:</p>
             {search_results.length!==0?(search_results.map(({post,upvoteCount,commentCount},index)=>(
-              <PostSneakPeak key={index} post={post} upvoteCount={upvoteCount} commentCount={commentCount}/>
+              <PostSneakPeak key={index} post={post} upvoteCount={upvoteCount} commentCount={commentCount} getSearchData={getSearchData}/>
             ))):(<p style={{marginTop:"10px", marginLeft:"8px"}}>No result</p>)}
           </div>
         </div>
