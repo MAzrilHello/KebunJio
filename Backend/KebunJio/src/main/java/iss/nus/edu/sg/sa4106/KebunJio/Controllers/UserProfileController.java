@@ -34,7 +34,7 @@ public class UserProfileController {
     		String message =  "Can not foun User";
     		return new ResponseEntity<>(message,HttpStatus.NOT_FOUND);
     	}
-    	
+    	System.out.println("UserProfile"+user);
     	List<Plant> history = plantHistoryService.getPlantsByUserId(user.getId());
     	
     	long totalPlanted = history.size();
