@@ -27,7 +27,7 @@ import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/ActivityLog")
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 public class ActivityLogController {
 	@Autowired
 	private ActivityLogService actLogService;
