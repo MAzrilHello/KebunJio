@@ -29,7 +29,7 @@ public class PostService {
 	private PostESRepository postESRepository;
 	
 	//Function1: CreatePost
-	public boolean createPost(PostDAO newPostData,String userId) {
+	public boolean createPost(PostDAO newPostData,String userId,String username) {
 		boolean result = false;
 		
 		Post newPost = new Post();
@@ -39,6 +39,7 @@ public class PostService {
 		newPost.setPostCategory(newPostData.postCategory);
 		newPost.setPublishedDateTime(LocalDateTime.now());
 		newPost.setUserId(userId);
+		newPost.setUsername(username);
 		try {
 			postRepository.save(newPost);
 			syncES(newPost);
