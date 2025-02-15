@@ -22,7 +22,7 @@ const PostHeader = ({post}) =>{
     const {authUser,isAdmin} = useAuth()
 
     const deletePost = () => {
-        axios.delete(getDeletePostEndpoint)
+        axios.delete(getDeletePostEndpoint,{withCredentials:true})
         .then(response=>{
             console.log(response)
         })
