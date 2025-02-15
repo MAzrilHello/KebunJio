@@ -17,6 +17,8 @@ public class Post {
 	private String id;
 	
 	private String userId;
+
+	private String username;
 	
 	@NotNull(message="Title can not be null")
 	private String title;
@@ -35,6 +37,13 @@ public class Post {
 		this.userId = userId;
 	}
 
+	public void setUsername(String username){
+		this.username=username;
+	}
+
+	public String getUsername(){
+		return username;
+	}
 	public Post() {}
 
 	public String getId() {
