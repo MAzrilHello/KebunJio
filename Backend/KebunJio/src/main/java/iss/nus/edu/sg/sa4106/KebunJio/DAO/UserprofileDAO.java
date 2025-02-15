@@ -9,14 +9,16 @@ public class UserprofileDAO {
 	public User user;
 	public List<Plant> history;
 	public long totalPlanted;
+	public long totalHarvested;
 	public long uniquePlantTypes;
 	
 	public UserprofileDAO() {}
 	
-	public UserprofileDAO(User user,List<Plant> history,long totalPlanted,long uniquePlantTypes) {
+	public UserprofileDAO(User user,List<Plant> history,long totalPlanted,long totalHarvested, long uniquePlantTypes) {
 		this.user=user;
 		this.history=history;
 		this.totalPlanted=totalPlanted;
+		this.totalHarvested=totalHarvested;
 		this.uniquePlantTypes=uniquePlantTypes;
 	}
 	

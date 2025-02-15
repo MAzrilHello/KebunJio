@@ -38,9 +38,10 @@ public class UserProfileController {
     	List<Plant> history = plantHistoryService.getPlantsByUserId(user.getId());
     	
     	long totalPlanted = history.size();
+        long totalHarvested = history.stream().filter(Plant::getHarvested).count();
     	long uniquePlantTypes = history.stream().map(Plant::getEdiblePlantSpeciesId).distinct().count();
     	
-    	UserprofileDAO userProfileInfo = new UserprofileDAO(user,history,totalPlanted,uniquePlantTypes);
+    	UserprofileDAO userProfileInfo = new UserprofileDAO(user,history,totalPlanted,totalHarvested,uniquePlantTypes);
     	
     	return new ResponseEntity<>(userProfileInfo,HttpStatus.OK);
     }

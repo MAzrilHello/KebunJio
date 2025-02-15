@@ -58,12 +58,13 @@ const UserProfilePage = () => {
                     setUserInfo({
                         totalPlant: response.data.totalPlant || 0,
                         totalHarvested: response.data.totalHarvested || 0,
-                        totalType: response.data.totalType || 0
+                        totalType: response.data.uniquePlantTypes || 0
                     });
 
                     setUsername(response.data.user.username);
                     setEmail(response.data.user.email);
                     setPhoneNumber(response.data.user.phoneNumber);
+                    setPlants(response.data.history)
                 }
             } catch (error) {
                 console.error("Error fetching user profile:", error);
@@ -111,9 +112,7 @@ const UserProfilePage = () => {
 
     const handleInputChange = (event) => {
         const { id, value } = event.target;
-        if (id === "username") {
-            setUsername(value);
-        } else if (id === "email") {
+        if (id === "email") {
             setEmail(value);
         } else if (id === "phone") {
             setPhoneNumber(value);
@@ -126,7 +125,6 @@ const UserProfilePage = () => {
 
     return (
         <div className="user-profile-page">
-            {console.log("Rendering - AuthUser State:", authUser)}
             <Appbar/>
             <div className="user-profile">
                 <div className="page-header">
@@ -147,7 +145,6 @@ const UserProfilePage = () => {
                                         value={email}
                                         required
                                         onChange={handleInputChange}
-
                                     />
                                 </div>
                             ):(
@@ -190,7 +187,7 @@ const UserProfilePage = () => {
                         </div>
                         <div>
                             <p className="summary-title">Total number of plants planted</p>
-                            <p className="summary-number">{userInfo.totalPlant}</p>
+                            <p className="summary-number">{userInfo.totalPlanted}</p>
                         </div>
                     </Card>
                     <Card className="summary-card">
@@ -211,8 +208,8 @@ const UserProfilePage = () => {
                             </svg>
                         </div>
                         <div>
-                            <p className="summary-title">Total number of plants harvested</p>
-                            <p className="summary-number">{userInfo.totalHarvested}</p>
+                            <p className="summary-title">Unique plant types</p>
+                            <p className="summary-number">{userInfo.uniquePlantTypes}</p>
                         </div>
                     </Card>
                 </div>
@@ -230,20 +227,18 @@ const UserProfilePage = () => {
                             <th>Plant type</th>
                             <th>Date planted</th>
                             <th>Status</th>
-                            <th>Disease</th>
                             <th>Harvested</th>
                         </tr>
                         </thead>
                         <tbody>
                         {plants.map((plant) => (
                             <tr key={plant.Id}>
-                                <td>{plant.Id}</td>
-                                <td>{plant.Name}</td>
-                                <td>{plant.EdiblePlantSpecies}</td>
-                                <td>{plant.PlantedDate}</td>
-                                <td>{plant.PlantHealth}</td>
-                                <td>{plant.Disease || "None"}</td>
-                                <td>{plant.Harvested ? "Yes" : "No"}</td>
+                                <td>{plant.id}</td>
+                                <td>{plant.name}</td>
+                                <td>{plant.ediblePlantSpeciesId}</td>
+                                <td>{plant.plantedDate}</td>
+                                <td>{plant.plantHealth}</td>
+                                <td>{plant.harvested ? "Yes" : "No"}</td>
                             </tr>
                         ))}
                         </tbody>
