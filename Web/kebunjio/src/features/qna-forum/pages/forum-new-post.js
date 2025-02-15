@@ -43,7 +43,7 @@ function ForumNewPost() {
                {withCredentials: true})
     .then(response=>{
       if(response.status==201){
-        console.log("Create post successfully")
+        alert("Create post successfully")
       }
       else{
         console.log("Failed to create post")

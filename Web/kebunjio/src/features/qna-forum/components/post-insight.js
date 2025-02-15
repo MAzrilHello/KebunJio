@@ -17,15 +17,16 @@ const PostInsight = ({upvote, comment, id, hasLiked}) => {
 
     const handleUpvote = () => {
         if(!isAdmin){
+
                 axios.put(upvoteEndpoint,{withCredentials:true})
                 .then(response=>{
                     console.log(response)
                     setPostLiked(!postLiked)
                     if(postLiked){
-                        setCurrentUpvote+=1
+                        setCurrentUpvote(currentUpvote+1)
                     }
                     else{
-                        setCurrentUpvote-=1
+                        setCurrentUpvote(currentUpvote-1)
                     }
                 })
                 .catch(err=>{
