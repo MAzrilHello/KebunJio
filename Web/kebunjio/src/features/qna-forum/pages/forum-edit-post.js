@@ -61,12 +61,7 @@ function ForumEditPost() {
       content: sanitizeInput(formData.question),
       postCategory: formData.category},{withCredentials:true})
     .then(response=>{
-      if(response==201){
-        console.log("Edit post successfully")
-      }
-      else{
-        console.log("Failed to create post")
-      }
+        alert("Edit post successfully")
     })
     .catch(err=>{
       console.log(err)
