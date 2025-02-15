@@ -12,6 +12,7 @@ const eventService = {
     if (searchParams.date) {
         queryString += `&date=${encodeURIComponent(searchParams.date)}`;
     }
+    console.log(`${API_URL}/eventPage${queryString}`)
     const response = await axios.get(`${API_URL}/eventPage${queryString}`,{withCredentials: true});
     return response.data;
   },
