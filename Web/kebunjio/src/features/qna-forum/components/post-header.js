@@ -42,7 +42,7 @@ const PostHeader = ({post}) =>{
                 </Col>
                 <Col>
                     <div className="post-header-info">
-                        <div className="post-header-username">{post.userId}</div>
+                        <div className="post-header-username">{post.username}</div>
                         <div className="post-header-time">{post.publishedDateTime}</div>
                     </div>
                 </Col>
