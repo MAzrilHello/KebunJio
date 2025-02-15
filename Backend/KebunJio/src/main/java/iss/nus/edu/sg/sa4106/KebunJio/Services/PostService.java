@@ -124,6 +124,7 @@ public class PostService {
         postES.setPublishedDateTime(post.getPublishedDateTime());
         postES.setUserId(post.getUserId());
         postES.setPostCategory(post.getPostCategory());
+	postES.setUsename(post.getUsername());
         postESRepository.save(postES);
 
         return post;
