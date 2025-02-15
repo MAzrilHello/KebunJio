@@ -4,12 +4,17 @@ import MenuSidebar from '../components/menu-sidebar'
 import '../styling/forum-page.css'
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { useLocation } from "react-router-dom";
+import { sanitizeInput } from '../../../service/sanitizeService';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 
 function ForumEditPost() {
 
-  const location = useLocation();
-  const post = location.state?.post; 
+  const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL;
+
+  const { id } = useParams();
+
+  const editPostEndpoint = `${API_BASE_URL}/Forum/Post/${id}`
 
   const [formData, setFormData] = useState({
     category: "",
@@ -18,14 +23,27 @@ function ForumEditPost() {
   });
 
   useEffect(() => {
-    if (post) {
-      setFormData({
-        category: post.PostCategory || "",
-        title: post.Title || "",
-        question: post.Content || "",
-      });
-    }
-  }, [post]);
+    const fetchData = async () => {
+      try {
+          axios.get(editPostEndpoint)
+          .then(response=>{
+              console.log(response.data);
+              setFormData({
+                category: response.data.post.postCategory || "",
+                title: response.data.post.title || "",
+                question: response.data.post.content || "",
+              });
+          })
+          .catch(error => {
+              console.error("Error fetching data:", error)
+          })
+
+      } catch (error) {
+          console.error("Error fetching data", error)
+      }
+  };
+  fetchData();
+}, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -38,37 +56,22 @@ function ForumEditPost() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    //if all are filled
-    if(formData.category!==''&&formData.title!==''&&formData.question!==''){
-      const requestData = {
-        Id: post.Id,
-        Title: formData.title,
-        Content: formData.question,
-        PostCategory: formData.category,
-        PublishedDateTime: new Date(),
-        UserId: post.UserId
+    axios.put((editPostEndpoint),{
+      title: sanitizeInput(formData.title),
+      content: sanitizeInput(formData.question),
+      postCategory: formData.category})
+    .then(response=>{
+      if(response==201){
+        console.log("Edit post successfully")
       }
-      console.log(requestData)
-      alert("Updated post!")
-      /*API Implementation
-      fetch('https://', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestData),
-        })
-        .then(response => response.json())  // Parse the response to JSON
-        .then(data => {
-            console.log('Success:', data)
-        })
-        .catch((error) => {
-            console.error('Error:', error)
-        })
-      
-      */
-    }
-  };
+      else{
+        console.log("Failed to create post")
+      }
+    })
+    .catch(err=>{
+      console.log(err)
+    })
+  }
 
   const resetPost = (e) => {
     setFormData({ category: '', title: '', question: '', image: null })

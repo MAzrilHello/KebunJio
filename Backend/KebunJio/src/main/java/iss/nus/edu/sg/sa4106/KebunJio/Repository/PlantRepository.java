@@ -15,4 +15,10 @@ public interface PlantRepository extends MongoRepository<Plant,String> {
 	//@Query("SELECT p FROM Plant p JOIN p.user u WHERE u.id = :userId")
 	@Query("{'userId': ?0}")
 	List<Plant> findByUserId(@Param("userId") String userId);
+	
+	@Query("{'harvested': ?0}")
+	List<Plant> findByHarvested(@Param("harvested") boolean harvested);
+	
+	@Query("{'plantHealth': ?0}")
+	List<Plant> findByPlantHealth(@Param("plantHealth") String plantHealth);
 }

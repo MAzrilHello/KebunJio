@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-@Document(collection = "reminders")
+@Document(collection = "Reminders")
 public class Reminder {
 	@Id
 	private String id;  
@@ -97,5 +97,9 @@ public class Reminder {
 	public void setCreatedDateTime(LocalDateTime createdDateTime) {
 		this.createdDateTime = createdDateTime;
 	} 
-
+	
+	@Override
+	public String toString() {
+	    return "Reminder{id='" + id + "', type='" + reminderType + "', date='" + reminderDateTime + "', status='" + status + "'}";
+	}	
 }

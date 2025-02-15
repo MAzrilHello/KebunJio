@@ -5,6 +5,8 @@ import ReplyHeader from "./reply-header";
 import ReplyInsight from "./reply-insight";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import { sanitizeInput } from '../../../service/sanitizeService';
+import axios from "axios";
 
 const Reply = ({userReply}) => {
 
@@ -13,64 +15,40 @@ const Reply = ({userReply}) => {
     const [isEditing, setIsEditing] = useState(false)
 
     const [editedContent, setEditedContent] = useState(reply.content);
-    
+
+    const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL;
+
+    const getDeleteReplyEndpoint = `${API_BASE_URL}/Forum/Post/Comment/${userReply.id}`;   
+
+    const getEditReplyEndpoint = `${API_BASE_URL}/Forum/Post/Comment/${userReply.id}/Edit`;   
+
     const onClickEdit = () =>{
         setIsEditing(true)
     }
 
     const onClickDelete = () => {
-        alert("Delete reply")
-        const requestData = {
-            Id: reply.id
-        }
-        console.log(JSON.stringify(requestData))
-        /*API Implementation
-            fetch('https://', {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestData),
-            })
-            .then(response => response.json())  // Parse the response to JSON
-            .then(data => {
-                console.log('Success:', data)
-            })
-            .catch((error) => {
-                console.error('Error:', error)
-            })
-        
-        */
+        axios.delete(getDeleteReplyEndpoint)
+        .then(response=>{
+            console.log(response)
+        })
+        .catch(err=>{
+            console.log(err)
+        })
     }
 
     const onSubmitEdit = () => {
         setReply({ ...reply, content: editedContent });
         setIsEditing(false);
 
-        const requestData = {
-            Id: reply.id,
-            Content: reply.content,
-            PublishedDateTime: new Date(),
-          }
-          console.log(JSON.stringify(requestData))
-          alert("Updated reply!")
-          /*API Implementation
-          fetch('https://', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestData),
-            })
-            .then(response => response.json())  // Parse the response to JSON
-            .then(data => {
-                console.log('Success:', data)
-            })
-            .catch((error) => {
-                console.error('Error:', error)
-            })
-          
-          */
+        axios.put(getEditReplyEndpoint,{
+            commentContent:sanitizeInput(reply)
+        })        
+        .then(response=>{
+            console.log(response)
+        })
+        .catch(err=>{
+            console.log(err)
+        })
     }
 
     const onChangeEdit = (e) => {
@@ -80,7 +58,7 @@ const Reply = ({userReply}) => {
     return(
         <div>
             <Container>
-                <Row><ReplyHeader username={reply.username} time={reply.time} onDelete={onClickDelete} onEdit={onClickEdit}/></Row>
+                <Row><ReplyHeader username={reply.userId} time={reply.publishedDateTime} onDelete={onClickDelete} onEdit={onClickEdit}/></Row>
                 <Row>
                     {isEditing?(
                         <Form>
@@ -92,11 +70,11 @@ const Reply = ({userReply}) => {
                         </Form>
                     ):
                     (
-                        <p style={{fontSize:"0.9rem"}}>{reply.content}</p>
+                        <p style={{fontSize:"0.9rem"}}>{reply.commentContent}</p>
 
                     )}                
                     </Row>
-                <Row><ReplyInsight cur_like={reply.like} cur_dislike={reply.dislike} has_liked={reply.hasLiked} has_disliked={reply.hasDisliked}/></Row>
+                <Row><ReplyInsight cur_like={reply.likeCount} cur_dislike={reply.dislikeCount} has_liked={false} has_disliked={false}/></Row>
             </Container>
         </div>
     )

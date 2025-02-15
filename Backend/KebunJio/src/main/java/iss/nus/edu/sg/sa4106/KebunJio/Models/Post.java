@@ -15,25 +15,17 @@ import jakarta.validation.constraints.NotNull;
 public class Post {
 	@Id
 	private String id;
+	
+	private String userId;
+	
 	@NotNull(message="Title can not be null")
 	private String title;
 	@NotNull(message="Content can not be null")
 	private String content;
-	private String questionStatus;
+	
+	private String postCategory;
+	
 	private LocalDateTime publishedDateTime;
-	private Boolean answerSolved;
-	private String userId;
-	private int upvote;
-	
-	public int getUpvote() {
-		return upvote;
-	}
-	
-	public void setUpvote(int upvote) {
-		this.upvote = upvote;
-	}
-	
-	
 
 	public String getUserId() {
 		return userId;
@@ -69,13 +61,7 @@ public class Post {
 		this.content = content;
 	}
 
-	public String getQuestionStatus() {
-		return questionStatus;
-	}
 
-	public void setQuestionStatus(String questionStatus) {
-		this.questionStatus = questionStatus;
-	}
 
 	public LocalDateTime getPublishedDateTime() {
 		return publishedDateTime;
@@ -85,12 +71,14 @@ public class Post {
 		this.publishedDateTime = publishedDateTime;
 	}
 
-	public Boolean getAnswerSolved() {
-		return answerSolved;
+	public String getPostCategory() {
+		return postCategory;
 	}
 
-	public void setAnswerSolved(Boolean answerSolved) {
-		this.answerSolved = answerSolved;
+	public void setPostCategory(String postCategory) {
+		this.postCategory = postCategory;
 	}
+
+
 
 }

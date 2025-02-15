@@ -8,18 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentChooseLogToViewBinding
 
 // for testing
-import iss.nus.edu.sg.sa4106.kebunjio.DummyData
 import iss.nus.edu.sg.sa4106.kebunjio.LoggedInFragment
 import iss.nus.edu.sg.sa4106.kebunjio.data.ActivityLog
-import iss.nus.edu.sg.sa4106.kebunjio.features.addplant.AddPlantActivity
 
 class ChooseLogToViewFragment : Fragment() {
 
@@ -103,6 +99,12 @@ class ChooseLogToViewFragment : Fragment() {
         addFAB.setOnClickListener {
             val intent = Intent(requireContext(),LogActivitiesActivity::class.java)
             intent.putExtra("userId",userId)
+            if (plantIdToNameDict.size != loggedInFragment!!.usersPlantList.size) {
+                plantIdToNameDict.clear()
+                for (i in 0..loggedInFragment!!.usersPlantList.size-1) {
+                    plantIdToNameDict[loggedInFragment!!.usersPlantList[i].id] = loggedInFragment!!.usersPlantList[i].name
+                }
+            }
             intent.putExtra("plantIdToNameDict",plantIdToNameDict)
             intent.putExtra("sessionCookie",sessionCookie)
             haveUpdateLauncher.launch(intent)

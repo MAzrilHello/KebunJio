@@ -24,13 +24,9 @@ import androidx.core.view.WindowInsetsCompat
 import iss.nus.edu.sg.sa4106.kebunjio.R
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityAddPlantBinding
 import iss.nus.edu.sg.sa4106.kebunjio.data.Plant
-import iss.nus.edu.sg.sa4106.kebunjio.DummyData
 import iss.nus.edu.sg.sa4106.kebunjio.HandleNulls
 import iss.nus.edu.sg.sa4106.kebunjio.TimeClassHandler
-import iss.nus.edu.sg.sa4106.kebunjio.data.ActivityLog
-import iss.nus.edu.sg.sa4106.kebunjio.data.EdiblePlantSpecies
 import iss.nus.edu.sg.sa4106.kebunjio.service.PlantSpeciesLogService
-import iss.nus.edu.sg.sa4106.kebunjio.service.mlModel.MlModelService
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
@@ -68,11 +64,12 @@ class AddPlantActivity : AppCompatActivity() {
     lateinit var changeHarvestDateBtn: Button
     lateinit var changeHarvestTimeBtn: Button
 
-    lateinit var plantHealthText: EditText
+    lateinit var plantHealthSpinner: Spinner
     lateinit var diseaseText: EditText
     lateinit var harvestedSpinner: Spinner
 
     private var harvestSpinnerOptions = mutableListOf("Not Harvested","Harvested")
+    private var healthSpinnerOptions = mutableListOf("","Healthy","Not Healthy")
 
     // for choosing an image
     val galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
@@ -140,7 +137,7 @@ class AddPlantActivity : AppCompatActivity() {
         changeHarvestTimeBtn = binding.changeHarvestTimeBtn
         harvestDateTimeHandler = TimeClassHandler(harvestDateTimeText,changeHarvestDateBtn,changeHarvestTimeBtn,this)
 
-        plantHealthText = binding.plantHealthText
+        plantHealthSpinner = binding.plantHealthSpinner
         diseaseText = binding.diseaseText
         harvestedSpinner = binding.harvestedSpinner
 
@@ -152,6 +149,12 @@ class AddPlantActivity : AppCompatActivity() {
         harvestSpinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         harvestedSpinner.adapter = harvestSpinAdapter
 
+        // set health spinner options
+        val healthSpinAdapter: ArrayAdapter<String> = ArrayAdapter<String>(this,
+                                                                                android.R.layout.simple_spinner_item,
+                                                                                healthSpinnerOptions)
+        healthSpinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        plantHealthSpinner.adapter = healthSpinAdapter
         // for choosing an image to show
         selectImageBtn.setOnClickListener {
             galleryLauncher.launch("image/*")
@@ -167,6 +170,10 @@ class AddPlantActivity : AppCompatActivity() {
         }
 
         binding.backBtn.setOnClickListener{
+            goBack(false)
+        }
+
+        binding.backArrow.setOnClickListener{
             goBack(false)
         }
 
@@ -233,7 +240,16 @@ class AddPlantActivity : AppCompatActivity() {
             harvestDateTimeText.text = plant.harvestStartDate
         }
 
-        plantHealthText.setText(plant.plantHealth)
+        //plantHealthText.setText(plant.plantHealth)
+
+        val healthIdx = healthSpinnerOptions.indexOf(plant.plantHealth)
+        if (healthIdx >= 0) {
+            plantHealthSpinner.setSelection(healthIdx)
+        } else {
+            plantHealthSpinner.setSelection(0)
+        }
+
+
         if (plant.harvested) {
             harvestedSpinner.setSelection(harvestSpinnerOptions.indexOf("Harvested"))
         } else {
@@ -257,11 +273,11 @@ class AddPlantActivity : AppCompatActivity() {
         val disease = diseaseText.text.toString()
         val plantedDate = plantDateTimeText.text.toString()
         val harvestStartDate = harvestDateTimeText.text.toString()
-        val plantHealth = plantHealthText.text.toString()
+        val plantHealth = plantHealthSpinner.selectedItem.toString()
         val harvested = harvestedSpinner.selectedItem.toString() == "Harvested"
         // check that all values are good
-        if (name.equals("") || plantedDate.equals("")) {
-            makeToast("Please ensure name and planted date are filled")
+        if (name.equals("") || plantedDate.equals("")|| plantHealth.equals("")) {
+            makeToast("Please ensure name, planted date and health are filled")
             return
         }
         val newPlant = Plant(plantId, ediblePlantSpeciesId, userId, name,disease,plantedDate,harvestStartDate,plantHealth,harvested)
@@ -304,7 +320,8 @@ class AddPlantActivity : AppCompatActivity() {
         //val use_as_ip = "127.0.0.1"
         //val use_as_ip = "192.168.1.3"
         //val use_as_ip = "192.168.1.254"
-        val flaskUrl = "http://$use_as_ip:5000/predictSpecies"
+        //val flaskUrl = "http://$use_as_ip:5000/predictSpecies"
+        val flaskUrl = PlantSpeciesLogService.predictSpeciesUrl
         Log.d("predictImage","flaskUrl: $flaskUrl")
 
         val url = URL(flaskUrl)

@@ -17,12 +17,6 @@ public class ReminderService {
     @Autowired
     private ReminderRepository reminderRepo;
 
-    /**
-     * Retrieves reminders for a specific user and plant.
-     * @param userId The user ID.
-     * @param plantId The plant ID.
-     * @return A list of reminders for the specified user and plant.
-     */
     public List<Reminder> getRemindersByUserAndPlant(String userId, String plantId) {
         if (userId == null || userId.isEmpty()) {
             throw new IllegalArgumentException("User ID must not be null or empty.");

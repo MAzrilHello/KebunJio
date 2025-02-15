@@ -1,5 +1,9 @@
 package iss.nus.edu.sg.sa4106.kebunjio.features.planthealthcheck
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -7,6 +11,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -19,10 +24,13 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import iss.nus.edu.sg.sa4106.kebunjio.HandleNulls
 import iss.nus.edu.sg.sa4106.kebunjio.R
+import iss.nus.edu.sg.sa4106.kebunjio.data.Plant
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityPlantHealthCheckBinding
 import iss.nus.edu.sg.sa4106.kebunjio.service.mlModel.MlModelDiagnoseService
 import iss.nus.edu.sg.sa4106.kebunjio.service.PlantApiService
+import iss.nus.edu.sg.sa4106.kebunjio.service.PlantSpeciesLogService
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -38,6 +46,29 @@ class PlantHealthCheckActivity : AppCompatActivity() {
     private var imageCapture: ImageCapture? = null
     private val apiService = PlantApiService
     private lateinit var getContent: ActivityResultLauncher<String>
+    private var toPassBack = ""
+    private lateinit var currentPlant: Plant
+    private var sessionCookie: String = ""
+
+    // for communicating with spring boot api
+    protected var receiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action
+            val responseCode = intent.getIntExtra("responseCode",-2)
+            if (responseCode in 200..299) {
+                Log.d("PlantHealhtCheckActivity","${action} successful: ${responseCode}")
+            }
+        }
+    }
+
+
+    protected fun initReceiver() {
+        val filter = IntentFilter()
+        filter.addAction("update_plant")
+        ContextCompat.registerReceiver(this, receiver, filter, ContextCompat.RECEIVER_EXPORTED)
+        Log.d("AddPlantActivity","initReceiver completed")
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +103,11 @@ class PlantHealthCheckActivity : AppCompatActivity() {
             insets
         }
 
+        initReceiver()
+
+        currentPlant = intent.getSerializableExtra("currentPlant") as Plant
+        sessionCookie = HandleNulls.ifNullString(intent.getStringExtra("sessionCookie"))
+
     }
 
     private fun initButtons() {
@@ -90,6 +126,10 @@ class PlantHealthCheckActivity : AppCompatActivity() {
             //val intent = Intent(this, ViewPlantDetailsActivity::class.java)
             //startActivity(intent)
             // 'finish' is used to close the activity
+            val response = Intent()
+            setResult(RESULT_OK, response)
+            response.putExtra("haveUpdate",toPassBack != "")
+            response.putExtra("newDiagnosis",toPassBack)
             finish()
         }
     }
@@ -284,17 +324,69 @@ class PlantHealthCheckActivity : AppCompatActivity() {
 
     //Diagnose plant using ML service
     private fun diagnosePlant(imageFile: File) {
+        binding.diagnoseText.text = "Diagnosing..."
         Thread {
             val diagnosis = MlModelDiagnoseService().diagnosePlant(imageFile)
             runOnUiThread {
                 if (diagnosis != null) {
+                    binding.diagnoseText.text = "Diagnosis: $diagnosis"
                     showToast("Diagnosis: $diagnosis")
+                    if (diagnosis.contains("Not Healthy")) {
+                        toPassBack = "Not Healthy"
+                    } else {
+                        toPassBack = "Healthy"
+                    }
+                    if (currentPlant.plantHealth != toPassBack) {
+                        updateHealthOnWeb()
+                    }
+
+
                 } else {
+                    binding.diagnoseText.text = "Failed to diagnose plant"
                     showToast("Failed to diagnose plant")
                 }
             }
         }.start()
     }
+
+
+    private fun updateHealthOnWeb() {
+        Log.d("PlantHealthCheckActivity","Trying to start update service")
+        //val intent = Intent(this, PlantSpeciesLogService::class.java)
+        //intent.setAction("change_plant")
+        //currentPlant.plantHealth = toPassBack
+        //intent.putExtra("plant",currentPlant)
+        //intent.putExtra("isUpdate",true)
+        //intent.putExtra("sessionCookie",sessionCookie)
+        Log.d("PlantHealthCheckActivity","Starting service")
+        //startActivity(intent)
+        Thread{
+            try {
+                val newPlant = Plant(currentPlant.id,currentPlant.ediblePlantSpeciesId,
+                    currentPlant.userId,currentPlant.name,currentPlant.disease,currentPlant.plantedDate,
+                    currentPlant.harvestStartDate,toPassBack,currentPlant.harvested)
+                //currentPlant.plantHealth = toPassBack
+                val somePlant = PlantSpeciesLogService.createOrUpdatePlant(newPlant, true, null, sessionCookie)
+                if (somePlant != null) {
+                    runOnUiThread{
+                        currentPlant = newPlant
+                        showToast("Health data is updated")
+                    }
+                } else {
+                    runOnUiThread{
+                        showToast("Failed to update health in database. Please do so manually later.")
+                    }
+                }
+            } catch (e: Exception) {
+                runOnUiThread{
+                    Log.d("PlantHealthCheckActivity","Error updating database: ${e}")
+                    showToast("Failed to update health in database. Please do so manually later.")
+                }
+
+            }
+        }.start()
+    }
+
 
     private fun showToast(message: String) {
         Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()

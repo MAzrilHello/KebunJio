@@ -19,8 +19,11 @@ import java.net.URL
 class PlantSpeciesLogService : Service() {
 
     companion object {
-        val startUrl = "http://10.0.2.2:8080/api"
-        val timeoutTime = 15000
+        //const val startUrl = "http://10.0.2.2:8080/api"
+        const val startUrl = "http://34.124.209.141:8080/api"
+        const val predictSpeciesUrl = "http://10.0.2.2:5000/predictSpecies"
+        //const val predictSpeciesUrl = "http://34.124.209.141:5000/predictSpecies"
+        const val timeoutTime = 15000
 
 
         fun createOrUpdatePlant(thePlant: Plant,isUpdate: Boolean, forIntent: Intent?, sessionCookie: String): Plant? {
@@ -428,7 +431,7 @@ class PlantSpeciesLogService : Service() {
                 isList = true
                 forIntent?.setAction("get_plants_byuser")
             } else {
-                fullUrl = "${startUrl}/Plants/${id}"
+                fullUrl = "${startUrl}/plants/${id}"
                 isList = false
                 forIntent?.setAction("get_plants")
             }
@@ -481,11 +484,11 @@ class PlantSpeciesLogService : Service() {
             val isList: Boolean
             val fullUrl: String
             if (byUser) {
-                fullUrl = "${startUrl}/reminders/user/${id}"
+                fullUrl = "${startUrl}/Reminders/user/${id}"
                 isList = true
                 forIntent?.setAction("get_reminders_byuser")
             } else {
-                fullUrl = "${startUrl}/reminders/${id}"
+                fullUrl = "${startUrl}/Reminders/${id}"
                 isList = false
                 forIntent?.setAction("get_reminders")
             }
@@ -536,7 +539,7 @@ class PlantSpeciesLogService : Service() {
 
         fun createOrUpdateReminder(theReminder: Reminder, isUpdate: Boolean, forIntent: Intent?, sessionCookie: String): Reminder? {
             // url for adding and updating situation
-            val fullUrl: String = if (isUpdate) {"${startUrl}/reminders/${theReminder.id}"} else {"${startUrl}/reminders"}
+            val fullUrl: String = if (isUpdate) {"${startUrl}/Reminders/${theReminder.id}"} else {"${startUrl}/Reminders"}
             val action: String
             if (isUpdate) {
                 action = "update_reminder"
@@ -615,7 +618,7 @@ class PlantSpeciesLogService : Service() {
 
 
         fun deleteReminder(id: String, forIntent: Intent?, sessionCookie: String): Int {
-            val fullUrl = "${startUrl}/reminders/${id}"
+            val fullUrl = "${startUrl}/Reminders/${id}"
 
             val url = URL(fullUrl)
             val connection = url.openConnection() as HttpURLConnection

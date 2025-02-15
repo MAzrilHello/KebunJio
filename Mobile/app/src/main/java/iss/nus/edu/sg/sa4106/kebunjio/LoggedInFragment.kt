@@ -21,7 +21,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import iss.nus.edu.sg.sa4106.kebunjio.data.ActivityLog
 import iss.nus.edu.sg.sa4106.kebunjio.data.EdiblePlantSpecies
 import iss.nus.edu.sg.sa4106.kebunjio.data.Plant
-import iss.nus.edu.sg.sa4106.kebunjio.data.Reminder
 import iss.nus.edu.sg.sa4106.kebunjio.data.User
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.FragmentLoggedInBinding
 import iss.nus.edu.sg.sa4106.kebunjio.features.browseguides.ChooseGuideToViewFragment

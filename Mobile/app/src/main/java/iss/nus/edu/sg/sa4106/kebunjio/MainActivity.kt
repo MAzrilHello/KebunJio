@@ -1,12 +1,9 @@
 package iss.nus.edu.sg.sa4106.kebunjio
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ActivityMainBinding
-import iss.nus.edu.sg.sa4106.kebunjio.features.planthealthcheck.PlantHealthCheckActivity
-import iss.nus.edu.sg.sa4106.kebunjio.features.reminders.ReminderActivity
 
 
 class MainActivity : AppCompatActivity() {

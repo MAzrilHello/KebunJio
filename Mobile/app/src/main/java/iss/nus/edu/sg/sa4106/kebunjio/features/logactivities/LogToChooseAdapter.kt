@@ -1,31 +1,19 @@
 package iss.nus.edu.sg.sa4106.kebunjio.features.logactivities;
 
 import android.app.Activity
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.graphics.BitmapFactory
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.registerReceiver
 import iss.nus.edu.sg.sa4106.kebunjio.LoggedInFragment
 import iss.nus.edu.sg.sa4106.kebunjio.R
 import iss.nus.edu.sg.sa4106.kebunjio.data.ActivityLog
 import iss.nus.edu.sg.sa4106.kebunjio.databinding.ViewActLogToChooseBinding
-import iss.nus.edu.sg.sa4106.kebunjio.databinding.ViewPlantToChooseBinding
-import iss.nus.edu.sg.sa4106.kebunjio.features.addplant.AddPlantActivity
-import iss.nus.edu.sg.sa4106.kebunjio.service.DownloadImageService
 import iss.nus.edu.sg.sa4106.kebunjio.service.PlantSpeciesLogService
-import java.io.File
 
 
 class LogToChooseAdapter(private val context: Context,
@@ -46,6 +34,10 @@ class LogToChooseAdapter(private val context: Context,
                          userActLogList: ArrayList<ActivityLog>,
                          plantIdToNameDict: HashMap<String, String>){
         Log.d("ChooseLogToViewFragment","Reset data begins ${userId}, ${userActLogList.size}, ${plantIdToNameDict.size}")
+        // to help ensure appropriate number of data rows
+        if (this.count < userActLogList.size) {
+            addAll(*arrayOfNulls<Any>(userActLogList.size-this.count))
+        }
         this.userId = userId
         this.userActLogList.clear()
         this.userActLogList.addAll(userActLogList)
@@ -81,6 +73,8 @@ class LogToChooseAdapter(private val context: Context,
         if (position >= userActLogList.size) {
             _view.visibility = View.GONE
             return _view
+        } else {
+            _view.visibility = View.VISIBLE
         }
 
         val positionId = userActLogList[position].id
@@ -95,6 +89,13 @@ class LogToChooseAdapter(private val context: Context,
         val viewLogBtn = binding.viewLogBtn
         val editLogBtn = binding.editLogBtn
         val deleteLogBtn = binding.deleteLogBtn
+
+        if (plantIdToNameDict.size != loggedInFragment.usersPlantList.size) {
+            plantIdToNameDict.clear()
+            for (i in 0..loggedInFragment.usersPlantList.size-1) {
+                plantIdToNameDict[loggedInFragment.usersPlantList[i].id] = loggedInFragment.usersPlantList[i].name
+            }
+        }
 
         if (plantId != null) {
             whichPlantText.text = plantIdToNameDict[plantId]
@@ -116,6 +117,12 @@ class LogToChooseAdapter(private val context: Context,
             val thisId = positionId
             val intent = Intent(getContext(), LogActivitiesActivity::class.java)
             intent.putExtra("userId",userId)
+            if (plantIdToNameDict.size != loggedInFragment.usersPlantList.size) {
+                plantIdToNameDict.clear()
+                for (i in 0..loggedInFragment.usersPlantList.size-1) {
+                    plantIdToNameDict[loggedInFragment.usersPlantList[i].id] = loggedInFragment.usersPlantList[i].name
+                }
+            }
             intent.putExtra("plantIdToNameDict",plantIdToNameDict)
             intent.putExtra("sessionCookie",sessionCookie)
             intent.putExtra("currentActivityLog",currentActivityLog)

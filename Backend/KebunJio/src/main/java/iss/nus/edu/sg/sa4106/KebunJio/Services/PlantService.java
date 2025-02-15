@@ -54,4 +54,23 @@ public class PlantService {
     	return true;
     }
 
+    
+    public long count() {
+    	return plantRepo.count();
+    }
+    
+    
+    public long harvestedCount(boolean harvested) {
+    	return plantRepo.findByHarvested(harvested).size();
+    }
+    
+    
+    public long healthCount(String plantHealth) {
+    	return plantRepo.findByPlantHealth(plantHealth).size();
+    }
+    
+    
+    public List<Plant> getAllPlants() {
+    	return plantRepo.findAll();
+    }
 }

@@ -11,15 +11,29 @@
         android:layout_height="match_parent"
         android:background="#0A803D"
         android:orientation="vertical" >
-        <TextView
-            android:id="@+id/title_part"
+        <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:text="Log Activities"
-            android:textSize="30sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            />
+            android:orientation="horizontal" >
+            <ImageButton
+                android:id="@+id/back_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:padding="20dp"
+                android:background="#0A803D"
+                android:src="@drawable/arrow_left"
+                />
+            <TextView
+                android:id="@+id/title_part"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="Log Activities"
+                android:textColor="@android:color/white"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_height="wrap_content"
@@ -134,6 +148,7 @@
             android:layout_height="wrap_content"
             android:layout_width="150dp"
             android:layout_gravity="center"
+            android:visibility="gone"
             android:text="Back" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

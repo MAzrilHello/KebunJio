@@ -1,0 +1,8 @@
+flask==3.1.0
+numpy==1.26.4
+pandas==2.2.3
+pillow==11.0.0
+torch==2.5.1+cu118
+torchvision==0.20.1+cu118
+tqdm==4.64.0
+waitress==3.0.2

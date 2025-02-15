@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080';
+const API_URL = `${process.env.REACT_APP_API_BASE_URL}/Dashboard/DataSummary`;;
 
 // 创建一个axios实例
+/*
 const axiosInstance = axios.create({
     baseURL: API_BASE_URL,
     withCredentials: true,
@@ -10,10 +11,21 @@ const axiosInstance = axios.create({
         'Content-Type': 'application/json',
         'Accept': 'application/json'
     }
-});
+});*/
 
 const statisticsService = {
+    getStatistics: async()=>{
+        try{
+            const response = await axios.get(API_URL);
+            console.log(response.data);
+            return response.data;
+        }
+        catch(error){
+            console.log(error)
+        }
+    },
     // 获取最新的统计数据
+    /*
     getLatestStatistics: async () => {
         console.log('statisticsService: 开始请求Dashboard数据...');
         console.log('请求URL:', `${API_BASE_URL}/api/statistics`);
@@ -42,7 +54,7 @@ const statisticsService = {
             });
             throw error;
         }
-    }
+    }*/
 };
 
 export default statisticsService; 

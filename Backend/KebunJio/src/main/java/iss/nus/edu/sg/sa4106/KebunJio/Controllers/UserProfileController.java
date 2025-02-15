@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -33,7 +34,7 @@ public class UserProfileController {
     		String message =  "Can not foun User";
     		return new ResponseEntity<>(message,HttpStatus.NOT_FOUND);
     	}
-    	
+    	System.out.println("UserProfile"+user);
     	List<Plant> history = plantHistoryService.getPlantsByUserId(user.getId());
     	
     	long totalPlanted = history.size();
@@ -62,20 +63,24 @@ public class UserProfileController {
 //        return "userProfile";
 //    }
 
-    @PostMapping("/update")
-    public ResponseEntity updateProfile(@RequestParam String username,
-    		                            @RequestParam String email,
-    		                            @RequestParam String phoneNumber,
-    		                            HttpSession sessionObj){
-    	User user = (User) sessionObj.getAttribute("loggedInUser");
-    	if(user == null) {
-    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    	}
-    	
-    	User updateUser = userService.UpdateUser(user, username, email, phoneNumber);
-    	sessionObj.setAttribute("loggedInUser", updateUser);
-    	return new ResponseEntity<>(HttpStatus.OK);
-    }
+	@PutMapping("/update")
+	public ResponseEntity updateProfile(@RequestBody Map<String, String> requestData, HttpSession sessionObj) {
+		User user = (User) sessionObj.getAttribute("loggedInUser");
+//		System.out.println(user);
+		if (user == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		String username = requestData.get("username");
+		String email = requestData.get("email");
+		String phoneNumber = requestData.get("phoneNumber");
+
+		User updateUser = userService.UpdateUser(user, username, email, phoneNumber);
+		sessionObj.setAttribute("loggedInUser", updateUser);
+
+		return new ResponseEntity<>(updateUser,HttpStatus.OK);
+	}
+
 //    public String updateProfile(
 //            @RequestParam String username,
 //            @RequestParam String email,
