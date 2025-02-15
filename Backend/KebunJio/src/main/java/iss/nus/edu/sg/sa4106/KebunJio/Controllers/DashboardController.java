@@ -43,7 +43,7 @@ public class DashboardController {
     
     @GetMapping("/DataSummary")
     public Map<String, Object> getDataSummary() {
-    	<String,Object> dataSummary = new HashMap<>();
+    	Map<String,Object> dataSummary = new HashMap<>();
     	
     	dataSummary.put("totalUser",userService.count());
     	dataSummary.put("totalPlanted", plantService.count());
