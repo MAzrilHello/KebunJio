@@ -3,7 +3,7 @@ import FullPost from "../components/full-post";
 import Reply from "../components/reply";
 import Form from "react-bootstrap/Form";
 import { Button } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 
 import Appbar from "../../../components/Appbar";
@@ -15,6 +15,7 @@ const Post = () => {
     const { id } = useParams();
     const [post, setPost] = useState(null);
     const [comments, setComments] = useState([]);
+    const location = useLocation();
     const {upvoteCount} = location?.state.upvoteCount;
     const {commentCount} = location?.state.commentCount;
 

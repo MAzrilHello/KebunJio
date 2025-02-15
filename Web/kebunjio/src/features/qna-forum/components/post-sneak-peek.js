@@ -32,7 +32,7 @@ const PostSneakPeak = ({post, upvoteCount, commentCount}) => {
                         <p>{trimContent(post.content)}</p>
                     </div>
                 </Row>
-                <Row><PostInsight upvote={upvoteCount} comment={commentCount} id={id}/></Row>
+                <Row><PostInsight upvote={upvoteCount} comment={commentCount} id={post.id}/></Row>
             </Container>
         </div>
     )
