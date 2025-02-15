@@ -15,6 +15,8 @@ function ForumSearchPage() {
 
   const [searchInput, setSearchInput] = useState('')
 
+  const [hasLiked, setHasLiked] = useState([])
+  
   const getUpvotesByUser = `${API_BASE_URL}/Forum/Upvote`;
 
   const handleSearchInputChange = (event) => {
