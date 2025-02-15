@@ -135,20 +135,7 @@ const UserProfilePage = () => {
                 <div className="user-profile-container">
                     <Card className="user-profile-card">
                         <div>
-                            {isEdit?(
-                                <div>
-                                    <label htmlFor='username'>Username:</label>
-                                    <input
-                                        type="text"
-                                        id="username"
-                                        value={username}
-                                        required
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
-                            ):(
-                                <p>Username: {authUser?.username || "N/A"}</p>
-                            )}
+                            <p>Username: {authUser?.username || "N/A"}</p>
                         </div>
                         <div>
                             {isEdit?(
