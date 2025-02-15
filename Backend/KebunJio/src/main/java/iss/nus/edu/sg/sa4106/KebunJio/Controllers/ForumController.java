@@ -93,12 +93,12 @@ public class ForumController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		String userId = currentUser.getId();
-		
+		String username = currentUser.getUsername();
 		if(bindingResult.hasErrors()) {
 			return new ResponseEntity<>(bindingResult.getAllErrors(),HttpStatus.BAD_REQUEST);
 		}
 		
-		if(postService.createPost(postData,userId)) {
+		if(postService.createPost(postData,userId,username)) {
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		}else {
 			String message = "Created Post Error";
