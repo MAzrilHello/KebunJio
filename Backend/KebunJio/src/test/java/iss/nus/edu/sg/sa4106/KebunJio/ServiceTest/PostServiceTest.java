@@ -63,7 +63,7 @@ class PostServiceTest{
         post.setPostCategory(postDAO.postCategory);
         post.setPublishedDateTime(LocalDateTime.now());
         post.setUserId("u1");
-	post.setUsername("user1")
+	post.setUsername("user1");
         
         post1 = new Post();
         post1.setId("p1");
@@ -72,7 +72,7 @@ class PostServiceTest{
         post1.setPostCategory("Others");
         post1.setPublishedDateTime(LocalDateTime.now());
         post1.setUserId("u1");'
-	post1.setUsername("user1")
+	post1.setUsername("user1");
         
         postES = new PostES();
         postES.setId(post.getId());
