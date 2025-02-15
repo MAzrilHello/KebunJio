@@ -15,6 +15,8 @@ function ForumSearchPage() {
 
   const [searchInput, setSearchInput] = useState('')
 
+  const getUpvotesByUser = `${API_BASE_URL}/Forum/Upvote`;
+
   const handleSearchInputChange = (event) => {
       setSearchInput(event.target.value);
   };
@@ -29,6 +31,15 @@ function ForumSearchPage() {
     .catch(err=>{
       console.log(err)
     })
+    axios.get(getUpvotesByUser,{withCredentials:true})
+    .then(response => {
+      console.log(getUpvotesByUser)
+      console.log(response.data)
+      setHasLiked(response.data)
+    })
+    .catch(error => {
+      console.error("Error fetching data:", error)
+    });
   }
 
   const handleSearchSubmit = () => {
@@ -58,7 +69,7 @@ function ForumSearchPage() {
           <div>
             <p style={{marginTop:"10px", marginLeft:"8px"}} className="page-header">Search result:</p>
             {search_results.length!==0?(search_results.map(({post,upvoteCount,commentCount},index)=>(
-              <PostSneakPeak key={index} post={post} upvoteCount={upvoteCount} commentCount={commentCount} getSearchData={getSearchData}/>
+              <PostSneakPeak key={index} post={post} upvoteCount={upvoteCount} commentCount={commentCount} hasLiked={hasLiked}/>
             ))):(<p style={{marginTop:"10px", marginLeft:"8px"}}>No result</p>)}
           </div>
         </div>
