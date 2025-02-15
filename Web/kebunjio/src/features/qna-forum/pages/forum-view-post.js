@@ -15,6 +15,8 @@ const Post = () => {
     const { id } = useParams();
     const [post, setPost] = useState(null);
     const [comments, setComments] = useState([]);
+    const {upvoteCount} = location?.state.upvoteCount;
+    const {commentCount} = location?.state.commentCount;
 
     const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL;
 
@@ -80,7 +82,7 @@ const Post = () => {
                     <MenuSidebar />
                 </div>
                 <div className="main-content">
-                    {post ? <FullPost post={post} /> : <p>Loading...</p>}
+                    {post ? <FullPost post={post} upvoteCount={upvoteCount} commentCount={commentCount}/> : <p>Loading...</p>}
                     <div>
                         <Form>
                             <Form.Group controlId="replyForm">

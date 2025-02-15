@@ -18,7 +18,7 @@ function ForumTopPage() {
       .then(response => {
         console.log(getPostEndpoint)
         console.log(response.data)
-        setPosts(response.data)
+        setPosts(response.data.sort((a, b) => b.upvoteCount - a.upvoteCount).slice(0, 10));
       })
       .catch(error => {
         console.error("Error fetching data:", error)

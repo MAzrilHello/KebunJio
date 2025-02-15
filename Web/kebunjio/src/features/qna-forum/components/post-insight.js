@@ -4,50 +4,27 @@ import Row from 'react-bootstrap/Row';
 import Col from "react-bootstrap/Col";
 import { useAuth } from "../../../context/AuthContext";
 
-const PostInsight = ({upvote, comment, hasLiked}) => {
+const PostInsight = ({upvote, comment, id}) => {
 
     const [postLiked, setPostLiked] = useState(false)
     const [currentUpvote, setCurrentUpvote] = useState(upvote)
     const {isAdmin} = useAuth()
 
+    const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL;
+
+    const upvoteEndpoint = `${API_BASE_URL}/Forum/Post/${id}/Upvote`
+
     const handleUpvote = () => {
         if(!isAdmin){
             if (postLiked) {
-                setCurrentUpvote(currentUpvote - 1);
-                                /**
-                 fetch('https://', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                axios.put(upvoteEndpoint,{withCredentials:true})
+                .then(response=>{
+                    console.log(response)
                 })
-                .then(response => response.json())  // Parse the response to JSON
-                .then(data => {
-                    console.log('Success:', data)
+                .catch(err=>{
+                    console.log(err)
                 })
-                .catch((error) => {
-                    console.error('Error:', error)
-                })
-                 */
-            } else {
-                setCurrentUpvote(currentUpvote + 1);
-                                /**
-                 fetch('https://', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                })
-                .then(response => response.json())  // Parse the response to JSON
-                .then(data => {
-                    console.log('Success:', data)
-                })
-                .catch((error) => {
-                    console.error('Error:', error)
-                })
-                 */
-            }
-            setPostLiked(!postLiked);
+        }
         }
     };
     
