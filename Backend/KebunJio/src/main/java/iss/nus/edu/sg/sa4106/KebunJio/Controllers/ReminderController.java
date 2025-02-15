@@ -147,46 +147,17 @@ public class ReminderController {
     	}
     }
 
-
-    // Must restrict to owner only
     @PutMapping("/{id}")
-    public ResponseEntity<Reminder> updateReminder(@PathVariable String reminderId,
-    												@RequestBody Reminder updatedReminder,
-    												HttpSession sessionObj) {
-    	Optional<Reminder> existingReminder = reminderService.getReminderById(reminderId);
-    	if (existingReminder.isPresent()) {
-    		Reminder foundReminder = existingReminder.get();
-    		User currentUser = (User) sessionObj.getAttribute("loggedInUser");
-    		HttpStatus editStatus = Reusables.editStatusType(currentUser, foundReminder.getUserId());
-    		if (editStatus != HttpStatus.OK) {
-    			return new ResponseEntity<Reminder>(editStatus);
-    		}
-    		return reminderService.updateReminder(reminderId, updatedReminder)
-                    .map(ResponseEntity::ok)
-                    .orElse(ResponseEntity.notFound().build());
-    	} else {
-    		return ResponseEntity.notFound().build();
-    	}
-        
+    public ResponseEntity<Reminder> updateReminder(@PathVariable String id, @RequestBody Reminder updatedReminder) {
+	    return reminderService.updateReminder(id, updatedReminder)
+	            .map(ResponseEntity::ok)
+	            .orElse(ResponseEntity.notFound().build());
     }
 
-    // Must restrict to owner only
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteReminder(@PathVariable String reminderId, HttpSession sessionObj) {
-    	// first validate that we have permission
-		User currentUser = (User) sessionObj.getAttribute("loggedInUser");
-		// check if it even exists
-		Optional<Reminder> existingReminder = reminderService.getReminderById(reminderId);
-		if (!existingReminder.isPresent()) {
-			return ResponseEntity.notFound().build();
-		}
-		Reminder reminder = existingReminder.get();
-		HttpStatus editStatus = Reusables.editStatusType(currentUser, reminder.getUserId());
-		if (editStatus != HttpStatus.OK) {
-			return new ResponseEntity<>(editStatus);
-		}
-        return reminderService.deleteReminder(reminderId)
-                ? ResponseEntity.ok("Reminder deleted successfully.")
-                : ResponseEntity.status(404).body("Reminder not found.");
+    public ResponseEntity<String> deleteReminder(@PathVariable String id) {
+	    return reminderService.deleteReminder(id)
+	            ? ResponseEntity.ok("Reminder deleted successfully.")
+	            : ResponseEntity.status(404).body("Reminder not found.");
     }
 }

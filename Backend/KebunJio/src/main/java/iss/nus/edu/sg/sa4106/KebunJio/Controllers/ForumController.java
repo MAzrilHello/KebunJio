@@ -148,7 +148,7 @@ public class ForumController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		if(postService.updatePostByPostId(userId, newPost)) {
+		if(postService.updatePostByPostId(id, newPost)) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -167,8 +167,8 @@ public class ForumController {
 	}
 	
 	// URL: /Forum/Post/{id}/Upvote
-	@PutMapping("/Post/{id}/Upvote")
-	public ResponseEntity upvotePost(@PathVariable String id,boolean hasUpvoted,HttpSession sessionObj) {
+	@PostMapping("/Post/{id}/Upvote")
+	public ResponseEntity upvotePost(@PathVariable String id,HttpSession sessionObj) {
 		User currentUser = (User) sessionObj.getAttribute("loggedInUser");
 		
 		String userId = currentUser.getId();
