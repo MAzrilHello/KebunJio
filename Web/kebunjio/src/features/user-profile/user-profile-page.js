@@ -232,10 +232,10 @@ const UserProfilePage = () => {
                         </tr>
                         </thead>
                         <tbody>
-                        {plants.map(({plant,speciesNames}) => (
+                        {plants.map((plant, index) => (
                             <tr key={plant.Id}>
                                 <td>{plant.name}</td>
-                                <td>{speciesNames}</td>
+                                <td>{speciesNames[index]}</td>
                                 <td>{plant.plantedDate}</td>
                                 <td>{plant.plantHealth}</td>
                                 <td>{plant.harvested ? "Yes" : "No"}</td>
