@@ -32,7 +32,7 @@ function ForumEditPost() {
                 category: response.data.post.postCategory || "",
                 title: response.data.post.title || "",
                 question: response.data.post.content || "",
-              });
+              },{withCredentials:true});
           })
           .catch(error => {
               console.error("Error fetching data:", error)
@@ -59,7 +59,7 @@ function ForumEditPost() {
     axios.put((editPostEndpoint),{
       title: sanitizeInput(formData.title),
       content: sanitizeInput(formData.question),
-      postCategory: formData.category})
+      postCategory: formData.category},{withCredentials:true})
     .then(response=>{
       if(response==201){
         console.log("Edit post successfully")
