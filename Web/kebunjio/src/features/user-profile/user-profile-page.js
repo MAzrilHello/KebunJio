@@ -21,6 +21,7 @@ const UserProfilePage = () => {
     // set if edit
     const [isEdit, setIsEdit] = useState(false);
     const [plants, setPlants] = useState([]);
+    const [speciesNames, setSpeciesNames] = useState([]);
 
     const hasFetched = useRef(false);
     const [loading, setLoading] = useState(true);
@@ -56,7 +57,7 @@ const UserProfilePage = () => {
                     setAuthUser(userData);
 
                     setUserInfo({
-                        totalPlant: response.data.totalPlant || 0,
+                        totalPlant: response.data.totalPlanted || 0,
                         totalHarvested: response.data.totalHarvested || 0,
                         totalType: response.data.uniquePlantTypes || 0
                     });
@@ -64,7 +65,8 @@ const UserProfilePage = () => {
                     setUsername(response.data.user.username);
                     setEmail(response.data.user.email);
                     setPhoneNumber(response.data.user.phoneNumber);
-                    setPlants(response.data.history)
+                    setPlants(response.data.history);
+                    setSpeciesNames(response.data.speciesNames);
                 }
             } catch (error) {
                 console.error("Error fetching user profile:", error);
@@ -187,7 +189,7 @@ const UserProfilePage = () => {
                         </div>
                         <div>
                             <p className="summary-title">Total number of plants planted</p>
-                            <p className="summary-number">{userInfo.totalPlanted}</p>
+                            <p className="summary-number">{userInfo.totalPlant}</p>
                         </div>
                     </Card>
                     <Card className="summary-card">
@@ -209,7 +211,7 @@ const UserProfilePage = () => {
                         </div>
                         <div>
                             <p className="summary-title">Unique plant types</p>
-                            <p className="summary-number">{userInfo.uniquePlantTypes}</p>
+                            <p className="summary-number">{userInfo.totalType}</p>
                         </div>
                     </Card>
                 </div>
@@ -222,20 +224,18 @@ const UserProfilePage = () => {
                     <Table striped bordered hover>
                         <thead>
                         <tr>
-                            <th>#</th>
+                            <th>Plant name</th>
                             <th>Plant species</th>
-                            <th>Plant type</th>
                             <th>Date planted</th>
                             <th>Status</th>
                             <th>Harvested</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {plants.map((plant) => (
+                        {plants.map(({plant,speciesNames}) => (
                             <tr key={plant.Id}>
-                                <td>{plant.id}</td>
                                 <td>{plant.name}</td>
-                                <td>{plant.ediblePlantSpeciesId}</td>
+                                <td>{speciesNames}</td>
                                 <td>{plant.plantedDate}</td>
                                 <td>{plant.plantHealth}</td>
                                 <td>{plant.harvested ? "Yes" : "No"}</td>

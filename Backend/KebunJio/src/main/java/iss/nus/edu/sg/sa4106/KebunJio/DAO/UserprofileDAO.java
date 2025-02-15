@@ -11,15 +11,17 @@ public class UserprofileDAO {
 	public long totalPlanted;
 	public long totalHarvested;
 	public long uniquePlantTypes;
+	public List<String> speciesNames;
 	
 	public UserprofileDAO() {}
 	
-	public UserprofileDAO(User user,List<Plant> history,long totalPlanted,long totalHarvested, long uniquePlantTypes) {
+	public UserprofileDAO(User user,List<Plant> history,long totalPlanted,long totalHarvested, long uniquePlantTypes, List<String> speciesNames) {
 		this.user=user;
 		this.history=history;
 		this.totalPlanted=totalPlanted;
 		this.totalHarvested=totalHarvested;
 		this.uniquePlantTypes=uniquePlantTypes;
+		this.speciesNames=speciesNames;
 	}
 	
 }

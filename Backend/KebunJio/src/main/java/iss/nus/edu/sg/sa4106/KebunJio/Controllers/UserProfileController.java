@@ -1,8 +1,10 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Controllers;
 
 import iss.nus.edu.sg.sa4106.KebunJio.DAO.UserprofileDAO;
+import iss.nus.edu.sg.sa4106.KebunJio.Models.EdiblePlantSpecies;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.Plant;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.User;
+import iss.nus.edu.sg.sa4106.KebunJio.Services.EdiblePlantSpeciesService;
 import iss.nus.edu.sg.sa4106.KebunJio.Services.UserProfilePlantHistoryService;
 import iss.nus.edu.sg.sa4106.KebunJio.Services.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -26,6 +28,9 @@ public class UserProfileController {
 
     @Autowired
     private UserProfilePlantHistoryService plantHistoryService;
+    
+    @Autowired
+    private EdiblePlantSpeciesService ediblePlantSpeciesService;
 
     @GetMapping
     public ResponseEntity showProfilePage(HttpSession sessionObj) {
@@ -41,7 +46,12 @@ public class UserProfileController {
         long totalHarvested = history.stream().filter(Plant::getHarvested).count();
     	long uniquePlantTypes = history.stream().map(Plant::getEdiblePlantSpeciesId).distinct().count();
     	
-    	UserprofileDAO userProfileInfo = new UserprofileDAO(user,history,totalPlanted,totalHarvested,uniquePlantTypes);
+    	List<String> speciesNames = history.stream().map((Plant plant) -> {
+    		        EdiblePlantSpecies species = ediblePlantSpeciesService.getEdiblePlantSpecies(plant.getEdiblePlantSpeciesId());
+    		        return (species != null) ? species.getName() : "Unknown Species";
+    	}).toList();
+    	
+    	UserprofileDAO userProfileInfo = new UserprofileDAO(user,history,totalPlanted,totalHarvested,uniquePlantTypes, speciesNames);
     	
     	return new ResponseEntity<>(userProfileInfo,HttpStatus.OK);
     }
