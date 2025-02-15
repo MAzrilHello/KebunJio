@@ -15,7 +15,7 @@ function ForumMyPage() {
     useEffect(() => {
       //still error from BE function
       async function fetchData() {
-          axios.get(getUserPostEndpoint)
+          axios.get(getUserPostEndpoint,{withCredentials:true})
           .then(response=>{
             setPosts(response.data)
           })
