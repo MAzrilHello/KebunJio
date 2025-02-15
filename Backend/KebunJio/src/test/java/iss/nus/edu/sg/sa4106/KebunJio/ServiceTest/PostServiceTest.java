@@ -71,7 +71,7 @@ class PostServiceTest{
         post1.setContent("Post 1");
         post1.setPostCategory("Others");
         post1.setPublishedDateTime(LocalDateTime.now());
-        post1.setUserId("u1");'
+        post1.setUserId("u1");
 	post1.setUsername("user1");
         
         postES = new PostES();
