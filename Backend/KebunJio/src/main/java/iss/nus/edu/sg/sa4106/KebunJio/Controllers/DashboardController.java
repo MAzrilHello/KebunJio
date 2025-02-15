@@ -43,7 +43,7 @@ public class DashboardController {
     
     @GetMapping("/DataSummary")
     public Map<String, Object> getDataSummary() {
-    	/*<String,Object> dataSummary = new HashMap<>();
+    	<String,Object> dataSummary = new HashMap<>();
     	
     	dataSummary.put("totalUser",userService.count());
     	dataSummary.put("totalPlanted", plantService.count());
@@ -77,7 +77,7 @@ public class DashboardController {
     	}
     	
     	dataSummary.put("plantTypeCount",plantTypeCount);
-    	dataSummary.put("speciesIdToName", speciesIdToName);*/
+    	dataSummary.put("speciesIdToName", speciesIdToName);
     	
     	Map<String,Object> dataSummary = new HashMap<>();
         dataSummary.put("status", "success");
