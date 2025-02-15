@@ -21,7 +21,7 @@ function ForumSearchPage() {
 
   const handleSearchSubmit = () => {
     const getSearchEndpoint = `${API_BASE_URL}/Forum/Search?query=${searchInput}`;
-    axios.get(getSearchEndpoint)
+    axios.get(getSearchEndpoint,{withCredentials:true})
     .then(response=>{
       console.log(response.data)
       setSearchResults(response.data)
