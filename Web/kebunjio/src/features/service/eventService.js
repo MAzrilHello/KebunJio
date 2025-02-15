@@ -12,38 +12,38 @@ const eventService = {
     if (searchParams.date) {
         queryString += `&date=${encodeURIComponent(searchParams.date)}`;
     }
-    const response = await axios.get(`${API_URL}/eventPage${queryString}`);
+    const response = await axios.get(`${API_URL}/eventPage${queryString}`,{withCredentials: true});
     return response.data;
   },
 
   //temp function because pagination is not fixed
   getAllEventTemp: async() =>{
-    const response = await axios.get(API_URL);
+    const response = await axios.get(API_URL,{withCredentials: true});
     return response.data;
   },
 
 
   // 获取单个事件详情
   getEventById: async (id) => {
-    const response = await axios.get(`${API_URL}/${id}`);
+    const response = await axios.get(`${API_URL}/${id}`,{withCredentials: true});
     return response.data;
   },
 
   // 创建新事件
   createEvent: async (eventData) => {
-    const response = await axios.post(API_URL, eventData);
+    const response = await axios.post(API_URL, eventData,{withCredentials: true});
     return response.data;
   },
 
   // 更新事件
   updateEvent: async (id, eventData) => {
-    const response = await axios.put(`${API_URL}/${id}`, eventData);
+    const response = await axios.put(`${API_URL}/${id}`, eventData,{withCredentials: true});
     return response.data;
   },
 
   // 删除事件
   deleteEvent: async (id) => {
-    await axios.delete(`${API_URL}/${id}`);
+    await axios.delete(`${API_URL}/${id}`,{withCredentials: true});
   },
 
   // 上传图片
