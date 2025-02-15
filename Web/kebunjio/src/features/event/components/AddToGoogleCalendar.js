@@ -165,10 +165,14 @@ const AddToGoogleCalendar = ({ event }) => {
     newevent.summary = event.title;
     newevent.location = event.location;
     newevent.description = event.description;
-    newevent.start = {};
-    newevent.start.dateTime = convertToLocalTimezoneDate(event.startTime);
-    newevent.end = {};
-    newevent.end.dateTime = convertToLocalTimezoneDate(event.endTime);
+    newevent.start = {
+        dateTime: new Date(event.startTime).toISOString(),
+        timeZone: 'Asia/Shanghai'
+    }
+    newevent.end = {
+        dateTime: new Date(event.endTime).toISOString(),
+        timeZone: 'Asia/Shanghai'
+    };
 
     const request = gapi.client.calendar.events.insert({
       calendarId: "primary",
