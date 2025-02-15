@@ -24,6 +24,7 @@ export const EventList = () => {
             setLoading(true);
             setError(null);
             const response = await getAllEvents();
+            console.log(response.data)
             setEvents(Array.isArray(response.data) ? response.data : []);
         } catch (error) {
             console.error('Error fetching events:', error);
@@ -35,10 +36,12 @@ export const EventList = () => {
     
 
     const filteredEvents = events.filter((event) => {
-        const matchesName = sanitizeInput(event?.name.toLowerCase().includes(searchName.toLowerCase()));
-        const matchesDate = event.startDateTime
+        const matchesName = event?.name 
+        ? sanitizeInput(event.name).toLowerCase().includes(searchName?.toLowerCase() || '')
+        : false;
+        const matchesDate = event?.startDateTime
             ? event.startDateTime.includes(searchDate)
-            : true;
+        : false;
         return matchesName && matchesDate;
     });
 
