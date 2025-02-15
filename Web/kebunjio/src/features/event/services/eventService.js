@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = `${process.env.REACT_APP_API_BASE_URL}/events`;;
+const BASE_URL = `${process.env.REACT_APP_API_LIVE_URL}/events`;;
 
 // Add error handling wrapper
 const handleApiError = async (apiCall) => {
