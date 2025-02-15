@@ -30,7 +30,7 @@ const Post = () => {
                     console.log(response.data);
                     setPost(response.data.post);
                     setComments(response.data.commentList);
-                })
+                },{withCredentials: true})
                 .catch(error => {
                     console.error("Error fetching data:", error)
                 })
@@ -54,7 +54,7 @@ const Post = () => {
         try {
             const response = await axios.post(createReplyEndpoint, {
                 commentContent: sanitizeInput(replyInput)
-            });
+            },{withCredentials: true});
     
             if (response.status === 201) { 
                 const newComment = response.data
