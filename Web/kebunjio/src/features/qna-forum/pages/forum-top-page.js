@@ -14,7 +14,7 @@ function ForumTopPage() {
   
   useEffect(() => {
     async function fetchData() {
-      axios.get(getPostEndpoint)
+      axios.get(getPostEndpoint,{withCredentials:true})
       .then(response => {
         console.log(getPostEndpoint)
         console.log(response.data)
