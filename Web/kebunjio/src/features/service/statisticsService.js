@@ -16,7 +16,7 @@ const axiosInstance = axios.create({
 const statisticsService = {
     getStatistics: async()=>{
         try{
-            const response = await axios.get(API_URL);
+            const response = await axios.get(API_URL,{withCredentials: true});
             console.log(response.data);
             return response.data;
         }
