@@ -12,7 +12,7 @@ public interface UpvoteRepository extends MongoRepository<Upvote,String> {
 	@Query("{'postId':?0}")
 	List<Upvote> findByPostId(String postId);
 	
-	@Query("{'postId':?0}")
+	@Query("{'userId':?0}")
 	List<Upvote> findByUserId(String userId);
 	
 	@Query("{'postId':?0,'userId':?1}")
