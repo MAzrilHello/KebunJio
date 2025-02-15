@@ -89,7 +89,9 @@ public class ForumController {
 	public ResponseEntity createNewPost(@RequestBody @Valid PostDAO postData,BindingResult bindingResult,HttpSession sessionObj){
 		// wait for user Create 
 		User currentUser = (User) sessionObj.getAttribute("loggedInUser");
-		
+		if(currentUser == null){
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 		String userId = currentUser.getId();
 		
 		if(bindingResult.hasErrors()) {
