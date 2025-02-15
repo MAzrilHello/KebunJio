@@ -24,6 +24,7 @@ import iss.nus.edu.sg.sa4106.KebunJio.Models.Comment;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.CommentLike;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.Post;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.PostES;
+import iss.nus.edu.sg.sa4106.KebunJio.Models.Upvote;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.User;
 import iss.nus.edu.sg.sa4106.KebunJio.Services.CommentLikeService;
 import iss.nus.edu.sg.sa4106.KebunJio.Services.CommentService;
@@ -171,6 +172,17 @@ public class ForumController {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	}
+	
+	@GetMapping("/Upvote")
+	public ResponseEntity upvotePost(HttpSession sessionObj) {
+		User currentUser = (User) sessionObj.getAttribute("loggedInUser");
+		
+		String userId = currentUser.getId();
+		
+		List<Upvote> upvoteByUser = upvoteService.getUpvotesByUser(userId);
+		
+		return new ResponseEntity<>(upvoteByUser,HttpStatus.OK);
 	}
 	
 	// URL: /Forum/Post/{id}/CreateComment

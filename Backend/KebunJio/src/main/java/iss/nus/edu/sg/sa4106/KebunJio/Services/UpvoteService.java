@@ -25,6 +25,11 @@ public class UpvoteService {
 		 return upvoteList.size();
 	}
 	
+	public List<Upvote> getHasUpvotedByUser(String userId) {
+		List<Upvote> upvoteListByUser = upvoteRepository.findByUserId(userId);
+		return upvoteListByUser;
+	}
+	
 	@Transactional
 	public boolean calculateUpvote(String postId,String userId) {
 		boolean result = false;
@@ -48,9 +53,6 @@ public class UpvoteService {
 				throw new RuntimeException("Upvote Failed");
 			}
 		}
-
-	
-
 		
 		return result;
 	}

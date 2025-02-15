@@ -7,7 +7,7 @@ import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
 import placeholderPostImage from '../../../media/plant.jpg';
 
-const FullPost = ({post,upvoteCount, commentCount}) => {
+const FullPost = ({post,upvoteCount, commentCount, hasLiked}) => {
     return(
         <div>
             <div>
@@ -27,7 +27,7 @@ const FullPost = ({post,upvoteCount, commentCount}) => {
                     </Row>
                     <Row>
                         <Col>
-                            <PostInsight upvote={upvoteCount} comment={commentCount} id={post.id}/>
+                            <PostInsight upvote={upvoteCount} comment={commentCount} id={post.id} hasLiked={hasLiked}/>
                         </Col>
                     </Row>
 

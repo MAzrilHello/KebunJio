@@ -5,9 +5,9 @@ import Col from "react-bootstrap/Col";
 import { useAuth } from "../../../context/AuthContext";
 import axios from "axios";
 
-const PostInsight = ({upvote, comment, id}) => {
+const PostInsight = ({upvote, comment, id, hasLiked}) => {
 
-    const [postLiked, setPostLiked] = useState(false)
+    const [postLiked, setPostLiked] = useState(hasLiked)
     const [currentUpvote, setCurrentUpvote] = useState(upvote)
     const {isAdmin} = useAuth()
 
@@ -17,15 +17,20 @@ const PostInsight = ({upvote, comment, id}) => {
 
     const handleUpvote = () => {
         if(!isAdmin){
-            if (postLiked) {
                 axios.put(upvoteEndpoint,{withCredentials:true})
                 .then(response=>{
                     console.log(response)
+                    setPostLiked(!postLiked)
+                    if(postLiked){
+                        setCurrentUpvote+=1
+                    }
+                    else{
+                        setCurrentUpvote-=1
+                    }
                 })
                 .catch(err=>{
                     console.log(err)
                 })
-        }
         }
     };
     
