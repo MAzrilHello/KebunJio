@@ -63,6 +63,7 @@ class PostServiceTest{
         post.setPostCategory(postDAO.postCategory);
         post.setPublishedDateTime(LocalDateTime.now());
         post.setUserId("u1");
+	post.setUsername("user1")
         
         post1 = new Post();
         post1.setId("p1");
@@ -70,7 +71,8 @@ class PostServiceTest{
         post1.setContent("Post 1");
         post1.setPostCategory("Others");
         post1.setPublishedDateTime(LocalDateTime.now());
-        post1.setUserId("u1");
+        post1.setUserId("u1");'
+	post1.setUsername("user1")
         
         postES = new PostES();
         postES.setId(post.getId());
@@ -87,7 +89,7 @@ class PostServiceTest{
     void testCreatePost_Success() {
     	when(postRepository.save(any(Post.class))).thenReturn(post);
     	
-        boolean result = postService.createPost(postDAO, "1");
+        boolean result = postService.createPost(postDAO, "1","user1");
         
         // assert if result is true;
         assertTrue(result);
@@ -103,7 +105,7 @@ class PostServiceTest{
     	
     	// assert the exception should be RuntimeException when execute createPost
     	Exception exception = assertThrows(RuntimeException.class,()->{
-    		postService.createPost(postDAO, "1");
+    		postService.createPost(postDAO, "1","user1");
     	});
     	
     	// assert the message
