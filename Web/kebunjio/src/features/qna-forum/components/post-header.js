@@ -25,7 +25,7 @@ const PostHeader = ({post}) =>{
         axios.delete(getDeletePostEndpoint,{withCredentials:true})
         .then(response=>{
             console.log(response)
-            window.location.reload();        
+            //window.location.reload();        
         })
         .catch(err=>{
             console.log(err)

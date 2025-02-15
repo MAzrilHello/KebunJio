@@ -16,8 +16,8 @@ const Post = () => {
     const [post, setPost] = useState(null);
     const [comments, setComments] = useState([]);
     const location = useLocation();
-    const {upvoteCount} = location?.state.upvoteCount;
-    const {commentCount} = location?.state.commentCount;
+    const { upvoteCount, commentCount } = location?.state || {};
+
 
     const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL;
 
