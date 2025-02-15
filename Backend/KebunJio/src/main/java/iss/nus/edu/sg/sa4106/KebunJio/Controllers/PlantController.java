@@ -24,7 +24,7 @@ import org.springframework.http.HttpStatus;
 
 @RestController
 @RequestMapping("/Plants")
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 public class PlantController {
 	@Autowired
 	private PlantService plantService;
