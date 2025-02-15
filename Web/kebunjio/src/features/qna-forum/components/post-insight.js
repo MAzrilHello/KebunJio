@@ -17,7 +17,7 @@ const PostInsight = ({upvote, comment, id, hasLiked}) => {
 
     const handleUpvote = () => {
         if(!isAdmin){
-                axios.put(upvoteEndpoint,{withCredentials:true})
+                axios.post(upvoteEndpoint,{withCredentials:true})
                 .then(response=>{
                     console.log(response)
                     setPostLiked(!postLiked)
