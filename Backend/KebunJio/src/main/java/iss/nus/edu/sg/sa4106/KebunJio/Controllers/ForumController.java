@@ -148,7 +148,7 @@ public class ForumController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		if(postService.updatePostByPostId(userId, newPost)) {
+		if(postService.updatePostByPostId(id, newPost)) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
