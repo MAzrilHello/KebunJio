@@ -132,11 +132,16 @@ public class ForumController {
 	
 	// URL: /Forum/Post/{id}
 	@PutMapping("/Post/{id}")
-	public ResponseEntity updatePostById(@PathVariable String id,@RequestBody PostDAO newPost,HttpSession sessionObj) {
+	public ResponseEntity updatePostById(@PathVariable String id,@RequestBody @Valid PostDAO newPost,BindingResult bindingResult,HttpSession sessionObj) {
 		User currentUser = (User) sessionObj.getAttribute("loggedInUser");
-		
+		if(currentUser == null){
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 		String userId = currentUser.getId();
-		
+
+		if(bindingResult.hasErrors()) {
+			return new ResponseEntity<>(bindingResult.getAllErrors(),HttpStatus.BAD_REQUEST);
+		}
 		Post editPost = postService.getPostByPostId(id);
 		if(!editPost.getUserId().equals(userId)) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
