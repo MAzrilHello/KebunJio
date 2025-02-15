@@ -153,7 +153,7 @@ const EditEvent = () => {
             {eventData.picture && (
               <div className="image-preview">
                 <img
-                  src={`http://localhost:8080/api/events/images/${eventData.picture}`}
+                  src={`http://34.124.209.141:8080/api/events/images/${eventData.picture}`}
                   alt="Event preview"
                   className="preview-image"
                 />
