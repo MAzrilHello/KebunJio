@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/statistics")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3001", allowCredentials = "true", maxAge = 3600)
+//@CrossOrigin(origins = "http://localhost:3001", allowCredentials = "true", maxAge = 3600)
 @Slf4j
 public class PlantStatisticsController {
 	
