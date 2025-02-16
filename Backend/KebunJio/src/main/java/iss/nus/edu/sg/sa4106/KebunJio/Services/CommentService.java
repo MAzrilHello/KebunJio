@@ -17,7 +17,7 @@ public class CommentService {
 	@Autowired
 	private CommentRepository commentRepository;
 	
-	public boolean createComment(CommentDAO newComment,String PostId,String UserId) {
+	public boolean createComment(CommentDAO newComment,String PostId,String UserId,String Username) {
 		boolean result = false;
 		
 		Comment comment = new Comment();
@@ -27,7 +27,7 @@ public class CommentService {
 		comment.setPostId(PostId);
 		comment.setUserId(UserId);
 		comment.setPublishedDateTime(LocalDateTime.now());
-		
+		comment.setUsername(Username);
 		try {
 			commentRepository.save(comment);
 			result=true;

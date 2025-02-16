@@ -201,7 +201,8 @@ public class ForumController {
 		
 		String userId = currentUser.getId();
 		String postId = id;
-		if(commentService.createComment(commentDAO,postId,userId)) {
+		String username = currentUser.getUsername();
+		if(commentService.createComment(commentDAO,postId,userId,username)) {
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		}else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
