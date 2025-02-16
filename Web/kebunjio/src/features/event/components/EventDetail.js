@@ -112,11 +112,11 @@ const EventDetail = () => {
             <AddToGoogleCalendar
               event={{
                 id: event.id,
-                title: event.name,
+                name: event.name,
                 description: event.description,
                 location: event.location,
-                startTime: event.startDateTime,
-                endTime: event.endDateTime,
+                startDateTime: event.startDateTime,
+                endDateTime: event.endDateTime,
                 picture: event.picture,
               }}
             />
