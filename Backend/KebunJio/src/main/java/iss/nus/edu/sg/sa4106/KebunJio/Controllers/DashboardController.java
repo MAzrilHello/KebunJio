@@ -105,7 +105,6 @@ public class DashboardController {
     		speciesIdToName.put(speciesId, fullName);
     	}
     	
-    	/*
     	for (int i = 0; i < plantList.size(); i++) {
     		Plant currentPlant = plantList.get(i);
     		String plantId = currentPlant.getEdiblePlantSpeciesId();
@@ -114,9 +113,9 @@ public class DashboardController {
     			thisCount = (int) plantTypeCount.get(plantId);
     		}
     		plantTypeCount.put(plantId, thisCount+1);
-    	}*/
+    	}
     	
-    	//dataSummary.put("plantTypeCount",plantTypeCount);
+    	dataSummary.put("plantTypeCount",plantTypeCount);
     	dataSummary.put("speciesIdToName", speciesIdToName);
     	return dataSummary;
     }
