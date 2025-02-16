@@ -20,7 +20,7 @@ const Post = () => {
     const { upvoteCount, commentCount } = location?.state || {};
     const [commentLike, setCommentLike] = useState([]);
 
-    const {authUser} = useAuth()
+    const {authUser, isAdmin} = useAuth()
 
     const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL;
 
@@ -89,7 +89,7 @@ const Post = () => {
                 <div className="main-content">
                     {post ? <FullPost post={post} upvoteCount={upvoteCount} commentCount={commentCount}/> : <p>Loading...</p>}
                     <div>
-                        <Form>
+                        {isAdmin? (<div></div>):(<Form>
                             <Form.Group controlId="replyForm">
                                 <Form.Control
                                     className="text-area"
@@ -107,7 +107,10 @@ const Post = () => {
                                     Reply
                                 </Button>
                             </div>
-                        </Form>
+                        </Form>)
+                        
+                    }
+                
                     </div>
                     <div style={{ marginTop: "16px" }}>
                     {comments.length !== 0 ? (
