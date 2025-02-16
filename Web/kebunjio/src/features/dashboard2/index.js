@@ -11,6 +11,7 @@ import {
 import statisticsService from '../service/statisticsService';
 import './style.css';
 import Appbar from '../../components/Appbar';
+import eventService from '../service/eventService';
 
 const Dashboard = () => {
   //console.log('Dashboard组件被加载');
@@ -135,7 +136,6 @@ const Dashboard = () => {
     series: [{
       type: 'pie',
       radius: '70%',
-      
       data: statistics?.reportedDiseases ? 
         Object.entries(statistics.reportedDiseases).map(([name, value]) => ({
           name,
@@ -215,4 +215,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard; 
+export default Dashboard;
