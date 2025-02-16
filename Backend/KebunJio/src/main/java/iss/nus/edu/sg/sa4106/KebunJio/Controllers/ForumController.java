@@ -167,7 +167,26 @@ public class ForumController {
 		String userId = currentUser.getId();
 		
 		List<Post> postList = postService.getPostsByUserId(userId);
-		return new ResponseEntity<>(postList,HttpStatus.OK);
+		List<PostWithUpvoteDAO> resultList = new ArrayList<>();
+		for(Post post : postList) {
+			int upvoteCount = upvoteService.getUpvoteCountByPost(post.getId());
+			
+			Optional<User> postUserOp = userService.getUserById(post.getUserId());
+			String username = "";
+			if(postUserOp.isPresent()) {
+				User postUser = postUserOp.get();
+				username=postUser.getUsername();
+			}
+			List<Comment> commentList = commentService.getCommentsByPostId(post.getId());
+			int commentCount = commentList.size();
+			PostWithUpvoteDAO result = new PostWithUpvoteDAO();
+			result.setPost(post);
+			result.setUpvoteCount(upvoteCount);
+			result.setCommentCount(commentCount);
+			result.setUsername(username);
+			resultList.add(result);
+		}
+		return new ResponseEntity<>(resultList,HttpStatus.OK);
 	}
 	
 	// URL: /Forum/Post/{id}/Upvote
