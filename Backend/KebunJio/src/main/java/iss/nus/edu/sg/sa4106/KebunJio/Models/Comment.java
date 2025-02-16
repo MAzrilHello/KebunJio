@@ -16,6 +16,8 @@ public class Comment {
 	private int likeCount;
 	private int dislikeCount;
 	private LocalDateTime publishedDateTime;
+	private String username;
+
 	
 	public Comment() {}
 
@@ -26,7 +28,13 @@ public class Comment {
 	public void setId(String id) {
 		this.id = id;
 	}
+	public String getUsername(){
+		return username;
+	}
 
+	public void setUsername(String username){
+		this.username=username;
+	}
 	public String getPostId() {
 		return postId;
 	}
