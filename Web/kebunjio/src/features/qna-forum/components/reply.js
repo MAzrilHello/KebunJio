@@ -8,7 +8,7 @@ import Button from 'react-bootstrap/Button';
 import { sanitizeInput } from '../../../service/sanitizeService';
 import axios from "axios";
 
-const Reply = ({userReply}) => {
+const Reply = ({userReply, hasLiked, hasDisliked}) => {
 
     const [reply, setReply] = useState(userReply)
 
@@ -74,7 +74,7 @@ const Reply = ({userReply}) => {
 
                     )}                
                     </Row>
-                <Row><ReplyInsight cur_like={reply.likeCount} cur_dislike={reply.dislikeCount} has_liked={false} has_disliked={false}/></Row>
+                <Row><ReplyInsight cur_like={reply.likeCount} cur_dislike={reply.dislikeCount} has_liked={hasLiked} has_disliked={hasDisliked}/></Row>
             </Container>
         </div>
     )

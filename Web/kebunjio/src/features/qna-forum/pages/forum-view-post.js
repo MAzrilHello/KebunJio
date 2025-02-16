@@ -17,7 +17,7 @@ const Post = () => {
     const [comments, setComments] = useState([]);
     const location = useLocation();
     const { upvoteCount, commentCount } = location?.state || {};
-
+    const [commentLike, setCommentLike] = useState([]);
 
     const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL;
 
@@ -33,6 +33,7 @@ const Post = () => {
                     console.log(response.data);
                     setPost(response.data.post);
                     setComments(response.data.commentList);
+                    setCommentLike(response.data.commentLikeList);
                 },{withCredentials: true})
                 .catch(error => {
                     console.error("Error fetching data:", error)
@@ -106,11 +107,16 @@ const Post = () => {
                         </Form>
                     </div>
                     <div style={{ marginTop: "16px" }}>
-                        {comments.length !== 0 ? (
-                            comments.map((comment, index) => <Reply key={index} userReply={comment} />)
-                        ) : (
-                            <p>No replies yet</p>
-                        )}
+                    {comments.length !== 0 ? (
+                        comments.map((comment, index) => {
+                            const hasLiked = commentLikeList[commentLike.commentId]?.some(likeEntry => likeEntry.like === true) || false;
+                            const hasDisliked = commentLikeList[commentLike.commentId]?.some(likeEntry => likeEntry.like === true) || false;
+
+                            return <Reply key={index} userReply={comment} hasLiked={hasLiked} hasDisliked={hasDisliked}/>;
+                        })
+                    ) : (
+                        <p>No replies yet</p>
+                    )}
                     </div>
                 </div>
             </div>
