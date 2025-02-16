@@ -38,6 +38,7 @@ const EditEvent = () => {
     }
   }, [isNewEvent, location.state]);
 
+  /*
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -53,7 +54,7 @@ const EditEvent = () => {
         message.error('Failed to upload image');
       }
     }
-  };
+  };*/
 
   const handleSubmit = async () => {
     try {
@@ -147,31 +148,6 @@ const EditEvent = () => {
             onChange={e => setEventData(prev => ({ ...prev, picture: e.target.value }))}
           />
         </div>
-
-        {/*<div className="form-group">
-          <div className="image-upload-container">
-            <input
-              type="file"
-              id="imageUpload"
-              accept="image/*"
-              onChange={handleImageUpload}
-              style={{ display: 'none' }}
-            />
-            <label htmlFor="imageUpload" className="upload-button">
-              + Add image
-            </label>
-            {eventData.picture && (
-              <div className="image-preview">
-                <img
-                  src={`http://34.124.209.141:8080/api/events/images/${eventData.picture}`}
-                  alt="Event preview"
-                  className="preview-image"
-                />
-                <span className="image-name">{eventData.picture}</span>
-              </div>
-            )}
-          </div>
-        </div>*/}
 
         <div className="form-actions">
           <Button 
