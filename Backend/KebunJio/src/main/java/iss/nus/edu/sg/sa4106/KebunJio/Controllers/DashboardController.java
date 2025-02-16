@@ -116,8 +116,8 @@ public class DashboardController {
     		plantTypeCount.put(plantId, thisCount+1);
     	}*/
     	
-    	dataSummary.put("plantTypeCount",plantTypeCount);
-    	//dataSummary.put("speciesIdToName", speciesIdToName);
+    	//dataSummary.put("plantTypeCount",plantTypeCount);
+    	dataSummary.put("speciesIdToName", speciesIdToName);
     	return dataSummary;
     }
 } 
