@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getEventById } from "../services/eventService";
 import AddToGoogleCalendar from "./AddToGoogleCalendar";
+import Appbar from "../../../components/Appbar";
 
 const EventDetail = () => {
   const { id } = useParams();
@@ -66,6 +67,7 @@ const EventDetail = () => {
   }
   return (
     <div className="max-w-7xl mx-auto p-6">
+      <Appbar/>
       <button
         onClick={() => navigate("/events")}
         className="flex items-center text-gray-600 mb-6 hover:text-gray-900"
