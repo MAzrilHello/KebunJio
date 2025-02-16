@@ -239,7 +239,7 @@ const AddToGoogleCalendar = ({ event }) => {
       try {
         const newEvent = { ...event };
         newEvent.description =
-          "The Google account has been successfully added " +
+          // "The Google account has been successfully added " +
           new Date().toISOString().slice(0, 19).replace("T", " ") +
           "." +
           event.description;
