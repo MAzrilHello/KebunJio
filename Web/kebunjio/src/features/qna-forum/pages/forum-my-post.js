@@ -36,9 +36,10 @@ function ForumMyPage() {
         </div>
         <div className="main-content">
         <p className="page-header">My post</p>
-            {posts.length!==0?(posts.map((post,index)=>(
-                <PostSneakPeak key={index} post={post}/>
-            ))):(<p>No result</p>)}
+        {posts.length !== 0 ? (posts.map(({post,upvoteCount,commentCount},index)=>(
+              <PostSneakPeak key={index} post={post} upvoteCount={upvoteCount} commentCount={commentCount} hasLiked={hasLiked[index]}/>
+        ))
+        ) : (<p>No result</p>)}
         </div>
       </div>
     </div>
