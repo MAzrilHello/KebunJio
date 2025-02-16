@@ -109,8 +109,8 @@ const Post = () => {
                     <div style={{ marginTop: "16px" }}>
                     {comments.length !== 0 ? (
                         comments.map((comment, index) => {
-                            const hasLiked = commentLikeList[commentLike.commentId]?.some(likeEntry => likeEntry.like === true) || false;
-                            const hasDisliked = commentLikeList[commentLike.commentId]?.some(likeEntry => likeEntry.like === true) || false;
+                            const hasLiked = commentLike[comment.commentId]?.some(likeEntry => likeEntry.like === true) || false;
+                            const hasDisliked = commentLike[comment.commentId]?.some(likeEntry => likeEntry.like === true) || false;
 
                             return <Reply key={index} userReply={comment} hasLiked={hasLiked} hasDisliked={hasDisliked}/>;
                         })
