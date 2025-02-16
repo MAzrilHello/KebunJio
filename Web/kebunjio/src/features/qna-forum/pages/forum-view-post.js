@@ -89,7 +89,7 @@ const Post = () => {
                 <div className="main-content">
                     {post ? <FullPost post={post} upvoteCount={upvoteCount} commentCount={commentCount}/> : <p>Loading...</p>}
                     <div>
-                        {isAdmin? (<div></div>):(<Form>
+                        <Form>
                             <Form.Group controlId="replyForm">
                                 <Form.Control
                                     className="text-area"
@@ -107,9 +107,9 @@ const Post = () => {
                                     Reply
                                 </Button>
                             </div>
-                        </Form>)
+                        </Form>
                         
-                    }
+                
                 
                     </div>
                     <div style={{ marginTop: "16px" }}>
