@@ -198,7 +198,7 @@ const Dashboard = () => {
             </Row>
 
             <Row style={{ marginTop: '20px' }}>
-              <Col>
+              <Col span={16}>
                 <Card>
                   <ReactECharts option={plantTypeOption} />
                 </Card>
