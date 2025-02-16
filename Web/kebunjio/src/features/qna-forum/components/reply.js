@@ -74,7 +74,7 @@ const Reply = ({userReply, hasLiked, hasDisliked}) => {
 
                     )}                
                     </Row>
-                <Row><ReplyInsight cur_like={reply.likeCount} cur_dislike={reply.dislikeCount} has_liked={hasLiked} has_disliked={hasDisliked}/></Row>
+                <Row><ReplyInsight replyId={reply.id} cur_like={reply.likeCount} cur_dislike={reply.dislikeCount} has_liked={hasLiked} has_disliked={hasDisliked}/></Row>
             </Container>
         </div>
     )

@@ -89,6 +89,35 @@ public class DashboardController {
     	dataSummary.put("totalHarvested", plantService.harvestedCount(true));
     	dataSummary.put("totalDisease", plantService.healthCount("Not Healthy"));
     	dataSummary.put("totalHealthy", plantService.healthCount("Healthy"));
+    	
+    	List<Plant> plantList = plantService.getAllPlants();
+    	
+    	Map<String,Object> plantTypeCount = new HashMap<>();
+    	Map<String,String> speciesIdToName = new HashMap<>();
+    	
+    	List<EdiblePlantSpecies> speciesList = ediblePlantSpeciesService.getAllEdiblePlantSpecies();
+    	for (int i = 0; i < speciesList.size(); i++) {
+    		EdiblePlantSpecies currentSpecies = speciesList.get(i);
+    		String speciesId = currentSpecies.getId();
+    		String speciesName = currentSpecies.getName();
+    		String scientificName = currentSpecies.getScientificName();
+    		String fullName = speciesName + " (" + scientificName + ")";
+    		speciesIdToName.put(speciesId, fullName);
+    	}
+    	
+    	/*
+    	for (int i = 0; i < plantList.size(); i++) {
+    		Plant currentPlant = plantList.get(i);
+    		String plantId = currentPlant.getEdiblePlantSpeciesId();
+    		int thisCount = 0;
+    		if (plantTypeCount.containsKey(plantId)) {
+    			thisCount = (int) plantTypeCount.get(plantId);
+    		}
+    		plantTypeCount.put(plantId, thisCount+1);
+    	}*/
+    	
+    	dataSummary.put("plantTypeCount",plantTypeCount);
+    	//dataSummary.put("speciesIdToName", speciesIdToName);
     	return dataSummary;
     }
 } 

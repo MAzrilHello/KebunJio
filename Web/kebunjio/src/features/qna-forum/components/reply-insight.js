@@ -5,12 +5,12 @@ import Col from "react-bootstrap/Col";
 import { useAuth } from "../../../context/AuthContext";
 import axios from "axios";
 
-const ReplyInsight = ({replyId,cur_like, cur_dislike, has_liked, has_disliked}) => {
+const ReplyInsight = ({replyId, cur_like, cur_dislike, has_liked, has_disliked}) => {
     const {commentId} = replyId;
-    const [like, setLikeNum] = useState(cur_like);
-    const [hasLiked, setLiked] = useState(has_liked);
-    const [dislike, setDislikeNum] = useState(cur_dislike);
-    const [hasDisliked, setDisliked] = useState(has_disliked);
+    const [like, setLikeNum] = useState(cur_like)
+    const [hasLiked, setLiked] = useState(has_liked)
+    const [dislike, setDislikeNum] = useState(cur_dislike)
+    const [hasDisliked, setDisliked] = useState(has_disliked)
     const {isAdmin} = useAuth()
 
     const handleLike = () => {
