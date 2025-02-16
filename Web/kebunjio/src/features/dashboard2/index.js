@@ -94,7 +94,7 @@ const Dashboard = () => {
     const plantTypeOption = {
       title: {
         text: 'Most Popular Plant Types',
-        left: 'center'
+        left: 'left'
       },
       tooltip: {
         trigger: 'item',
@@ -198,7 +198,7 @@ const Dashboard = () => {
             </Row>
 
             <Row style={{ marginTop: '20px' }}>
-              <Col span={16} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <Col>
                 <Card>
                   <ReactECharts option={plantTypeOption} />
                 </Card>
