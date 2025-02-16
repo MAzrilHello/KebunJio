@@ -30,7 +30,7 @@ const Dashboard = () => {
     const plantTypeOption = {
       title: {
         text: 'Most Popular Plant Types',
-        left: 'left'
+        left: 'center'
       },
       tooltip: {
         trigger: 'item',
@@ -39,6 +39,7 @@ const Dashboard = () => {
       series: [{
         type: 'pie',
         radius: '70%',
+        center: ['50%', '50%'],
         data: statistics?.plantTypeCount 
           ? Object.entries(statistics.plantTypeCount).map(([plantId, value]) => ({
               name: statistics.speciesIdToName?.[plantId] || plantId,
@@ -132,12 +133,13 @@ const Dashboard = () => {
               </Col>
             </Row>
 
-            <Row style={{ marginTop: '20px' }}>
-              <Col span={16}>
-                <Card>
-                  <ReactECharts option={plantTypeOption} />
+            <Row style={{ marginTop: '20px' }} justify="center">
+              <Col xs={24} sm={20} md={16} lg={12} xl={10}>
+                <Card style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <ReactECharts option={plantTypeOption} style={{ width: '100%', height: '400px' }} />
                 </Card>
               </Col>
+            </Row>
               {/*
               <Col span={12}>
                 <Card>
@@ -145,7 +147,6 @@ const Dashboard = () => {
                 </Card>
               </Col>
               */}
-            </Row>
           </div>
     </div>
   );
