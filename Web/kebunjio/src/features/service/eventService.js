@@ -48,6 +48,7 @@ const eventService = {
   },
 
   // 上传图片
+  /* Cannot use code
   uploadImage: async (file) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -70,7 +71,7 @@ const eventService = {
       console.error('Upload error:', error.response || error);
       throw error;
     }
-  }
+  }*/
 };
 
 export default eventService; 

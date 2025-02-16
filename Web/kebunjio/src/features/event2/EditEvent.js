@@ -24,7 +24,7 @@ const EditEvent = () => {
     startDateTime: null,
     endDateTime: null,
     description: '',
-    picture: null
+    picture: ''
   });
 
   useEffect(() => {
@@ -109,6 +109,7 @@ const EditEvent = () => {
               format="YYYY-MM-DD HH:mm:ss"
             />
           </div>
+
           <div className="form-group">
             <DatePicker
               showTime
@@ -139,6 +140,15 @@ const EditEvent = () => {
         </div>
 
         <div className="form-group">
+          <Input.TextArea 
+            placeholder="Insert image URL"
+            rows={6}
+            value={eventData.picture}
+            onChange={e => setEventData(prev => ({ ...prev, picture: e.target.value }))}
+          />
+        </div>
+
+        {/*<div className="form-group">
           <div className="image-upload-container">
             <input
               type="file"
@@ -161,7 +171,7 @@ const EditEvent = () => {
               </div>
             )}
           </div>
-        </div>
+        </div>*/}
 
         <div className="form-actions">
           <Button 
@@ -173,6 +183,7 @@ const EditEvent = () => {
           </Button>
         </div>
       </div>
+
     </Content>
     </div>
     
