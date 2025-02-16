@@ -69,7 +69,6 @@ const EventDetail = () => {
     <div>
       <Appbar/>
       <div className="max-w-7xl mx-auto p-6">
-      <Appbar/>
       <button
         onClick={() => navigate("/events")}
         className="flex items-center text-gray-600 mb-6 hover:text-gray-900"
