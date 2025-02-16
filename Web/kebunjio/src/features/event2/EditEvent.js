@@ -16,7 +16,6 @@ const EditEvent = () => {
   const location = useLocation();
   const { id } = useParams();
   const isNewEvent = id === 'new';
-  const [loading, setLoading] = useState(false);
 
   const [eventData, setEventData] = useState({
     name: '',
@@ -58,7 +57,6 @@ const EditEvent = () => {
 
   const handleSubmit = async () => {
     try {
-      setLoading(true);
       const formData = {
         ...Object.keys(eventData).reduce((acc, key) => {
           acc[key] = sanitizeInput(eventData[key]);
@@ -81,7 +79,7 @@ const EditEvent = () => {
     } catch (error) {
       message.error(`Failed to ${isNewEvent ? 'create' : 'update'} event`);
     } finally {
-      setLoading(false);
+
     }
   };
 
@@ -141,7 +139,7 @@ const EditEvent = () => {
         </div>
 
         <div className="form-group">
-          <Input.TextArea 
+          <Input
             placeholder="Insert image URL"
             rows={6}
             value={eventData.picture}
@@ -153,7 +151,6 @@ const EditEvent = () => {
           <Button 
             type="primary" 
             onClick={handleSubmit} 
-            loading={loading}
           >
             {isNewEvent ? 'Create' : 'Update'}
           </Button>
