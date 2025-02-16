@@ -16,8 +16,19 @@ import eventService from '../service/eventService';
 const Dashboard = () => {
   //console.log('Dashboard组件被加载');
   const [statistics, setStatistics] = useState(null);
+  
+  //Chingnam's code, do not delete
+  //const [loading, setLoading] = useState(true);
+  //const [error, setError] = useState(null);
+
 
   useEffect(() => {
+    /*Chingnam's code, do not delete
+    console.log('Dashboard useEffect被触发');
+    fetchStatistics();
+    */
+
+    //Kelly's code with dummy data, comment the code below after integrate with backend
     async function fetchData() {
       const statisticsRes = await statisticsService.getStatistics();
       setStatistics(statisticsRes)
@@ -26,6 +37,59 @@ const Dashboard = () => {
     fetchData()
 
   }, []);
+
+  /*Chingnam's code, do not delete
+  const fetchStatistics = async () => {
+    console.log('开始获取统计数据...');
+    try {
+      const data = await statisticsService.getLatestStatistics();
+      console.log('获取到的原始数据:', data);
+      
+      if (!data) {
+        console.log('警告: 获取到的数据为空');
+        setError('数据为空');
+        return;
+      }
+      
+      console.log('Dashboard数据:', {
+        日期: data.date,
+        总用户数: data.totalUsers,
+        已种植植物: data.totalPlantsPlanted,
+        已收获植物: data.totalPlantsHarvested,
+        病害报告数: data.totalDiseasesReported,
+        植物类型分布: data.popularPlantTypes,
+        病害类型分布: data.reportedDiseases
+      });
+      
+      setStatistics(data);
+      setError(null);
+    } catch (err) {
+      console.error('获取Dashboard数据错误:', err);
+      console.error('错误详情:', {
+        message: err.message,
+        response: err.response,
+        stack: err.stack
+      });
+      setError('获取统计数据失败');
+    } finally {
+      setLoading(false);
+      console.log('数据获取流程结束');
+    }
+  };*/
+
+  /*Chingnam's code, do not delete
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <Spin size="large" />
+      </div>
+    );
+  }*/
+
+  /*Chingnam's code, do not delete
+  if (error) {
+    return <Alert message={error} type="error" style={{ margin: '24px' }} />;
+  }*/
 
     const plantTypeOption = {
       title: {
@@ -39,7 +103,6 @@ const Dashboard = () => {
       series: [{
         type: 'pie',
         radius: '70%',
-        center: ['50%', '50%'],
         data: statistics?.plantTypeCount 
           ? Object.entries(statistics.plantTypeCount).map(([plantId, value]) => ({
               name: statistics.speciesIdToName?.[plantId] || plantId,
@@ -61,7 +124,7 @@ const Dashboard = () => {
       }]
     };
 
-  /*const diseaseOption = {
+  const diseaseOption = {
     title: {
       text: 'Most reported disease',
       left: 'left'
@@ -73,6 +136,7 @@ const Dashboard = () => {
     series: [{
       type: 'pie',
       radius: '70%',
+      
       data: statistics?.reportedDiseases ? 
         Object.entries(statistics.reportedDiseases).map(([name, value]) => ({
           name,
@@ -91,7 +155,7 @@ const Dashboard = () => {
         }
       }
     }]
-  };*/
+  };
 
   return (
     <div>
@@ -133,13 +197,12 @@ const Dashboard = () => {
               </Col>
             </Row>
 
-            <Row style={{ marginTop: '20px' }} justify="center">
-              <Col xs={24} sm={20} md={16} lg={12} xl={10}>
-                <Card style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  <ReactECharts option={plantTypeOption} style={{ width: '100%', height: '400px' }} />
+            <Row style={{ marginTop: '20px' }}>
+              <Col span={16} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Card>
+                  <ReactECharts option={plantTypeOption} />
                 </Card>
               </Col>
-            </Row>
               {/*
               <Col span={12}>
                 <Card>
@@ -147,6 +210,7 @@ const Dashboard = () => {
                 </Card>
               </Col>
               */}
+            </Row>
           </div>
     </div>
   );
