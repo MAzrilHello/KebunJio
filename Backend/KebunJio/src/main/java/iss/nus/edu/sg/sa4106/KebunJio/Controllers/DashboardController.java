@@ -64,17 +64,27 @@ public class DashboardController {
     	}
     	
     	List<Plant> plantList = plantService.getAllPlants();
+    	int nullSpeciesIdCount = 0;
+    	List<String> errorSpeciesList = List.<String>of();
     	
     	for (int i = 0; i < plantList.size(); i++) {
     		Plant currentPlant = plantList.get(i);
     		String plantId = currentPlant.getEdiblePlantSpeciesId();
-    		int thisCount = 0;
-    		if (plantTypeCount.containsKey(plantId)) {
-    			thisCount = (int) plantTypeCount.get(plantId);
+    		if (plantId == null || plantId.equals("") || plantId.equals("null")) {
+    			nullSpeciesIdCount = nullSpeciesIdCount + 1;
+    		} else {
+    			try {
+        			int thisCount = (int) plantTypeCount.getOrDefault(plantId, 0);
+            		plantTypeCount.put(plantId, thisCount+1);
+    			} catch (Exception e) {
+    				errorSpeciesList.add(e.toString());
+    			}
+
     		}
-    		plantTypeCount.put(plantId, thisCount+1);
     	}
     	
+    	dataSummary.put("nullSpeciesIdCount",nullSpeciesIdCount);
+    	dataSummary.put("errorSpeciesList", errorSpeciesList);
     	dataSummary.put("plantTypeCount",plantTypeCount);
     	dataSummary.put("speciesIdToName", speciesIdToName);
     	
