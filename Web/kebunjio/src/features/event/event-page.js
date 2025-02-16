@@ -7,7 +7,7 @@ import { sanitizeInput } from '../../service/sanitizeService';
 export const EventList = () => {
     const [events, setEvents] = useState([]);
           
-    const [loading, setLoading] = useState(true);
+    //const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const eventsPerPage = 4;
@@ -21,8 +21,7 @@ export const EventList = () => {
     
     const fetchEvents = async () => {
         try {
-            setLoading(true);
-            setError(null);
+//            setError(null);
             const response = await getAllEvents();
             console.log(response.data)
             setEvents(Array.isArray(response.data) ? response.data : []);
@@ -30,7 +29,7 @@ export const EventList = () => {
             console.error('Error fetching events:', error);
             setError('Failed to load events. Please try again later.');
         } finally {
-            setLoading(false);
+            //setLoading(false);
         }
     };
     
@@ -45,7 +44,7 @@ export const EventList = () => {
         return matchesName && matchesDate;
     });
 
-    
+    /*
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-screen">
@@ -53,16 +52,18 @@ export const EventList = () => {
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600" />
             </div>
         );
-    }
+    }*/
 
     if (error) {
         return (
-            <div className="container mx-auto px-4 py-8 text-center">
+            <div>
                 <Appbar/>
+                <div className="container mx-auto px-4 py-8 text-center">
 
                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
                     {error}
                 </div>
+            </div>
             </div>
         );
     }
