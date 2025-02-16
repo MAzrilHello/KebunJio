@@ -5,6 +5,7 @@ import Row from 'react-bootstrap/Row';
 import Col from "react-bootstrap/Col";
 import Dropdown from 'react-bootstrap/Dropdown';
 import axios from 'axios';
+import sanitizeDateTime from "../../service/timeService";
 
 import '../styling/forum-page.css'
 import placeholderImage from '../../../media/placeholder.jpg';
@@ -44,7 +45,7 @@ const PostHeader = ({post}) =>{
                 <Col>
                     <div className="post-header-info">
                         <div className="post-header-username">{post.username}</div>
-                        <div className="post-header-time">{post.publishedDateTime}</div>
+                        <div className="post-header-time">{sanitizeDateTime(post.publishedDateTime)}</div>
                     </div>
                 </Col>
                 <Col xs="auto">

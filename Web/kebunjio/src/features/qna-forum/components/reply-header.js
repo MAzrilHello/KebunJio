@@ -5,6 +5,7 @@ import Row from 'react-bootstrap/Row';
 import Col from "react-bootstrap/Col";
 import Dropdown from 'react-bootstrap/Dropdown';
 import { useAuth } from "../../../context/AuthContext";
+import sanitizeDateTime from "../../service/timeService";
 
 import '../styling/forum-page.css'
 import placeholderImage from '../../../media/placeholder.jpg';
@@ -25,7 +26,7 @@ const ReplyHeader = ({username, time, onEdit, onDelete}) =>{
                 <Col>
                     <div className="post-header-info">
                         <div className="reply-header-username">{username}</div>
-                        <div className="reply-header-time">{time}</div>
+                        <div className="reply-header-time">{sanitizeDateTime(time)}</div>
                     </div>
                 </Col>
                 <Col xs="auto">
