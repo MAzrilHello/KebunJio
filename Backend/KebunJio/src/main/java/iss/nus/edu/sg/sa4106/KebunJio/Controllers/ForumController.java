@@ -113,9 +113,13 @@ public class ForumController {
 	public ResponseEntity getPostById(@PathVariable String id) {
 		Post post = postService.getPostByPostId(id);
 		List<Comment> commentList = commentService.getCommentsByPostId(id);
+		Map<String, List<CommentLike>> commentLikesMap = new HashMap<>();
 		for(Comment comment : commentList) {
 			Map<String,Integer> likeAndDislikeCount = clService.getLikeAndDislikeCountByComment(comment.getId());
-	
+			
+		    List<CommentLike> commentLikes = clService.getCommentLikesByCommentId(comment.getId());
+		    commentLikesMap.put(comment.getId(), commentLikes);
+
 	        int likeCount = (likeAndDislikeCount != null) ? likeAndDislikeCount.getOrDefault("likeCount", 0) : 0;
 	        int dislikeCount = (likeAndDislikeCount != null) ? likeAndDislikeCount.getOrDefault("dislikeCount", 0) : 0;
 			
@@ -124,7 +128,7 @@ public class ForumController {
 		}
 		
 		if(post!=null) {
-			PostWithCommentDAO postWithComments = new PostWithCommentDAO(post,commentList);
+			PostWithCommentDAO postWithComments = new PostWithCommentDAO(post,commentList,commentLikesMap);
 			return new ResponseEntity<>(postWithComments,HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

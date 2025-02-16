@@ -106,4 +106,8 @@ public class CommentLikeService {
 		}
 		return result;
 	}
+
+	public List<CommentLike> getCommentLikesByCommentId(String commentId) {
+	    return clRepository.findByCommentId(commentId);
+	}
 }
