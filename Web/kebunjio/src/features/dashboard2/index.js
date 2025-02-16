@@ -132,19 +132,12 @@ const Dashboard = () => {
               </Col>
             </Row>
 
-            <Row style={{ marginTop: '20px' }}>
+            <Row style={{ marginTop: '20px', justifyContent: 'center' }}>
               <Col span={16}>
                 <Card>
                   <ReactECharts option={plantTypeOption} />
                 </Card>
               </Col>
-              {/*
-              <Col span={12}>
-                <Card>
-                  <ReactECharts option={diseaseOption} />
-                </Card>
-              </Col>
-              */}
             </Row>
           </div>
     </div>
