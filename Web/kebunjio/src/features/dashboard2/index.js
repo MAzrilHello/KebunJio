@@ -105,7 +105,7 @@ const Dashboard = () => {
         radius: '70%',
         data: statistics?.plantTypeCount 
           ? Object.entries(statistics.plantTypeCount).map(([plantId, value]) => ({
-              name: statistics.speciesIdToName?.[plantId] || plantId,
+              name: statistics.speciesIdToName?.[plantId] || plantId, 
               value
             })) 
           : [],
@@ -215,4 +215,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Dashboard; 
