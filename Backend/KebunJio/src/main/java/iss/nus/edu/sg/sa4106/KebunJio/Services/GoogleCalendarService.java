@@ -19,26 +19,31 @@ public class GoogleCalendarService {
     private GoogleAuthorizationCodeFlow flow;
 
     @Value("${google.redirect.uri}")
-    private String redirectUri;
+    private String redirectUri;  // This will now point to the ngrok URL
 
     @Value("${google.application.name}")
     private String applicationName;
 
+    // Generate the authorization URL with the ngrok URL as redirect URI
     public String getAuthorizationUrl() {
         return flow.newAuthorizationUrl()
-                .setRedirectUri(redirectUri)
+                .setRedirectUri(redirectUri)  // This will use the ngrok URL
                 .build();
     }
 
+    // Add event to Google Calendar using the authorization code and event data
     public boolean addEventToCalendar(String code, Event event) {
         try {
+            // Exchange the authorization code for an access token
             GoogleTokenResponse tokenResponse = flow.newTokenRequest(code)
-                    .setRedirectUri(redirectUri)
+                    .setRedirectUri(redirectUri)  // Ensure ngrok URL is used here too
                     .execute();
 
+            // Use the access token to create credentials
             GoogleCredential credential = new GoogleCredential()
                     .setAccessToken(tokenResponse.getAccessToken());
 
+            // Build the Google Calendar service with credentials
             Calendar service = new Calendar.Builder(
                     new NetHttpTransport(),
                     GsonFactory.getDefaultInstance(),
@@ -46,10 +51,14 @@ public class GoogleCalendarService {
                     .setApplicationName(applicationName)
                     .build();
 
+            // Convert your event to a Google Calendar event
             com.google.api.services.calendar.model.Event googleEvent = event.toGoogleCalendarEvent();
+
+            // Insert the event into the calendar
             com.google.api.services.calendar.model.Event createdEvent =
                     service.events().insert("primary", googleEvent).execute();
 
+            // Return true if the event was successfully created
             return createdEvent != null;
         } catch (Exception e) {
             throw new RuntimeException("Failed to add event to Google Calendar", e);
