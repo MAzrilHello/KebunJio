@@ -4,7 +4,8 @@ import Row from 'react-bootstrap/Row';
 import Col from "react-bootstrap/Col";
 import { useAuth } from "../../../context/AuthContext";
 
-const ReplyInsight = ({cur_like, cur_dislike, has_liked, has_disliked}) => {
+const ReplyInsight = ({replyId,cur_like, cur_dislike, has_liked, has_disliked}) => {
+    const {commentId} = replyId;
     const [like, setLikeNum] = useState(cur_like);
     const [hasLiked, setLiked] = useState(has_liked);
     const [dislike, setDislikeNum] = useState(cur_dislike);
@@ -12,88 +13,50 @@ const ReplyInsight = ({cur_like, cur_dislike, has_liked, has_disliked}) => {
     const {isAdmin} = useAuth()
 
     const handleLike = () => {
-        //TODO: update to API
         if(!isAdmin){
-            if(hasLiked){
-                setLiked(false)
-                setLikeNum(like-1)
-                /**
-             fetch('https://', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then(response => response.json())  // Parse the response to JSON
-            .then(data => {
-                console.log('Success:', data)
-            })
-            .catch((error) => {
-                console.error('Error:', error)
-            })
-                 */
-            }
-            else{
-                setLiked(true)
-                setLikeNum(like+1)
-                                /**
-                 fetch('https://', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+            if(!hasDisliked){
+                if(hasLiked){
+                    setLiked(false)
+                    setLikeNum(like-1)
+    
+                }
+                else{
+                    setLiked(true)
+                    setLikeNum(like+1)
+    
+                }
+                axios.put(`http://34.124.209.141:8080/api/Forum/Post/Comment/${commentId}/Like`,{},{withCredentials:true})
+                .then(response=>{
+                    console.log("liked")
                 })
-                .then(response => response.json())  // Parse the response to JSON
-                .then(data => {
-                    console.log('Success:', data)
+                .catch(err=>{
+                    console.log(err)
                 })
-                .catch((error) => {
-                    console.error('Error:', error)
-                })
-                    */
             }
         }
     };
 
     const handleDislike = () => {
-        //TODO: update to API
-        if(hasDisliked){
-            setDisliked(false)
-            setDislikeNum(dislike-1)
-                            /**
-             fetch('https://', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then(response => response.json())  // Parse the response to JSON
-            .then(data => {
-                console.log('Success:', data)
-            })
-            .catch((error) => {
-                console.error('Error:', error)
-            })
-                 */
-        }
-        else{
-            setDisliked(true)
-            setDislikeNum(dislike+1)
-                            /**
-             fetch('https://', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then(response => response.json())  // Parse the response to JSON
-            .then(data => {
-                console.log('Success:', data)
-            })
-            .catch((error) => {
-                console.error('Error:', error)
-            })
-                 */
+        if(!isAdmin){
+            if(!hasLiked){
+                if(hasDisliked){
+                    setDisliked(false)
+                    setDislikeNum(dislike-1)
+        
+                }
+                else{
+                    setDisliked(true)
+                    setDislikeNum(dislike+1)
+        
+                }
+                axios.put(`http://34.124.209.141:8080/api/Forum/Post/Comment/${commentId}/Dislike`,{},{withCredentials:true})
+                .then(response=>{
+                    console.log("disliked")
+                })
+                .catch(err=>{
+                    console.log(err)
+                })
+            }
         }
     };
 
