@@ -328,6 +328,7 @@ const AddToGoogleCalendar = ({ event }) => {
         {error && <p className="text-sm text-red-100 mt-2">{error}</p>}
       </button>
 
+
       {/* 显示已添加消息 */}
       {showAlreadyAddedMessage && (
         <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -361,12 +362,11 @@ const AddToGoogleCalendar = ({ event }) => {
           </div>
         </div>
       )}
-
+  {/*
       <div>
         <div style={styles.container}>
           <h2 style={styles.title}>Google Calendar API Quickstart</h2>
 
-          {/* Render authorization and signout buttons */}
           <div style={styles.buttonContainer}>
             <button onClick={handleAuthClick} style={styles.authButton}>
               {authButtonText}
@@ -380,10 +380,10 @@ const AddToGoogleCalendar = ({ event }) => {
             </button>
           </div>
 
-          {/* Display event creation result */}
           <pre style={styles.content}>{content}</pre>
         </div>
       </div>
+      */}
     </div>
   );
 };
