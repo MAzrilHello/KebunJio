@@ -58,7 +58,7 @@ const Reply = ({userReply, hasLiked, hasDisliked}) => {
     return(
         <div>
             <Container>
-                <Row><ReplyHeader username={reply.userId} time={reply.publishedDateTime} onDelete={onClickDelete} onEdit={onClickEdit}/></Row>
+                <Row><ReplyHeader username={reply.username} time={reply.publishedDateTime} onDelete={onClickDelete} onEdit={onClickEdit}/></Row>
                 <Row>
                     {isEditing?(
                         <Form>
