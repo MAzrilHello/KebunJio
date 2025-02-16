@@ -26,8 +26,9 @@ const Events = () => {
   // 获取事件列表
   const fetchEvents = async (page = currentPage, searchParams = {}) => {
     try {
+      console.log()
       setLoading(true);
-      const response = await eventService.getAllEventTemp();
+      const response = await eventService.getAllEvents(page,searchParams);
       //const response = await eventService.getAllEvent(page, pageSize, searchParams);
       console.log(response);
       setEvents(response);
