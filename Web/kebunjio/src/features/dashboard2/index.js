@@ -199,16 +199,11 @@ const Dashboard = () => {
             <Row style={{ marginTop: '20px' }}>
               <Col span={16}>
                 <Card>
-                  <ReactECharts option={plantTypeOption} />
+                  <div style={{ height: '400px' }}>  
+                    <ReactECharts option={plantTypeOption} />
+                  </div>
                 </Card>
               </Col>
-              {/*
-              <Col span={12}>
-                <Card>
-                  <ReactECharts option={diseaseOption} />
-                </Card>
-              </Col>
-              */}
             </Row>
           </div>
     </div>
