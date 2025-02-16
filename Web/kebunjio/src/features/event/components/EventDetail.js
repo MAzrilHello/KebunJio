@@ -66,9 +66,7 @@ const EventDetail = () => {
     remainingDescription = description.slice(endIndex).trim();
   }
   return (
-    <div>
-      <Appbar/>
-      <div className="max-w-7xl mx-auto p-6">
+    <div className="max-w-7xl mx-auto p-6">
       <button
         onClick={() => navigate("/events")}
         className="flex items-center text-gray-600 mb-6 hover:text-gray-900"
@@ -128,8 +126,6 @@ const EventDetail = () => {
           </div>
         </div>
       </div>
-    </div>
-    
     </div>
   );
 };
