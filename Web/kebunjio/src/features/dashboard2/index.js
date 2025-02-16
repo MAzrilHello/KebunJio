@@ -11,7 +11,6 @@ import {
 import statisticsService from '../service/statisticsService';
 import './style.css';
 import Appbar from '../../components/Appbar';
-import eventService from '../service/eventService';
 
 const Dashboard = () => {
   //console.log('Dashboard组件被加载');
