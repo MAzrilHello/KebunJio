@@ -7,13 +7,16 @@ import axios from 'axios';
 
 function ForumMyPage() {
   const [posts, setPosts] = useState([])
+  const [hasLiked, setHasLiked] = useState([])
+  
 
   const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL;
 
-  const getUserPostEndpoint = `${API_BASE_URL}/Forum/User/Posts`;    
+  const getUserPostEndpoint = `${API_BASE_URL}/Forum/User/Posts`; 
+  
+  const getUpvotesByUser = `${API_BASE_URL}/Forum/Upvote`;
 
     useEffect(() => {
-      //still error from BE function
       async function fetchData() {
           axios.get(getUserPostEndpoint,{withCredentials:true})
           .then(response=>{
@@ -22,7 +25,19 @@ function ForumMyPage() {
           .catch(err=>{
             console.log(err)
           })
+
+          axios.get(getUpvotesByUser,{withCredentials:true})
+          .then(response => {
+            console.log(getUpvotesByUser)
+            console.log(response.data)
+            setHasLiked(response.data)
+          })
+          .catch(error => {
+            console.error("Error fetching data:", error)
+          });
       }
+
+
   
       fetchData()
   }, []);
