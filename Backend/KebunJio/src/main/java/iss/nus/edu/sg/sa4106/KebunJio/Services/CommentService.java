@@ -17,7 +17,7 @@ public class CommentService {
 	@Autowired
 	private CommentRepository commentRepository;
 	
-	public boolean createComment(CommentDAO newComment,String PostId,String UserId,String Username) {
+	public Comment createComment(CommentDAO newComment,String PostId,String UserId,String Username) {
 		boolean result = false;
 		
 		Comment comment = new Comment();
@@ -34,8 +34,13 @@ public class CommentService {
 		}catch(Exception e) {
 			throw new RuntimeException("Create comment error");
 		}
+
+		if(result){
+			return comment;
+		}else{
+			return null;
+		}
 		
-		return result;
 		
 	}
 	
