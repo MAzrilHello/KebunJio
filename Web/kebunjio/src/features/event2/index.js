@@ -31,13 +31,12 @@ const Events = () => {
       const response = await eventService.getAllEvents(page, pageSize, searchParams);
       //const response = await eventService.getAllEvent(page, pageSize, searchParams);
       console.log(response);
-      setEvents(response);
-      setFilteredEvents(response);
-      //setEvents(response.content);
-      //setFilteredEvents(response.content);
-      //setTotalElements(response.totalElements);
-      //setCurrentPage(response.number);
-      //console.log(response.totalElements)
+      setEvents(response.content);
+      setFilteredEvents(response.content);
+
+      setTotalElements(response.totalElements);
+      setCurrentPage(response.number);
+      console.log(response.totalElements)
     } catch (error) {
       message.error('Failed to fetch events');
     } finally {
