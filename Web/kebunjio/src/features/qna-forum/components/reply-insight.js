@@ -3,6 +3,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from "react-bootstrap/Col";
 import { useAuth } from "../../../context/AuthContext";
+import axios from "axios";
 
 const ReplyInsight = ({replyId,cur_like, cur_dislike, has_liked, has_disliked}) => {
     const {commentId} = replyId;
