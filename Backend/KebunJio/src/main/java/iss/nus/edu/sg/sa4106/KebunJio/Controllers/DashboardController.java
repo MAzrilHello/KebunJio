@@ -85,6 +85,10 @@ public class DashboardController {
     public Map<String, Object> getDataSummaryTest() {
     	Map<String,Object> dataSummary = new HashMap<>();
     	dataSummary.put("totalUser",userService.count());
+    	dataSummary.put("totalPlanted", plantService.count());
+    	dataSummary.put("totalHarvested", plantService.harvestedCount(true));
+    	dataSummary.put("totalDisease", plantService.healthCount("Not Healthy"));
+    	dataSummary.put("totalHealthy", plantService.healthCount("Healthy"));
     	return dataSummary;
     }
 } 
