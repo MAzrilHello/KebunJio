@@ -19,6 +19,8 @@ const Post = () => {
     const { upvoteCount, commentCount } = location?.state || {};
     const [commentLike, setCommentLike] = useState([]);
 
+    const {authUser} = useAuth()
+
     const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL;
 
     const getPostEndpoint = `${API_BASE_URL}/Forum/Post/${id}`;
@@ -109,14 +111,29 @@ const Post = () => {
                     <div style={{ marginTop: "16px" }}>
                     {comments.length !== 0 ? (
                         comments.map((comment, index) => {
-                            const hasLiked = commentLike[comment.commentId]?.some(likeEntry => likeEntry.like === true) || false;
-                            const hasDisliked = commentLike[comment.commentId]?.some(likeEntry => likeEntry.like === true) || false;
+                            const likeList = commentLike[comment.id] || []; 
 
-                            return <Reply key={index} userReply={comment} hasLiked={hasLiked} hasDisliked={hasDisliked}/>;
+                            const hasLiked = likeList.some(
+                                likeEntry => likeEntry.userId === authUser.id && likeEntry.like === true
+                            );
+
+                            const hasDisliked = likeList.some(
+                                likeEntry => likeEntry.userId === authUser.id && likeEntry.dislike === true
+                            );
+
+                            return (
+                                <Reply 
+                                    key={index} 
+                                    userReply={comment} 
+                                    hasLiked={hasLiked} 
+                                    hasDisliked={hasDisliked} 
+                                />
+                            );
                         })
                     ) : (
                         <p>No replies yet</p>
                     )}
+
                     </div>
                 </div>
             </div>

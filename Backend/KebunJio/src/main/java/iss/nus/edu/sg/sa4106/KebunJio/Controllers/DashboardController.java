@@ -84,7 +84,7 @@ public class DashboardController {
     @GetMapping("/dashboardSummary")
     public Map<String, Object> getDataSummaryTest() {
     	Map<String,Object> dataSummary = new HashMap<>();
-    	dataSummary.put("totalUser",1);
+    	dataSummary.put("totalUser",userService.count());
     	return dataSummary;
     }
 } 
