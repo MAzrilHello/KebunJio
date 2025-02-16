@@ -69,9 +69,7 @@ h2 {
 }
 
 .ant-card-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  padding: 20px;
 }
 
 /* Element Plus 覆盖样式 */
