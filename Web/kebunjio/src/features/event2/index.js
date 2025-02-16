@@ -28,7 +28,7 @@ const Events = () => {
     try {
       console.log()
       setLoading(true);
-      const response = await eventService.getAllEvents(page,searchParams);
+      const response = await eventService.getAllEvents(page, pageSize, searchParams);
       //const response = await eventService.getAllEvent(page, pageSize, searchParams);
       console.log(response);
       setEvents(response);
