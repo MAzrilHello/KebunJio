@@ -66,7 +66,9 @@ const EventDetail = () => {
     remainingDescription = description.slice(endIndex).trim();
   }
   return (
-    <div className="max-w-7xl mx-auto p-6">
+    <div>
+      <Appbar/>
+      <div className="max-w-7xl mx-auto p-6">
       <Appbar/>
       <button
         onClick={() => navigate("/events")}
@@ -127,6 +129,8 @@ const EventDetail = () => {
           </div>
         </div>
       </div>
+    </div>
+    
     </div>
   );
 };

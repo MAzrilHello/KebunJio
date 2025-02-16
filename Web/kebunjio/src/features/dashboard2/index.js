@@ -11,7 +11,6 @@ import {
 import statisticsService from '../service/statisticsService';
 import './style.css';
 import Appbar from '../../components/Appbar';
-import eventService from '../service/eventService';
 
 const Dashboard = () => {
   //console.log('Dashboard组件被加载');
@@ -199,9 +198,7 @@ const Dashboard = () => {
             <Row style={{ marginTop: '20px' }}>
               <Col span={16}>
                 <Card>
-                  <div style={{ height: '400px' }}>  
                     <ReactECharts option={plantTypeOption} />
-                  </div>
                 </Card>
               </Col>
             </Row>
