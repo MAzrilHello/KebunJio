@@ -163,35 +163,35 @@ const Dashboard = () => {
             
             <Row gutter={[16, 16]} style={{marginTop:"16px"}}>
               <Col span={6}>
-                <Card className="stat-card">
+                <div className="stat-card">
                   <FontAwesomeIcon icon={faUser} className="stat-icon" />
                   <h2 style={{fontSize:"1.1rem"}}>Total User</h2>
                   <div className="stat-number">{statistics?.totalUser || 0}</div>
-                </Card>
+                </div>
               </Col>
               
               <Col span={6}>
-                <Card className="stat-card">
+                <div className="stat-card">
                   <FontAwesomeIcon icon={faSeedling} className="stat-icon" />
                   <h2 style={{fontSize:"1.1rem"}}>Total Plants Planted</h2>
                   <div className="stat-number">{statistics?.totalPlanted || 0}</div>
-                </Card>
+                </div>
               </Col>
               
               <Col span={6}>
-                <Card className="stat-card">
+                <div className="stat-card">
                   <FontAwesomeIcon icon={faChartLine} className="stat-icon" />
                   <h2 style={{fontSize:"1.1rem"}}>Total Plants Harvested</h2>
                   <div className="stat-number">{statistics?.totalHarvested || 0}</div>
-                </Card>
+                </div>
               </Col>
               
               <Col span={6}>
-                <Card className="stat-card">
+                <div className="stat-card">
                   <FontAwesomeIcon icon={faVirusCovid} className="stat-icon" />
                   <h2 style={{fontSize:"1.1rem"}}>Total Reported Disease</h2>
                   <div className="stat-number">{statistics?.totalDisease || 0}</div>
-                </Card>
+                </div>
               </Col>
             </Row>
 
