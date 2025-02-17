@@ -27,7 +27,7 @@ const Reply = ({userReply, hasLiked, hasDisliked}) => {
     }
 
     const onClickDelete = () => {
-        axios.delete(getDeleteReplyEndpoint)
+        axios.delete(getDeleteReplyEndpoint,{withCredentials:true})
         .then(response=>{
             console.log(response)
         })
@@ -42,7 +42,7 @@ const Reply = ({userReply, hasLiked, hasDisliked}) => {
 
         axios.put(getEditReplyEndpoint,{
             commentContent:sanitizeInput(reply)
-        })        
+        },{withCredentials:true})        
         .then(response=>{
             console.log(response)
         })
