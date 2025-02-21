@@ -14,7 +14,7 @@ const Reply = ({userReply, hasLiked, hasDisliked, onDelete}) => {
 
     const [isEditing, setIsEditing] = useState(false)
 
-    const [editedContent, setEditedContent] = useState(userReply.content);
+    const [editedContent, setEditedContent] = useState(userReply.commentContent);
 
     const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL;
 
