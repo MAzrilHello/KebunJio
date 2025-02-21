@@ -13,12 +13,12 @@ import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../../context/AuthContext";
 
-const PostHeader = ({post}) =>{
+const PostHeader = ({post, onDelete}) =>{
     const navigate = useNavigate()
 
     const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL;
 
-    const getDeletePostEndpoint = `${API_BASE_URL}/Forum/User/Post/${post.id}`;    
+    const getDeletePostEndpoint = `${API_BASE_URL}/Forum/User/Post/${post.id}`
     
     const {authUser,isAdmin} = useAuth()
 
@@ -26,7 +26,7 @@ const PostHeader = ({post}) =>{
         axios.delete(getDeletePostEndpoint,{withCredentials:true})
         .then(response=>{
             console.log(response)
-            //window.location.reload();        
+            onDelete(post.id)        
         })
         .catch(err=>{
             console.log(err)

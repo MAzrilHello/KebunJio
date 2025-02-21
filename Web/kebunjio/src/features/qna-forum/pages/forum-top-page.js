@@ -15,6 +15,11 @@ function ForumTopPage() {
 
   const getUpvotesByUser = `${API_BASE_URL}/Forum/Upvote`;
 
+  const handleDeletePost = (postId) => {
+    setPosts((prevPosts) => prevPosts.filter((postObj) => postObj.post.id !== postId));
+  };
+  
+
   async function fetchData() {
     axios.get(getPostEndpoint,{withCredentials:true})
     .then(response => {
@@ -51,7 +56,7 @@ function ForumTopPage() {
         <div className="main-content">
         <p className="page-header">Top post</p>
         {posts.length !== 0 ? (posts.map(({post,upvoteCount,commentCount},index)=>(
-              <PostSneakPeak key={index} post={post} upvoteCount={upvoteCount} commentCount={commentCount} hasLiked={hasLiked[index]}/>
+              <PostSneakPeak key={index} post={post} upvoteCount={upvoteCount} commentCount={commentCount} hasLiked={hasLiked[index]} onDelete={handleDeletePost} />
         ))
         ) : (<p>No result</p>)}
         </div>
