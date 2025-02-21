@@ -43,7 +43,7 @@ const Reply = ({userReply, hasLiked, hasDisliked, onDelete}) => {
         },{withCredentials:true})        
         .then(response=>{
             console.log(response)
-            setReply({ ...reply, content: editedContent });
+            setReply({ ...reply, commentContent: editedContent });
             setIsEditing(false);
         })
         .catch(err=>{
