@@ -47,7 +47,7 @@ const Post = () => {
             }
         };
         fetchData();
-    }, []);
+    }, [comments]);
 
     const [replyInput, setReplyInput] = useState("");
 
