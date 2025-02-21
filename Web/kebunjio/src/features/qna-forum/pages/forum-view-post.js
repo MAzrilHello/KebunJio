@@ -49,7 +49,7 @@ const Post = () => {
             }
         };
         fetchData();
-    }, [comments]);
+    }, []);
 
     const [replyInput, setReplyInput] = useState("");
 
@@ -67,7 +67,8 @@ const Post = () => {
     
             if (response.status === 201) { 
                 navigate(`/forum/post/${post.id}`)
-                /*
+
+                /* Code unable to work to update
                 const newComment = response.data;
                 console.log("New Comment:", newComment);  
 
