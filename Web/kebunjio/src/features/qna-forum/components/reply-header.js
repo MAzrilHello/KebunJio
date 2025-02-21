@@ -31,7 +31,7 @@ const ReplyHeader = ({username, time, onEdit, onDelete}) =>{
                 </Col>
                 <Col xs="auto">
                 {
-                    username===authUser.Username?(
+                    username===authUser.username?(
                         <Dropdown>
                         <Dropdown.Toggle className="three-dot">
                         </Dropdown.Toggle>
