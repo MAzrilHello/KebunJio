@@ -14,7 +14,7 @@ const Reply = ({userReply, hasLiked, hasDisliked, onDelete}) => {
 
     const [isEditing, setIsEditing] = useState(false)
 
-    const [editedContent, setEditedContent] = useState(reply.content);
+    const [editedContent, setEditedContent] = useState(userReply.content);
 
     const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL;
 
@@ -38,14 +38,13 @@ const Reply = ({userReply, hasLiked, hasDisliked, onDelete}) => {
     }
 
     const onSubmitEdit = () => {
-        setReply({ ...reply, content: editedContent });
-        setIsEditing(false);
-
         axios.put(getEditReplyEndpoint,{
             commentContent:sanitizeInput(reply)
         },{withCredentials:true})        
         .then(response=>{
             console.log(response)
+            setReply({ ...reply, content: editedContent });
+            setIsEditing(false);
         })
         .catch(err=>{
             console.log(err)
@@ -72,7 +71,6 @@ const Reply = ({userReply, hasLiked, hasDisliked, onDelete}) => {
                     ):
                     (
                         <p style={{fontSize:"0.9rem"}}>{reply.commentContent}</p>
-
                     )}                
                     </Row>
                 <Row><ReplyInsight replyId={reply.id} cur_like={reply.likeCount} cur_dislike={reply.dislikeCount} has_liked={hasLiked} has_disliked={hasDisliked}/></Row>
