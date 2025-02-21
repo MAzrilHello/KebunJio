@@ -65,6 +65,7 @@ const Post = () => {
     
             if (response.status === 201) { 
                 const newComment = response.data
+                console.log(newComment)
                 setComments(prevComments => [newComment, ...prevComments])
                 setReplyInput("")
             } else {
