@@ -64,10 +64,16 @@ const Post = () => {
             },{withCredentials: true});
     
             if (response.status === 201) { 
-                const newComment = response.data
-                console.log(newComment)
-                setComments(prevComments => [newComment, ...prevComments])
-                setReplyInput("")
+                const newComment = response.data;
+                console.log("New Comment:", newComment);  
+
+                setComments(prevComments => {
+                    const updatedComments = [newComment, ...prevComments];  
+                    console.log("Updated Comments:", updatedComments);  
+                    return updatedComments;
+            });
+
+            setReplyInput("");  // Reset the reply input field
             } else {
                 console.error("Failed to submit reply")
             }
