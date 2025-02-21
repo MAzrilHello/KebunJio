@@ -45,7 +45,7 @@ function ForumSearchPage() {
   }
 
   const handleDeletePost = (postId) => {
-    setPosts((prevPosts) => prevPosts.filter((postObj) => postObj.post.id !== postId));
+    setSearchResults((prevPosts) => prevPosts.filter((postObj) => postObj.post.id !== postId));
   };
 
   return (
@@ -65,7 +65,7 @@ function ForumSearchPage() {
                 aria-label="Search"
                 onChange={handleSearchInputChange}
               />
-              <Button variant="primary" onClick={handleSearchSubmit}>Search</Button>
+              <Button variant="primary" onClick={getSearchData}>Search</Button>
             </Form>
           </div>
           <div>
