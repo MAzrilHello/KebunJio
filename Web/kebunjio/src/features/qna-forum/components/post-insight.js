@@ -20,12 +20,7 @@ const PostInsight = ({upvote, comment, id, hasLiked}) => {
                 axios.post(upvoteEndpoint,{},{withCredentials:true})
                 .then(response=>{
                     console.log(response)
-                    if(postLiked){
-                        setCurrentUpvote(currentUpvote-1)
-                    }
-                    else{
-                        setCurrentUpvote(currentUpvote+1)
-                    }
+                    setCurrentUpvote(response.data);
                     setPostLiked(!postLiked)
                 })
                 .catch(err=>{

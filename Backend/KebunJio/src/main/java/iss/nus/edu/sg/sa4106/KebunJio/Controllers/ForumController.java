@@ -197,7 +197,8 @@ public class ForumController {
 		String userId = currentUser.getId();
 		
 		if(upvoteService.calculateUpvote(id,userId)) {
-			return new ResponseEntity<>(HttpStatus.OK);
+			int updatedUpvoteCount = upvoteService.getUpvoteCountByPost(id);
+			return new ResponseEntity<>(updatedUpvoteCount,HttpStatus.OK);
 		}
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
