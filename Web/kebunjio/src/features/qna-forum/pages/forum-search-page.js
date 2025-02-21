@@ -44,9 +44,9 @@ function ForumSearchPage() {
     });
   }
 
-  const handleSearchSubmit = () => {
-    getSearchData()
-  }
+  const handleDeletePost = (postId) => {
+    setPosts((prevPosts) => prevPosts.filter((postObj) => postObj.post.id !== postId));
+  };
 
   return (
     <div>
@@ -71,7 +71,7 @@ function ForumSearchPage() {
           <div>
             <p style={{marginTop:"10px", marginLeft:"8px"}} className="page-header">Search result:</p>
             {search_results.length!==0?(search_results.map(({post,upvoteCount,commentCount},index)=>(
-              <PostSneakPeak key={index} post={post} upvoteCount={upvoteCount} commentCount={commentCount} hasLiked={hasLiked}/>
+              <PostSneakPeak key={index} post={post} upvoteCount={upvoteCount} commentCount={commentCount} hasLiked={hasLiked} onDelete={handleDeletePost}/>
             ))):(<p style={{marginTop:"10px", marginLeft:"8px"}}>No result</p>)}
           </div>
         </div>

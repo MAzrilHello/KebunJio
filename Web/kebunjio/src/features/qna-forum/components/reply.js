@@ -8,7 +8,7 @@ import Button from 'react-bootstrap/Button';
 import { sanitizeInput } from '../../../service/sanitizeService';
 import axios from "axios";
 
-const Reply = ({userReply, hasLiked, hasDisliked}) => {
+const Reply = ({userReply, hasLiked, hasDisliked, onDelete}) => {
 
     const [reply, setReply] = useState(userReply)
 
@@ -30,6 +30,7 @@ const Reply = ({userReply, hasLiked, hasDisliked}) => {
         axios.delete(getDeleteReplyEndpoint,{withCredentials:true})
         .then(response=>{
             console.log(response)
+            onDelete(reply.id)
         })
         .catch(err=>{
             console.log(err)

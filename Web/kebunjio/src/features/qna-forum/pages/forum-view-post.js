@@ -79,6 +79,10 @@ const Post = () => {
         setReplyInput("")
     };
 
+    const handleDeleteReply = (commentId) => {
+        setComments((prevComments) => prevComments.filter((commentObj) => commentObj.comment.id !== commentId));
+    }
+
     return (
         <div>
             <Appbar />
@@ -126,12 +130,7 @@ const Post = () => {
                             );
 
                             return (
-                                <Reply 
-                                    key={index} 
-                                    userReply={comment} 
-                                    hasLiked={hasLiked} 
-                                    hasDisliked={hasDisliked} 
-                                />
+                                <Reply key={index} userReply={comment} hasLiked={hasLiked} hasDisliked={hasDisliked} onDelete={handleDeleteReply}/>
                             );
                         })
                     ) : (

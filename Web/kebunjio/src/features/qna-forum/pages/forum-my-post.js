@@ -14,6 +14,10 @@ function ForumMyPage() {
   const getUserPostEndpoint = `${API_BASE_URL}/Forum/User/Posts`;    
   const getUpvotesByUser = `${API_BASE_URL}/Forum/Upvote`;
 
+  const handleDeletePost = (postId) => {
+    setPosts((prevPosts) => prevPosts.filter((postObj) => postObj.post.id !== postId));
+  };
+
 
     useEffect(() => {
       async function fetchData() {
@@ -48,7 +52,7 @@ function ForumMyPage() {
         <div className="main-content">
         <p className="page-header">My post</p>
           {posts.length !== 0 ? (posts.map(({post,upvoteCount,commentCount},index)=>(
-                <PostSneakPeak key={index} post={post} upvoteCount={upvoteCount} commentCount={commentCount} hasLiked={hasLiked[index]}/>
+                <PostSneakPeak key={index} post={post} upvoteCount={upvoteCount} commentCount={commentCount} hasLiked={hasLiked[index]} onDelete={handleDeletePost}/>
           ))
           ) : (<p>No result</p>)}
         </div>
