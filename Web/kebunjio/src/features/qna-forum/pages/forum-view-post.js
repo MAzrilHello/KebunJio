@@ -3,7 +3,7 @@ import FullPost from "../components/full-post";
 import Reply from "../components/reply";
 import Form from "react-bootstrap/Form";
 import { Button } from "react-bootstrap";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../../context/AuthContext";
 
@@ -19,6 +19,8 @@ const Post = () => {
     const location = useLocation();
     const { upvoteCount, commentCount } = location?.state || {};
     const [commentLike, setCommentLike] = useState([]);
+
+    const navigate = useNavigate()
 
     const {authUser, isAdmin} = useAuth()
 
@@ -64,6 +66,8 @@ const Post = () => {
             },{withCredentials: true});
     
             if (response.status === 201) { 
+                navigate(`/forum/post/${post.id}`)
+                /*
                 const newComment = response.data;
                 console.log("New Comment:", newComment);  
 
@@ -73,7 +77,7 @@ const Post = () => {
                     return updatedComments;
             });
 
-            setReplyInput("");  // Reset the reply input field
+            setReplyInput("");  */
             } else {
                 console.error("Failed to submit reply")
             }
