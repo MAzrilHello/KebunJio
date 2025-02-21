@@ -39,7 +39,7 @@ const Reply = ({userReply, hasLiked, hasDisliked, onDelete}) => {
 
     const onSubmitEdit = () => {
         axios.put(getEditReplyEndpoint,{
-            commentContent:sanitizeInput(reply)
+            commentContent:sanitizeInput(editedContent)
         },{withCredentials:true})        
         .then(response=>{
             console.log(response)
