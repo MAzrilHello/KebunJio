@@ -18,7 +18,6 @@ function ForumTopPage() {
   const handleDeletePost = (postId) => {
     setPosts((prevPosts) => prevPosts.filter((postObj) => postObj.post.id !== postId));
   };
-  
 
   async function fetchData() {
     axios.get(getPostEndpoint,{withCredentials:true})

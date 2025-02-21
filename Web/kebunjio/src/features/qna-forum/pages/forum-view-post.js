@@ -81,7 +81,7 @@ const Post = () => {
     };
 
     const handleDeleteReply = (commentId) => {
-        setComments((prevComments) => prevComments.filter((commentObj) => commentObj.comment.id !== commentId));
+        setComments((prevComments) => prevComments.filter((comment) => comment.id !== commentId));
     }
 
     return (
