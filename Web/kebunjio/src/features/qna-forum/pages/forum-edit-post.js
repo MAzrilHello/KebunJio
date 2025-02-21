@@ -65,7 +65,7 @@ function ForumEditPost() {
       postCategory: formData.category},{withCredentials:true})
     .then(response=>{
         alert("Edit post successfully")
-        navigate(`/forum/my`)
+        navigate('/forum/my')
     })
     .catch(err=>{
       console.log(err)

@@ -47,7 +47,7 @@ function ForumNewPost() {
     .then(response=>{
       if(response.status==201){
         alert("Create post successfully")
-        navigate(`/forum/my`)
+        navigate('/forum/my')
       }
       else{
         console.log("Failed to create post")
