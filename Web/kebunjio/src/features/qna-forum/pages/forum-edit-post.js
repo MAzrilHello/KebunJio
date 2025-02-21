@@ -5,10 +5,13 @@ import '../styling/forum-page.css'
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { sanitizeInput } from '../../../service/sanitizeService';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+
 function ForumEditPost() {
+
+  const navigate = useNavigate()
 
   const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL;
 
@@ -62,6 +65,7 @@ function ForumEditPost() {
       postCategory: formData.category},{withCredentials:true})
     .then(response=>{
         alert("Edit post successfully")
+        navigate(`/forum/my`)
     })
     .catch(err=>{
       console.log(err)

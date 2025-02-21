@@ -7,8 +7,11 @@ import Button from 'react-bootstrap/Button';
 import { sanitizeInput } from '../../../service/sanitizeService';
 import { useAuth } from '../../../context/AuthContext';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function ForumNewPost() {
+  const navigate = useNavigate()
+
   const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL;
 
   const createPostEndpoint = `${API_BASE_URL}/Forum/Post/Create`
@@ -44,6 +47,7 @@ function ForumNewPost() {
     .then(response=>{
       if(response.status==201){
         alert("Create post successfully")
+        navigate(`/forum/my`)
       }
       else{
         console.log("Failed to create post")
