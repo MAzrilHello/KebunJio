@@ -32,7 +32,7 @@ const PostSneakPeak = ({post, upvoteCount, commentCount, hasLiked, onDelete}) =>
                         <p>{trimContent(post.content)}</p>
                     </div>
                 </Row>
-                <Row><PostInsight upvote={upvoteCount} comment={commentCount} id={post.id}/></Row>
+                <Row><PostInsight upvote={upvoteCount} comment={commentCount} id={post.id} hasLiked={hasLiked}/></Row>
             </Container>
         </div>
     )
