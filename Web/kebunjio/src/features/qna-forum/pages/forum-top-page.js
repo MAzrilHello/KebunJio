@@ -28,6 +28,7 @@ function ForumTopPage() {
         upvotes.some(upvote => upvote.userId === authUser.id)
       );
       setHasLiked(upvoteByUserList);
+      console.log(upvoteByUserList)
     })
     .catch(error => {
       console.error("Error fetching data:", error)
