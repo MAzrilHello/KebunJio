@@ -53,31 +53,41 @@ function ForumTopPage() {
         <div className="main-content">
         <p className="page-header">Top post</p>
         {posts.length !== 0 ? (
-          posts.map(({ post, upvoteCount, commentCount }, index) => {
-            const hasUserLiked = hasLiked.some(upvote => {
-              const postId = String(post.id).trim();  // Convert and trim the post.id
-              const upvotePostId = String(upvote.postId).trim();  // Convert and trim the upvote.postId
-              console.log(`Checking post.id: ${postId} vs upvote.postId: ${upvotePostId}`);  // Log both values
-              console.log(`Comparison result: ${postId === upvotePostId}`);  // Log the result of the comparison
-              return postId === upvotePostId && upvote.hasUpvoted;
-            });
-            
-            console.log(`Post ID: ${post.id}, hasLiked: ${hasUserLiked}, hasLiked Array: `, hasLiked);
-            
-            return (
-              <PostSneakPeak 
-                key={post.id} 
-                post={post} 
-                upvoteCount={upvoteCount} 
-                commentCount={commentCount} 
-                hasLiked={hasUserLiked}
-                onDelete={handleDeletePost} 
-              />
-            );
-          })
-        ) : (
-          <p>No result</p>
-        )}
+            posts.map(({ post, upvoteCount, commentCount }, index) => {
+              console.log("Checking post:", post);  // Log the current post
+              console.log("Checking hasLiked for index:", index, " - ", hasLiked); // Log hasLiked array
+
+              // Ensure that the hasLiked array is not empty and contains valid data
+              if (hasLiked && hasLiked.length > 0) {
+                const hasUserLiked = hasLiked.some(upvote => {
+                  console.log("Checking upvote:", upvote);  // Log the upvote object
+                  const postId = String(post.id).trim();  // Convert and trim the post.id
+                  const upvotePostId = String(upvote.postId).trim();  // Convert and trim the upvote.postId
+                  console.log(`Comparing post.id: ${postId} vs upvote.postId: ${upvotePostId}`);
+                  console.log(`Comparison result: ${postId === upvotePostId}`);
+                  return postId === upvotePostId && upvote.hasUpvoted;
+                });
+
+                console.log(`Post ID: ${post.id}, hasLiked: ${hasUserLiked}, hasLiked Array: `, hasLiked);
+                
+                return (
+                  <PostSneakPeak 
+                    key={post.id} 
+                    post={post} 
+                    upvoteCount={upvoteCount} 
+                    commentCount={commentCount} 
+                    hasLiked={hasUserLiked}
+                    onDelete={handleDeletePost} 
+                  />
+                );
+              } else {
+                console.log("hasLiked is empty or undefined");
+                return null; // Return null if hasLiked is empty or undefined
+              }
+            })
+          ) : (
+            <p>No result</p>
+          )}
 
 
         </div>
