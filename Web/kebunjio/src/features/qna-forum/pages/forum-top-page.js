@@ -54,7 +54,8 @@ function ForumTopPage() {
         <div className="main-content">
         <p className="page-header">Top post</p>
         {posts.length !== 0 ? (posts.map(({post,upvoteCount,commentCount},index)=>(
-              <PostSneakPeak key={index} post={post} upvoteCount={upvoteCount} commentCount={commentCount} hasLiked={hasLiked.some(upvote => upvote.postId === post.id)} onDelete={handleDeletePost} />
+              <PostSneakPeak key={index} post={post} upvoteCount={upvoteCount} commentCount={commentCount} hasLiked={hasLiked.some(upvote => upvote.postId === post.id && upvote.hasUpvoted)}
+              onDelete={handleDeletePost} />
         ))
         ) : (<p>No result</p>)}
         </div>
