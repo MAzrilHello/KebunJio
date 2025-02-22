@@ -33,7 +33,6 @@ function ForumTopPage() {
     .then(response => {
       console.log(getUpvotesByUser)
       console.log(response.data)
-      const upvoteListByUser = response.data.map((upvoteObj, posts)=> upvoteObj.postId===posts.id)
     })
     .catch(error => {
       console.error("Error fetching data:", error)
@@ -54,25 +53,32 @@ function ForumTopPage() {
         <div className="main-content">
         <p className="page-header">Top post</p>
         {posts.length !== 0 ? (
-            posts.map(({ post, upvoteCount, commentCount }, index) => {
-              const hasUserLiked = hasLiked.some(upvote => upvote.postId === post.id && upvote.hasUpvoted);
-              
-              console.log(`Post ID: ${post.id}, hasLiked: ${hasUserLiked}, hasLiked Array: `, hasLiked);  // Log post and status
-              
-              return (
-                <PostSneakPeak 
-                  key={post.id} 
-                  post={post} 
-                  upvoteCount={upvoteCount} 
-                  commentCount={commentCount} 
-                  hasLiked={hasUserLiked} // Pass the computed value
-                  onDelete={handleDeletePost} 
-                />
-              );
-            })
-          ) : (
-            <p>No result</p>
-          )}
+          posts.map(({ post, upvoteCount, commentCount }, index) => {
+            const hasUserLiked = hasLiked.some(upvote => {
+              const postId = String(post.id).trim();  // Convert and trim the post.id
+              const upvotePostId = String(upvote.postId).trim();  // Convert and trim the upvote.postId
+              console.log(`Checking post.id: ${postId} vs upvote.postId: ${upvotePostId}`);  // Log both values
+              console.log(`Comparison result: ${postId === upvotePostId}`);  // Log the result of the comparison
+              return postId === upvotePostId && upvote.hasUpvoted;
+            });
+            
+            console.log(`Post ID: ${post.id}, hasLiked: ${hasUserLiked}, hasLiked Array: `, hasLiked);
+            
+            return (
+              <PostSneakPeak 
+                key={post.id} 
+                post={post} 
+                upvoteCount={upvoteCount} 
+                commentCount={commentCount} 
+                hasLiked={hasUserLiked}
+                onDelete={handleDeletePost} 
+              />
+            );
+          })
+        ) : (
+          <p>No result</p>
+        )}
+
 
         </div>
       </div>
