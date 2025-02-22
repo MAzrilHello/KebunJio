@@ -49,7 +49,7 @@ const Post = () => {
             }
         };
         fetchData();
-    }, []);
+    }, [comments]);
 
     const [replyInput, setReplyInput] = useState("");
 
@@ -63,22 +63,17 @@ const Post = () => {
         try {
             const response = await axios.post(createReplyEndpoint, {
                 commentContent: sanitizeInput(replyInput)
-            },{withCredentials: true});
+            },{withCredentials: true})
     
             if (response.status === 201) { 
-                navigate(`/forum/post/${post.id}`)
+                //navigate(`/forum/post/${post.id}`)
 
-                /* Code unable to work to update
-                const newComment = response.data;
-                console.log("New Comment:", newComment);  
+                /* Code unable to work to update*/
+                const newComment = response.data
 
-                setComments(prevComments => {
-                    const updatedComments = [newComment, ...prevComments];  
-                    console.log("Updated Comments:", updatedComments);  
-                    return updatedComments;
-            });
+                setComments(prevComments => [newComment, ...prevComments])      
 
-            setReplyInput("");  */
+                setReplyInput("")
             } else {
                 console.error("Failed to submit reply")
             }

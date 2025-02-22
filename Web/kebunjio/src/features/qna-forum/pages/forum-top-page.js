@@ -4,6 +4,7 @@ import MenuSidebar from '../components/menu-sidebar'
 import PostSneakPeak from '../components/post-sneak-peek';
 import '../styling/forum-page.css'
 import axios from 'axios';
+import { useAuth } from '../../../context/AuthContext';
 
 function ForumTopPage() {
   const [posts, setPosts] = useState([])
@@ -13,7 +14,7 @@ function ForumTopPage() {
 
   const getPostEndpoint = `${API_BASE_URL}/Forum`;
 
-  const getUpvotesByUser = `${API_BASE_URL}/Forum/Upvote`;
+  const {authUser} = useAuth()
 
   const handleDeletePost = (postId) => {
     setPosts((prevPosts) => prevPosts.filter((postObj) => postObj.post.id !== postId));
@@ -22,19 +23,11 @@ function ForumTopPage() {
   async function fetchData() {
     axios.get(getPostEndpoint,{withCredentials:true})
     .then(response => {
-      console.log(getPostEndpoint)
-      console.log(response.data)
       setPosts(response.data.sort((a, b) => b.upvoteCount - a.upvoteCount).slice(0, 10));
-    })
-    .catch(error => {
-      console.error("Error fetching data:", error)
-    });
-
-    axios.get(getUpvotesByUser,{withCredentials:true})
-    .then(response => {
-      console.log(getUpvotesByUser)
-      console.log(response.data)
-      setHasLiked(response.data)
+      const upvoteByUserList = response.data.map(({ upvotes }) => 
+        upvotes.some(upvote => upvote.userId === authUser.id)
+      );
+      setHasLiked(upvoteByUserList);
     })
     .catch(error => {
       console.error("Error fetching data:", error)
