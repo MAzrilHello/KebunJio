@@ -65,6 +65,7 @@ public class ForumController {
 		List<PostWithUpvoteDAO> resultList = new ArrayList<>();
 		for(Post post : postList) {
 			int upvoteCount = upvoteService.getUpvoteCountByPost(post.getId());
+			List<Upvote> upvotes = upvoteService.getUpvotesByPost(post.getId());
 			
 			Optional<User> postUserOp = userService.getUserById(post.getUserId());
 			String username = "";
@@ -76,6 +77,7 @@ public class ForumController {
 			int commentCount = commentList.size();
 			PostWithUpvoteDAO result = new PostWithUpvoteDAO();
 			result.setPost(post);
+			result.setUpvotes(upvotes);
 			result.setUpvoteCount(upvoteCount);
 			result.setCommentCount(commentCount);
 			result.setUsername(username);
