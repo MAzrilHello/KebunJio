@@ -10,25 +10,30 @@ function ForumTopPage() {
   const [posts, setPosts] = useState([])
   const [hasLiked, setHasLiked] = useState([])
 
-  const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL;
+  const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL
 
-  const getPostEndpoint = `${API_BASE_URL}/Forum`;
+  const getPostEndpoint = `${API_BASE_URL}/Forum`
 
-  const {authUser} = useAuth()
+  const getUpvotesByUser = `${API_BASE_URL}/Forum/Upvote`
 
   const handleDeletePost = (postId) => {
-    setPosts((prevPosts) => prevPosts.filter((postObj) => postObj.post.id !== postId));
+    setPosts((prevPosts) => prevPosts.filter((postObj) => postObj.post.id !== postId))
   };
 
   async function fetchData() {
     axios.get(getPostEndpoint,{withCredentials:true})
     .then(response => {
-      setPosts(response.data.sort((a, b) => b.upvoteCount - a.upvoteCount).slice(0, 10));
-      const upvoteByUserList = response.data.map(({ upvotes }) => 
-        upvotes.some(upvote => upvote.userId === authUser.id)
-      );
-      setHasLiked(upvoteByUserList);
-      console.log(upvoteByUserList)
+      setPosts(response.data.sort((a, b) => b.upvoteCount - a.upvoteCount).slice(0, 10))
+    })
+    .catch(error => {
+      console.error("Error fetching data:", error)
+    });
+
+    axios.get(getUpvotesByUser,{withCredentials:true})
+    .then(response => {
+      console.log(getUpvotesByUser)
+      console.log(response.data)
+      setHasLiked(response.data)
     })
     .catch(error => {
       console.error("Error fetching data:", error)

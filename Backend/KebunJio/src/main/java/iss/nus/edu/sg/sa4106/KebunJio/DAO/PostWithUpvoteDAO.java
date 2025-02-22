@@ -12,7 +12,6 @@ public class PostWithUpvoteDAO {
         private String username;
 	private int upvoteCount;
 	private int commentCount;
-	private List<Upvote> upvotes;
 	
 	public Post getPost() {
 		return post;
@@ -39,10 +38,5 @@ public class PostWithUpvoteDAO {
 	public void setUpvoteCount(int upvoteCount) {
 		this.upvoteCount = upvoteCount;
 	}
-	public List<Upvote> getUpvotes() {
-		return upvotes;
-	}
-	public void setUpvotes(List<Upvote> upvotes) {
-		this.upvotes = upvotes;
-	}
+
 }
