@@ -53,11 +53,27 @@ function ForumTopPage() {
         </div>
         <div className="main-content">
         <p className="page-header">Top post</p>
-        {posts.length !== 0 ? (posts.map(({post,upvoteCount,commentCount},index)=>(
-              <PostSneakPeak key={index} post={post} upvoteCount={upvoteCount} commentCount={commentCount} hasLiked={hasLiked.some(upvote => upvote.postId === post.id && upvote.hasUpvoted)}
-              onDelete={handleDeletePost} />
-        ))
-        ) : (<p>No result</p>)}
+        {posts.length !== 0 ? (
+            posts.map(({ post, upvoteCount, commentCount }, index) => {
+              const hasUserLiked = hasLiked.some(upvote => upvote.postId === post.id && upvote.hasUpvoted);
+              
+              console.log(`Post ID: ${post.id}, hasLiked: ${hasUserLiked}, hasLiked Array: `, hasLiked);  // Log post and status
+              
+              return (
+                <PostSneakPeak 
+                  key={post.id} 
+                  post={post} 
+                  upvoteCount={upvoteCount} 
+                  commentCount={commentCount} 
+                  hasLiked={hasUserLiked} // Pass the computed value
+                  onDelete={handleDeletePost} 
+                />
+              );
+            })
+          ) : (
+            <p>No result</p>
+          )}
+
         </div>
       </div>
     </div>
