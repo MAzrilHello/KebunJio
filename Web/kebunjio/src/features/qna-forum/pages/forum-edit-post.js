@@ -53,10 +53,6 @@ function ForumEditPost() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleFileChange = (e) => {
-    setFormData({ ...formData, image: e.target.files[0] });
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault()
     axios.put((editPostEndpoint),{
@@ -131,16 +127,6 @@ function ForumEditPost() {
                 className="text-area"
               />
 
-            </Form.Group>
-
-            <Form.Group controlId="image">
-              <Form.Label>Upload image</Form.Label>
-              <Form.Control
-                type="file"
-                name="image"
-                onChange={handleFileChange}
-                className="text-area"
-              />
             </Form.Group>
 
             <div style={{marginTop:"32px"}}>

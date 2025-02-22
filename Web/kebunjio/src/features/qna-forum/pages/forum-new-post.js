@@ -5,7 +5,6 @@ import '../styling/forum-page.css'
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { sanitizeInput } from '../../../service/sanitizeService';
-import { useAuth } from '../../../context/AuthContext';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -27,12 +26,6 @@ function ForumNewPost() {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value })
   };
-
-  const handleFileChange = (e) => {
-    setFormData({ ...formData, image: e.target.files[0] });
-  };
-
-  const {authUser} = useAuth()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -119,16 +112,6 @@ function ForumNewPost() {
                 className="text-area"
               />
 
-            </Form.Group>
-
-            <Form.Group controlId="image">
-              <Form.Label>Upload image</Form.Label>
-              <Form.Control
-                type="file"
-                name="image"
-                onChange={handleFileChange}
-                className="text-area"
-              />
             </Form.Group>
 
             <div style={{marginTop:"32px"}}>
