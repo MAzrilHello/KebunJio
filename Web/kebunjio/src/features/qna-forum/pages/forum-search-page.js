@@ -32,7 +32,7 @@ function ForumSearchPage() {
       ])
   
       console.log("Posts response data:", postsResponse.data)
-      setPosts(postsResponse.data)
+      setSearchResults(postsResponse.data)
   
       console.log("Upvotes response data:", upvotesResponse.data)
       setHasLiked(upvotesResponse.data)

@@ -39,9 +39,11 @@ const Post = () => {
                     axios.get(getPostEndpoint, { withCredentials: true }),
                     axios.get(getUpvotesByUser, { withCredentials: true }),
                   ])
-                  setPost(postResponse.data);
+                setPost(postResponse.data.post);
+                setComments(postResponse.data.commentList);
+                setCommentLike(postResponse.data.commentLikeList);
               
-                  setHasLiked(upvoteResponse.data);  
+                setHasLiked(upvoteResponse.data);  
     
             } catch (error) {
                 console.error("Error fetching data", error)
