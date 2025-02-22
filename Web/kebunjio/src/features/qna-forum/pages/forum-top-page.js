@@ -21,22 +21,20 @@ function ForumTopPage() {
   };
 
   async function fetchData() {
-    axios.get(getPostEndpoint,{withCredentials:true})
-    .then(response => {
-      setPosts(response.data.sort((a, b) => b.upvoteCount - a.upvoteCount).slice(0, 10))
-    })
-    .catch(error => {
-      console.error("Error fetching data:", error)
-    });
-
-    axios.get(getUpvotesByUser,{withCredentials:true})
-    .then(response => {
-      console.log(getUpvotesByUser)
-      console.log(response.data)
-    })
-    .catch(error => {
-      console.error("Error fetching data:", error)
-    });
+    try {
+      const [postsResponse, upvotesResponse] = await Promise.all([
+        axios.get(getPostEndpoint, { withCredentials: true }),
+        axios.get(getUpvotesByUser, { withCredentials: true }),
+      ]);
+  
+      console.log("Posts response data:", postsResponse.data);
+      setPosts(postsResponse.data.sort((a, b) => b.upvoteCount - a.upvoteCount).slice(0, 10));
+  
+      console.log("Upvotes response data:", upvotesResponse.data);
+      setHasLiked(upvotesResponse.data);  
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   }
   
   useEffect(() => {
