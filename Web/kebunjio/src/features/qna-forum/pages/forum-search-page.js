@@ -23,25 +23,22 @@ function ForumSearchPage() {
       setSearchInput(event.target.value);
   };
 
-  const getSearchData = () => {
+  const getSearchData = async () => {
     const getSearchEndpoint = `${API_BASE_URL}/Forum/Search?query=${searchInput}`;
-    axios.get(getSearchEndpoint,{withCredentials:true})
-    .then(response=>{
-      console.log(response.data)
-      setSearchResults(response.data)
-    })
-    .catch(err=>{
-      console.log(err)
-    })
-    axios.get(getUpvotesByUser,{withCredentials:true})
-    .then(response => {
-      console.log(getUpvotesByUser)
-      console.log(response.data)
-      setHasLiked(response.data)
-    })
-    .catch(error => {
+    try {
+      const [postsResponse, upvotesResponse] = await Promise.all([
+        axios.get(getSearchEndpoint, { withCredentials: true }),
+        axios.get(getUpvotesByUser, { withCredentials: true }),
+      ])
+  
+      console.log("Posts response data:", postsResponse.data)
+      setPosts(postsResponse.data)
+  
+      console.log("Upvotes response data:", upvotesResponse.data)
+      setHasLiked(upvotesResponse.data)
+    } catch (error) {
       console.error("Error fetching data:", error)
-    });
+    }
   }
 
   const handleDeletePost = (postId) => {
@@ -70,9 +67,20 @@ function ForumSearchPage() {
           </div>
           <div>
             <p style={{marginTop:"10px", marginLeft:"8px"}} className="page-header">Search result:</p>
-            {search_results.length!==0?(search_results.map(({post,upvoteCount,commentCount},index)=>(
-              <PostSneakPeak key={index} post={post} upvoteCount={upvoteCount} commentCount={commentCount} hasLiked={hasLiked} onDelete={handleDeletePost}/>
-            ))):(<p style={{marginTop:"10px", marginLeft:"8px"}}>No result</p>)}
+            {search_results.length !== 0 ? (
+              search_results.map(({ post, upvoteCount, commentCount }, index) => (
+                <PostSneakPeak 
+                  key={index} 
+                  post={post} 
+                  upvoteCount={upvoteCount} 
+                  commentCount={commentCount} 
+                  hasLiked={hasLiked.some(upvote => upvote.postId === post.id && upvote.hasUpvoted)} 
+                  onDelete={handleDeletePost} 
+                />
+              ))
+            ) : (
+              <p>No result</p>
+            )}
           </div>
         </div>
       </div>

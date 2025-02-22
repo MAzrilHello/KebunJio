@@ -3,7 +3,7 @@ import FullPost from "../components/full-post";
 import Reply from "../components/reply";
 import Form from "react-bootstrap/Form";
 import { Button } from "react-bootstrap";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../../context/AuthContext";
 
@@ -20,9 +20,9 @@ const Post = () => {
     const { upvoteCount, commentCount } = location?.state || {};
     const [commentLike, setCommentLike] = useState([]);
 
-    const navigate = useNavigate()
+    const [hasLiked, setHasLiked] = useState(false)
 
-    const {authUser, isAdmin} = useAuth()
+    const {authUser} = useAuth()
 
     const API_BASE_URL = process.env.REACT_APP_API_LIVE_URL;
 
@@ -30,19 +30,18 @@ const Post = () => {
 
     const createReplyEndpoint = `${API_BASE_URL}/Forum/Post/${id}/CreateComment`;
 
+    const getUpvotesByUser = `${API_BASE_URL}/Forum/Upvote`
+
     useEffect(() => {
         const fetchData = async () => {
             try {
-                axios.get(getPostEndpoint)
-                .then(response=>{
-                    console.log(response.data);
-                    setPost(response.data.post);
-                    setComments(response.data.commentList);
-                    setCommentLike(response.data.commentLikeList);
-                },{withCredentials: true})
-                .catch(error => {
-                    console.error("Error fetching data:", error)
-                })
+                const [postResponse, upvoteResponse] = await Promise.all([
+                    axios.get(getPostEndpoint, { withCredentials: true }),
+                    axios.get(getUpvotesByUser, { withCredentials: true }),
+                  ])
+                  setPost(postResponse.data);
+              
+                  setHasLiked(upvoteResponse.data);  
     
             } catch (error) {
                 console.error("Error fetching data", error)
@@ -66,9 +65,7 @@ const Post = () => {
             },{withCredentials: true})
     
             if (response.status === 201) { 
-                //navigate(`/forum/post/${post.id}`)
 
-                /* Code unable to work to update*/
                 const newComment = response.data
 
                 setComments(prevComments => [newComment, ...prevComments])      
@@ -98,7 +95,7 @@ const Post = () => {
                     <MenuSidebar />
                 </div>
                 <div className="main-content">
-                    {post ? <FullPost post={post} upvoteCount={upvoteCount} commentCount={commentCount}/> : <p>Loading...</p>}
+                    {post ? <FullPost post={post} upvoteCount={upvoteCount} commentCount={commentCount} hasLiked={hasLiked.some(upvote => upvote.postId === post.id && upvote.hasUpvoted)}/> : <p>Loading...</p>}
                     <div>
                         <Form>
                             <Form.Group controlId="replyForm">

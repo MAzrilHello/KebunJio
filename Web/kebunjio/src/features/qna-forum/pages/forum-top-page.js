@@ -25,15 +25,15 @@ function ForumTopPage() {
       const [postsResponse, upvotesResponse] = await Promise.all([
         axios.get(getPostEndpoint, { withCredentials: true }),
         axios.get(getUpvotesByUser, { withCredentials: true }),
-      ]);
+      ])
   
-      console.log("Posts response data:", postsResponse.data);
-      setPosts(postsResponse.data.sort((a, b) => b.upvoteCount - a.upvoteCount).slice(0, 10));
+      console.log("Posts response data:", postsResponse.data)
+      setPosts(postsResponse.data.sort((a, b) => b.upvoteCount - a.upvoteCount).slice(0, 10))
   
-      console.log("Upvotes response data:", upvotesResponse.data);
-      setHasLiked(upvotesResponse.data);  
+      console.log("Upvotes response data:", upvotesResponse.data)
+      setHasLiked(upvotesResponse.data)
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching data:", error)
     }
   }
   
