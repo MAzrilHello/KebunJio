@@ -33,7 +33,7 @@ function ForumTopPage() {
     .then(response => {
       console.log(getUpvotesByUser)
       console.log(response.data)
-      setHasLiked(response.data)
+      const upvoteListByUser = response.data.map((upvoteObj, posts)=> upvoteObj.postId===posts.id)
     })
     .catch(error => {
       console.error("Error fetching data:", error)
@@ -54,7 +54,7 @@ function ForumTopPage() {
         <div className="main-content">
         <p className="page-header">Top post</p>
         {posts.length !== 0 ? (posts.map(({post,upvoteCount,commentCount},index)=>(
-              <PostSneakPeak key={index} post={post} upvoteCount={upvoteCount} commentCount={commentCount} hasLiked={hasLiked[index]} onDelete={handleDeletePost} />
+              <PostSneakPeak key={index} post={post} upvoteCount={upvoteCount} commentCount={commentCount} hasLiked={hasLiked.some(upvote => upvote.postId === post.id)} onDelete={handleDeletePost} />
         ))
         ) : (<p>No result</p>)}
         </div>
