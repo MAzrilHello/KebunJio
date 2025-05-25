@@ -1,0 +1,57 @@
+name: Deploy to Cloud Run (Backend Only)
+
+on:
+  push:
+    branches:
+      - devsecopsint
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build JAR
+        run: mvn clean package -DskipTests=true
+        working-directory: Backend/KebunJio
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Configure Docker for GCR
+        run: gcloud auth configure-docker --quiet
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t gcr.io/ultimate-ascent-449505-u0/kebunjio:latest .
+          docker push gcr.io/ultimate-ascent-449505-u0/kebunjio:latest
+        working-directory: Backend/KebunJio
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy kebunjio \
+            --image gcr.io/ultimate-ascent-449505-u0/kebunjio:latest \
+            --platform managed \
+            --region asia-southeast1 \
+            --allow-unauthenticated

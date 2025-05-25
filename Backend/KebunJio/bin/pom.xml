@@ -11,7 +11,6 @@
 	<groupId>iss.nus.edu.sg.sa4106.KebunJio</groupId>
 	<artifactId>KebunJio</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
 	<name>KebunJio</name>
 	<description>An app to collaborate gardening enthusiast</description>
 	<url/>
