@@ -1,9 +1,7 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Services;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import iss.nus.edu.sg.sa4106.KebunJio.DAO.PostDAO;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.Post;
-import iss.nus.edu.sg.sa4106.KebunJio.Models.PostES;
-import iss.nus.edu.sg.sa4106.KebunJio.Repository.PostESRepository;
+// import iss.nus.edu.sg.sa4106.KebunJio.Models.PostES;
+// import iss.nus.edu.sg.sa4106.KebunJio.Repository.PostESRepository;
 import iss.nus.edu.sg.sa4106.KebunJio.Repository.PostRepository;
 
 /* ToDiscuss:
@@ -25,8 +23,8 @@ public class PostService {
 	@Autowired
 	private PostRepository postRepository;
 	
-	@Autowired
-	private PostESRepository postESRepository;
+	// @Autowired
+	// private PostESRepository postESRepository;
 	
 	//Function1: CreatePost
 	public boolean createPost(PostDAO newPostData,String userId,String username) {
@@ -42,7 +40,7 @@ public class PostService {
 		newPost.setUsername(username);
 		try {
 			postRepository.save(newPost);
-			syncES(newPost);
+			// syncES(newPost);
 			result = true;
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -81,7 +79,7 @@ public class PostService {
 			try {
 				postRepository.save(newPost);
 				
-				syncES(newPost);
+				// syncES(newPost);
 				result = true;
 			}catch(Exception e) {
 				throw new RuntimeException("Update Post Error");
@@ -107,14 +105,14 @@ public class PostService {
 		boolean result = false;
 		if(postRepository.existsById(id)) {
 			postRepository.deleteById(id);
-			postESRepository.deleteById(id);
+			// postESRepository.deleteById(id);
 			result = true;
 		}
 		return result;
 	}
 	
-	
 	// DataSync to ES
+	/*
 	public Post syncES(Post post) {
 		
         PostES postES = new PostES();
@@ -124,16 +122,20 @@ public class PostService {
         postES.setPublishedDateTime(post.getPublishedDateTime());
         postES.setUserId(post.getUserId());
         postES.setPostCategory(post.getPostCategory());
-	postES.setUsername(post.getUsername());
+		postES.setUsername(post.getUsername());
         postESRepository.save(postES);
 
         return post;
 	}
+	*/
 	
 	//Search ES
+	/*
 	public List<PostES> searchES(String query){
 		return postESRepository.findByTitleContainingOrContentContaining(query, query);
 	}
+	*/
+	
 	//Function for Junit and GithubActions
 	public int add(int a,int b) {
 		return a+b;

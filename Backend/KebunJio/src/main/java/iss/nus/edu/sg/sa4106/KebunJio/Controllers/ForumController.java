@@ -23,7 +23,7 @@ import iss.nus.edu.sg.sa4106.KebunJio.DAO.PostWithUpvoteDAO;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.Comment;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.CommentLike;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.Post;
-import iss.nus.edu.sg.sa4106.KebunJio.Models.PostES;
+//import iss.nus.edu.sg.sa4106.KebunJio.Models.PostES;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.Upvote;
 import iss.nus.edu.sg.sa4106.KebunJio.Models.User;
 import iss.nus.edu.sg.sa4106.KebunJio.Services.CommentLikeService;
@@ -357,21 +357,21 @@ public class ForumController {
 	}
 	
 	//Search
-	@GetMapping("/Search")
-	public ResponseEntity searchPosts(@RequestParam String query) {
-		List<PostES> searchResult = postService.searchES(query);
-	    List<Map<String, Object>> responseList = new ArrayList<>();
-
-	    for (PostES postES : searchResult) {
-	        Map<String, Object> responseMap = new HashMap<>();
-	        responseMap.put("post", postES);
-	        responseMap.put("upvoteCount", upvoteService.getUpvoteCountByPost(postES.getId()));
-	        responseMap.put("commentCount", commentService.getCommentsByPostId(postES.getId()).size());
-
-	        responseList.add(responseMap);
-	    }
-		return new ResponseEntity<>(responseList,HttpStatus.OK);
-	}
+//	@GetMapping("/Search")
+//	public ResponseEntity searchPosts(@RequestParam String query) {
+//		List<PostES> searchResult = postService.searchES(query);
+//	    List<Map<String, Object>> responseList = new ArrayList<>();
+//
+//	    for (PostES postES : searchResult) {
+//	        Map<String, Object> responseMap = new HashMap<>();
+//	        responseMap.put("post", postES);
+//	        responseMap.put("upvoteCount", upvoteService.getUpvoteCountByPost(postES.getId()));
+//	        responseMap.put("commentCount", commentService.getCommentsByPostId(postES.getId()).size());
+//
+//	        responseList.add(responseMap);
+//	    }
+//		return new ResponseEntity<>(responseList,HttpStatus.OK);
+//	}
 	
 	
 }
