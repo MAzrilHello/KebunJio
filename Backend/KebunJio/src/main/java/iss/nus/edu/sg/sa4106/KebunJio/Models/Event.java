@@ -1,25 +1,43 @@
 package iss.nus.edu.sg.sa4106.KebunJio.Models;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.annotation.Id;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Objects;
+import java.util.Date;
 
+@Document(collection = "Event")
 public class Event {
-	
-	private int eventId;
+
+	@Id
+	private String id;
+
 	private String name;
 	private String location;
-	private LocalDateTime StartDateTime;
-	private LocalDateTime EndDateTime;
+	private LocalDateTime startDateTime;
+	private LocalDateTime endDateTime;
 	private String description;
-	private String Picture;
-
+	private String picture;
 	public Event() {}
-
-	public int getEventId() {
-		return eventId;
+	public Event(String id, String name, String location,
+				 LocalDateTime startDateTime, LocalDateTime endDateTime,
+				 String description, String picture) {
+		this.id = id;
+		this.name = name;
+		this.location = location;
+		this.startDateTime = startDateTime;
+		this.endDateTime = endDateTime;
+		this.description = description;
+		this.picture = picture;
 	}
 
-	public void setEventId(int eventId) {
-		this.eventId = eventId;
+	public String getId() {
+		return this.id;
+	}
+
+	public void setId(String eventId) {
+		this.id = eventId;
 	}
 
 	public String getName() {
@@ -39,19 +57,19 @@ public class Event {
 	}
 
 	public LocalDateTime getStartDateTime() {
-		return StartDateTime;
+		return startDateTime;
 	}
 
 	public void setStartDateTime(LocalDateTime startDateTime) {
-		StartDateTime = startDateTime;
+		this.startDateTime = startDateTime;
 	}
 
 	public LocalDateTime getEndDateTime() {
-		return EndDateTime;
+		return endDateTime;
 	}
 
 	public void setEndDateTime(LocalDateTime endDateTime) {
-		EndDateTime = endDateTime;
+		this.endDateTime = endDateTime;
 	}
 
 	public String getDescription() {
@@ -63,13 +81,63 @@ public class Event {
 	}
 
 	public String getPicture() {
-		return Picture;
+		return picture;
 	}
 
 	public void setPicture(String picture) {
-		Picture = picture;
+		this.picture = picture;
 	}
-	
-	
 
+	public com.google.api.services.calendar.model.Event toGoogleCalendarEvent() {
+		com.google.api.services.calendar.model.Event googleEvent = new com.google.api.services.calendar.model.Event()
+				.setSummary(this.name)
+				.setDescription(this.description)
+				.setLocation(this.location);
+
+		Date startDate = Date.from(this.startDateTime.atZone(ZoneId.systemDefault()).toInstant());
+		Date endDate = Date.from(this.endDateTime.atZone(ZoneId.systemDefault()).toInstant());
+
+		com.google.api.services.calendar.model.EventDateTime start = new com.google.api.services.calendar.model.EventDateTime()
+				.setDateTime(new com.google.api.client.util.DateTime(startDate));
+
+		com.google.api.services.calendar.model.EventDateTime end = new com.google.api.services.calendar.model.EventDateTime()
+				.setDateTime(new com.google.api.client.util.DateTime(endDate));
+
+		googleEvent.setStart(start);
+		googleEvent.setEnd(end);
+
+		return googleEvent;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Event event = (Event) o;
+		return Objects.equals(id, event.id) &&
+				Objects.equals(name, event.name) &&
+				Objects.equals(location, event.location) &&
+				Objects.equals(startDateTime, event.startDateTime) &&
+				Objects.equals(endDateTime, event.endDateTime) &&
+				Objects.equals(description, event.description) &&
+				Objects.equals(picture, event.picture);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name, location, startDateTime, endDateTime, description, picture);
+	}
+
+	@Override
+	public String toString() {
+		return "Event{" +
+				"id='" + id + '\'' +
+				", name='" + name + '\'' +
+				", location='" + location + '\'' +
+				", startDateTime=" + startDateTime +
+				", endDateTime=" + endDateTime +
+				", description='" + description + '\'' +
+				", picture='" + picture + '\'' +
+				'}';
+	}
 }
