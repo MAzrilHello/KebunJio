@@ -18,7 +18,7 @@ import iss.nus.edu.sg.sa4106.KebunJio.Services.ReminderService;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class) // ✅ Use Mockito for testing
+@ExtendWith(MockitoExtension.class) 
 public class ReminderServiceTest {
 
 	//e
@@ -33,7 +33,7 @@ public class ReminderServiceTest {
         // Testing reminder service and instantiating data
     	
         Reminder reminder = new Reminder();
-        reminder.setUserId("user123");
+        reminder.setUserId("user1234");
         reminder.setPlantId("plant456");
         reminder.setReminderType("Watering");
         reminder.setReminderDateTime(LocalDateTime.of(2025, 3, 10, 10, 0));
