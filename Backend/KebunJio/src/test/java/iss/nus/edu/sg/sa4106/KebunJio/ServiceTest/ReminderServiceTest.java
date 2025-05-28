@@ -33,7 +33,7 @@ public class ReminderServiceTest {
         // Testing reminder service and instantiating data
     	
         Reminder reminder = new Reminder();
-        reminder.setUserId("user1234");
+        reminder.setUserId("user12345");
         reminder.setPlantId("plant456");
         reminder.setReminderType("Watering");
         reminder.setReminderDateTime(LocalDateTime.of(2025, 3, 10, 10, 0));
