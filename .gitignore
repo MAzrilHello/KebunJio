@@ -1,4 +1,40 @@
+# Existing
 Kebunjio/
 
-# Node dependencies
+# Node
 **/node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Java / Maven
+target/
+*.class
+
+# Gradle / Android
+.gradle/
+build/
+local.properties
+captures/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# IDEs
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IntelliJ / Android Studio
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/shelf/
+.idea/**/usage.statistics.xml
+
+# Logs
+*.log

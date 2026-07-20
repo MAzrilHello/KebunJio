@@ -87,7 +87,7 @@ Extract the ZIP file into the newly created folder.
 3. Install Backend dependencies (Spring Boot):
    ```bash
    cd Backend
-   ./mvnw clean install
+   cd Backend/KebunJio && ./mvnw clean install
 
 4. Open Mobile in Android studio:
    ```bash
