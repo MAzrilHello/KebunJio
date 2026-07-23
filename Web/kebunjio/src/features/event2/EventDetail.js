@@ -67,7 +67,7 @@ const AdminEventDetail = () => {
                 {
                 event?.picture ? (
                   <img
-                    src={`http://localhost:8080/api/events/images/${event.picture}`}
+                    src={`/api/events/images/${event.picture}`}
                     alt={event.name}
                     className="event-image"
                   />

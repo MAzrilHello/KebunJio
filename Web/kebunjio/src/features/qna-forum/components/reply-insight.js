@@ -26,7 +26,7 @@ const ReplyInsight = ({replyId, cur_like, cur_dislike, has_liked, has_disliked})
                     setLikeNum(like+1)
     
                 }
-                axios.put(`http://34.124.209.141:8080/api/Forum/Post/Comment/${commentId}/Like`,{},{withCredentials:true})
+                axios.put(`/api/Forum/Post/Comment/${commentId}/Like`,{},{withCredentials:true})
                 .then(response=>{
                     console.log("liked")
                 })
@@ -50,7 +50,7 @@ const ReplyInsight = ({replyId, cur_like, cur_dislike, has_liked, has_disliked})
                     setDislikeNum(dislike+1)
         
                 }
-                axios.put(`http://34.124.209.141:8080/api/Forum/Post/Comment/${commentId}/Dislike`,{},{withCredentials:true})
+                axios.put(`/api/Forum/Post/Comment/${commentId}/Dislike`,{},{withCredentials:true})
                 .then(response=>{
                     console.log("disliked")
                 })
